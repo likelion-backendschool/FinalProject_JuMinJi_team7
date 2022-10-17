@@ -1,21 +1,22 @@
 spring:
+  profiles:
+    active: dev
+    include:
+      - base-addi
   datasource:
-    url: jdbc:mariadb://localhost:3306/ebook_market?useUnicode=true&characterEncoding=utf8&serverTimeZone=Asia/Seoul&allowPublicKeyRetrieval=true&useSSL=false
-    username: user1
-    password: Ttest12341234@
-
     driver-class-name: org.mariadb.jdbc.Driver
-
   jpa:
-    hibernate:
-      ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
         show_sql: true
+        format_sql: true
         use_sql_comments: true
-
 logging:
   level:
-    org.hibernate.SQL: debug
-    org.hibernate.type.descriptor: trace
+    root: info
+    com.ll.exam.com.ll.exam.Week_Mission: debug
+    org.hibernate.type.descriptor.sql: trace
+custom:
+  site:
+    name: MEOT
+    baseUrl: "http://localhost:8010"
