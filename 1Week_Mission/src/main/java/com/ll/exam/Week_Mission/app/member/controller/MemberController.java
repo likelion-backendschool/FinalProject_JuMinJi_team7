@@ -7,13 +7,13 @@ import com.ll.exam.Week_Mission.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,20 +34,18 @@ public class MemberController {
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("/join")
-    public String showJoin() {
-        return "member/join";
-    }
+    public String showJoin() {return "member/join";}
 
     @PreAuthorize("isAnonymous()")
     @PostMapping("/join")
     public String join(@Valid JoinForm joinForm) {
-        Optional<Member> oldMember = memberService.findByUsername(joinForm.getUsername());
+        Member oldMember = memberService.findByUsername(joinForm.getUsername());
 
-        if (oldMember.isPresent()) {
-            return "redirect:/?errorMsg=Already joined.";
+        if (oldMember!=null) {
+            return "redirect:/?errorMsg=" + Ut.url.encode("이미 가입되어 있는 회원입니다.");
         }
 
-        memberService.join(joinForm.getUsername(), joinForm.getPassword(), joinForm.getEmail(), joinForm.getUsername());
+        memberService.join(joinForm.getUsername(), joinForm.getPassword(), joinForm.getEmail(), joinForm.getNickname());
 
         return "redirect:/member/login?msg=" + Ut.url.encode("회원가입이 완료되었습니다.");
     }

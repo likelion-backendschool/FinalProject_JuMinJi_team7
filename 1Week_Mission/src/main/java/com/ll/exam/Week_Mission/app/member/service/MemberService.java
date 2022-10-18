@@ -7,8 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -16,26 +14,13 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Member join(String username, String password, String nickname, String email) {
-
-        Member member = Member.builder()
-                .username(username)
-                .password(passwordEncoder.encode(password))
-                .email(nickname)
-                .email(email)
-                .build();
-
-        memberRepository.save(member);
-
-        return member;
-    }
-
-    public Member join(String username, String password, String email) {
+    public Member join(String username, String password, String email, String nickname) {
 
         Member member = Member.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
                 .email(email)
+                .nickname(nickname)
                 .build();
 
         memberRepository.save(member);
@@ -44,8 +29,8 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Member> findByUsername(String username) {
-        return memberRepository.findByUsername(username);
+    public Member findByUsername(String username) {
+        return memberRepository.findByUsername(username).orElse(null);
+        }
     }
-}
 

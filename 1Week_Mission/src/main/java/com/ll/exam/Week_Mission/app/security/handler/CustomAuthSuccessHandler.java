@@ -27,17 +27,25 @@ public class CustomAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
 
-        String url ="/";
+        String url = "/";
 
         clearSession(request);
 
         SavedRequest savedRequest = requestCache.getRequest(request, response);
 
+        /**
+         * prevPage가 존재하는 경우 = 사용자가 직접 /auth/login 경로로 로그인 요청
+         * 기존 Session의 prevPage attribute 제거
+         */
         String prevPage = (String) request.getSession().getAttribute("prevPage");
         if (prevPage != null) {
             request.getSession().removeAttribute("prevPage");
         }
 
+        /**
+         * savedRequest 존재하는 경우 = 인증 권한이 없는 페이지 접근
+         * Security Filter가 인터셉트하여 savedRequest에 세션 저장
+         */
         if (savedRequest != null) {
             url = savedRequest.getRedirectUrl();
         } else if (prevPage != null && prevPage.length() > 0) {
@@ -56,7 +64,7 @@ public class CustomAuthSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         redirectStrategy.sendRedirect(request, response, url);
     }
 
-    // 로그인 실패 시 에러 세션 제거
+    // 로그인 실패 시 인증 에러 세션 제거
     protected void clearSession(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {

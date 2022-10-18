@@ -18,24 +18,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-@ToString(callSuper = true, exclude = "password")
+@ToString(callSuper = true)
 public class Member extends BaseEntity {
     @Column(unique = true)
     private String username;
     private String password;
-    private String nickname;
     private String email;
+    private String nickname;
 
     public Member (long id) { super(id); }
-
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        if(nickname!=null){
-            authorities.add(new SimpleGrantedAuthority("AUTHOR"));
-        } else {
-            authorities.add(new SimpleGrantedAuthority("GENERAL"));
-        }
-
-        return authorities;
-    }
 }
