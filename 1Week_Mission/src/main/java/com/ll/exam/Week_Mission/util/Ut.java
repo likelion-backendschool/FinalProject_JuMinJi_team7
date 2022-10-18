@@ -1,4 +1,4 @@
-package com.ll.exam.Week_Mission.app.util;
+package com.ll.exam.Week_Mission.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

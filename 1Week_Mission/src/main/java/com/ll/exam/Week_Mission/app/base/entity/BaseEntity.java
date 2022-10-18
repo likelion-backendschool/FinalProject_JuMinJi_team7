@@ -30,8 +30,8 @@ public class BaseEntity {
     @CreatedDate
     private LocalDateTime createDate;
     @LastModifiedDate
-    private LocalDateTime modifyDate;
-    @Transient // 아래 필드가 DB 필드가 되는 것을 막는다.
+    private LocalDateTime updateDate;
+    @Transient
     @Builder.Default
     private Map<String, Object> extra = new LinkedHashMap<>();
 
@@ -41,6 +41,6 @@ public class BaseEntity {
 
     public BaseEntity(LocalDateTime createDate, LocalDateTime modifyDate) {
         this.createDate = createDate;
-        this.modifyDate = modifyDate;
+        this.updateDate = modifyDate;
     }
 }
