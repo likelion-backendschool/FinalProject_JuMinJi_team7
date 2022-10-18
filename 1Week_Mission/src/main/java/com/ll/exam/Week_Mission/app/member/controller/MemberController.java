@@ -50,8 +50,8 @@ public class MemberController {
 
         memberService.join(joinForm.getUsername(), joinForm.getPassword(), joinForm.getEmail(), joinForm.getNickname());
 
-        MimeMessage welcomeEmail = emailService.createMessage(joinForm.getEmail(),joinForm.getUsername());
-        emailService.sendMail(welcomeEmail);
+        emailService.sendPlainTextEmail(emailService.getHost(), emailService.getPort(), emailService.getUserName(),
+                emailService.getPassword(), joinForm.getEmail(), emailService.getWelcomeSubject(), emailService.getWelcomeMessage());
 
         return "redirect:/member/login?msg=" + Ut.url.encode("회원가입이 완료되었습니다.");
     }
