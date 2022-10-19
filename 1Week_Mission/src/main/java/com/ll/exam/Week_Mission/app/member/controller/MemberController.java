@@ -2,18 +2,21 @@ package com.ll.exam.Week_Mission.app.member.controller;
 
 import com.ll.exam.Week_Mission.app.email.service.EmailService;
 import com.ll.exam.Week_Mission.app.member.dto.request.JoinForm;
+import com.ll.exam.Week_Mission.app.member.dto.request.UpdateForm;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.service.MemberService;
+import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
 import com.ll.exam.Week_Mission.util.Ut;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -54,5 +57,31 @@ public class MemberController {
                 emailService.getPassword(), joinForm.getEmail(), emailService.getWelcomeSubject(), emailService.getWelcomeMessage());
 
         return "redirect:/member/login?msg=" + Ut.url.encode("회원가입이 완료되었습니다.");
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/profile")
+        public String showProfile(@AuthenticationPrincipal MemberContext memberContext, Model model) {
+        Member member = memberService.findByUsername(memberContext.getUsername());
+        model.addAttribute("member", member);
+            return "member/profile";
+        }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/profile/modify")
+    public String showModify(@AuthenticationPrincipal MemberContext memberContext, Model model) {
+        Member member = memberService.findByUsername(memberContext.getUsername());
+        model.addAttribute("member", member);
+        return "member/profile_update";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/profile/modify")
+    public String modify(@AuthenticationPrincipal MemberContext memberContext, @Valid UpdateForm updateForm) {
+        Member member = memberService.findByUsername(memberContext.getUsername());
+
+        memberService.modify(member,updateForm.getPassword(), updateForm.getEmail(), updateForm.getNickname());
+
+        return "redirect:/member/profile";
     }
 }

@@ -56,8 +56,7 @@
                         <a href="/member/join">Join</a>
                     </li>
                     <li class="cta-button-outline" sec:authorize="isAuthenticated()">
-                        <a href="javascript: document.logoutForm.submit();">Logout</a>
-                        <form name="logoutForm" th:action="@{/member/logout}" method="post" hidden></form>
+                        <a th:href="@{/member/logout}">Logout</a>
                     </li>
                     <li class="cta-primary" sec:authorize="isAuthenticated()">
                         <a href="/member/profile" class="inline-flex" >Profile</a>

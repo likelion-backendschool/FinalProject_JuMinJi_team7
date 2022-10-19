@@ -32,5 +32,13 @@ public class MemberService {
     public Member findByUsername(String username) {
         return memberRepository.findByUsername(username).orElse(null);
         }
+
+    public void modify(Member member,String password, String email, String nickname) {
+        member.setPassword(password);
+        member.setEmail(email);
+        member.setNickname(nickname);
+
+        memberRepository.save(member);
     }
+}
 
