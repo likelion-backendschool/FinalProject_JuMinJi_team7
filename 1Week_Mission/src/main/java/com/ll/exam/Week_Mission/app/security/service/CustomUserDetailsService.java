@@ -13,7 +13,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,13 +28,16 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new MemberNotFoundException(username + "멤버가 존재하지 않습니다.");
         });
 
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        if (member.getNickname() == null) {
-            authorities.add(new SimpleGrantedAuthority("GENERAL"));
-
+        Map<Integer, GrantedAuthority> authorities = new HashMap();
+        if (member.getAuthLevel() == 7) {
+            authorities.put(7, new SimpleGrantedAuthority("ADMIN"));
         } else {
-            authorities.add(new SimpleGrantedAuthority("AUTHOR"));
+            if(member.getNickname()!=null) {
+                authorities.put(3, new SimpleGrantedAuthority("GENERAL"));
+            } else {
+            authorities.put(3, new SimpleGrantedAuthority("AUTHOR"));
         }
+    }
         return new MemberContext(member, authorities);
     }
 }

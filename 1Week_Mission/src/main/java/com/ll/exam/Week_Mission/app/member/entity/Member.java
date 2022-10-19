@@ -3,11 +3,13 @@ package com.ll.exam.Week_Mission.app.member.entity;
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.PrePersist;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,6 +27,11 @@ public class Member extends BaseEntity {
     private String password;
     private String email;
     private String nickname;
-
+    @ColumnDefault("3")
+    private Integer authLevel;
     public Member (long id) { super(id); }
+    @PrePersist
+    public void prePersist() {
+        this.authLevel = this.authLevel == null ? 3 : this.authLevel;
+    }
 }
