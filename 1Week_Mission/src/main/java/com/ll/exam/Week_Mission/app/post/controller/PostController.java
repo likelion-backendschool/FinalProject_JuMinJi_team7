@@ -1,26 +1,25 @@
 package com.ll.exam.Week_Mission.app.post.controller;
 
-import com.ll.exam.Week_Mission.app.member.entity.Member;
-import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.post.dto.request.PostForm;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
+import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
+import com.ll.exam.Week_Mission.app.post.hashtag.service.PostHashTagService;
 import com.ll.exam.Week_Mission.app.post.service.PostService;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
 import com.ll.exam.Week_Mission.util.Ut;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartRequest;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/post")
@@ -29,10 +28,24 @@ import java.util.Map;
 public class PostController {
 
     private final PostService postService;
+    private final PostHashTagService postHashTagService;
 
     @GetMapping("")
-    public String showList(Model model) {
+    public String showListWithKeyWord(Model model) {
         List<Post> posts = postService.findAll();
+
+        List<PostHashTag> postHashTags = new ArrayList<>();
+        for(Post temp : posts) {
+            long postId= temp.getId();
+
+            if(postHashTagService.findByPostId(postId)!=null){
+                postHashTags = postHashTagService.findByPostId(postId);
+            } else {
+                postHashTags = null;
+            }
+            temp.getExtra().put("postHashTags", postHashTags);
+
+        }
 
         model.addAttribute("posts", posts);
 

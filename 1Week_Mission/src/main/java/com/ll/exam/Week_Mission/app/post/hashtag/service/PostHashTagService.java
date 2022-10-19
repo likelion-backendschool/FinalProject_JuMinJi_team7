@@ -54,4 +54,8 @@ public class PostHashTagService {
 
         return postHashTag;
     }
+
+    public List<PostHashTag> findByPostId(long PostId){
+        return postHashTagRepository.findByPostId(PostId);
+    }
 }
