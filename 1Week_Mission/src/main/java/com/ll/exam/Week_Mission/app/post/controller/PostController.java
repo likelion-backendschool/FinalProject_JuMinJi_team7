@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -70,4 +71,8 @@ public class PostController {
         return "redirect:/post/%d?msg=%s".formatted(post.getId(), msg);
     }
 
+    @GetMapping("/detail")
+    public String showdetail(@RequestParam long postId) {
+        return "post/detail";
+    }
 }
