@@ -53,8 +53,7 @@ public class MemberController {
 
         memberService.join(joinForm.getUsername(), joinForm.getPassword(), joinForm.getEmail(), joinForm.getNickname());
 
-        emailService.sendPlainTextEmail(emailService.getHost(), emailService.getPort(), emailService.getUserName(),
-                emailService.getPassword(), joinForm.getEmail(), emailService.getWelcomeSubject(), emailService.getWelcomeMessage());
+        emailService.sendPlainTextEmail(joinForm.getEmail(), emailService.getWelcomeSubject(), emailService.getWelcomeMessage());
 
         return "redirect:/member/login?msg=" + Ut.url.encode("회원가입이 완료되었습니다.");
     }

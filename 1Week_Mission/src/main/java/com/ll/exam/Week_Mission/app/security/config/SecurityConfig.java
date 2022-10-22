@@ -21,7 +21,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                //.csrf().disable() // 로그아웃 테스트시 설정 필요
+                .csrf().disable() // 로그아웃 테스트시 설정 필요
                 .formLogin(
                         formLogin -> formLogin
                                 .loginPage("/member/login") // GET
