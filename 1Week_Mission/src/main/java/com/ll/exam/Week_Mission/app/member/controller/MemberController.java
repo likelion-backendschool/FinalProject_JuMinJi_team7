@@ -11,12 +11,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -27,6 +30,7 @@ import javax.validation.Valid;
 public class MemberController {
     private final MemberService memberService;
     private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
@@ -45,11 +49,18 @@ public class MemberController {
     @SneakyThrows // to catch emailService Errors(UnsupportedEncodingException, RuntimeException)
     @PreAuthorize("isAnonymous()")
     @PostMapping("/join")
-    public String join(@Valid JoinForm joinForm) {
+    public String join(@Valid JoinForm joinForm, BindingResult bindingResult, Model model) {
         Member oldMember = memberService.findByUsername(joinForm.getUsername());
 
         if (oldMember!=null) {
             return "redirect:/?errorMsg=" + Ut.url.encode("이미 가입되어 있는 회원입니다.");
+        }
+
+        if (!joinForm.getPassword().equals(joinForm.getRePassword())) {
+            bindingResult.rejectValue("rePassword", "passwordMismatch",
+                    "두 비밀번호가 일치하지 않습니다.");
+
+            return "redirect:/member/join?errorMsg=" + Ut.url.encode(String.valueOf(bindingResult.getFieldError().getDefaultMessage()));
         }
 
         memberService.join(joinForm.getUsername(), joinForm.getPassword(), joinForm.getEmail(), joinForm.getNickname());

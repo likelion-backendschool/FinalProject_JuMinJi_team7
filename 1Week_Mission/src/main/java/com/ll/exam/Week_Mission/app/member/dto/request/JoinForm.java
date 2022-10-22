@@ -10,6 +10,8 @@ public class JoinForm {
     private String username;
     @NotEmpty(message = "비밀번호를 입력해주세요.")
     private String password;
+    @NotEmpty(message = "확인용 비밀번호를 입력해주세요.")
+    private String rePassword;
     @NotEmpty(message = "이메일을 입력해주세요.")
     private String email;
     private String nickname;

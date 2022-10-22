@@ -40,6 +40,10 @@
             <input type="password" class="form-control"  id="password" name="password" maxlength="50">
           </div>
           <div class="form-field">
+            <label for="rePassword"><span style="color:#107BE9;">[필수]</span> 비밀번호 재확인</label>
+            <input type="password" class="form-control"  id="rePassword" name="rePassword" maxlength="50">
+          </div>
+          <div class="form-field">
             <label for="email"><span style="color:#107BE9;">[필수]</span> 이메일</label>
             <input type="email" class="form-control" id="email" name="email" maxlength="50">
           </div>
@@ -109,6 +113,15 @@
       if (form.password.value.length == 0) {
         warningModal("비밀번호를 입력해주세요.");
         form.password.focus();
+
+        return;
+      }
+
+      form.rePassword.value = form.rePassword.value.trim();
+
+      if (form.rePassword.value.length == 0) {
+        warningModal("확인용 비밀번호를 입력해주세요.");
+        form.rePassword.focus();
 
         return;
       }
