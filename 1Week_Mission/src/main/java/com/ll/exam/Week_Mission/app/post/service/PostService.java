@@ -7,6 +7,7 @@ import com.ll.exam.Week_Mission.app.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +37,7 @@ public class PostService {
         return write(author, subject, content, contentHtml, "");
     }
 
+    @Transactional
     public Post write(Member member, String subject, String content, String contentHtml, String hashTagContents) {
         Post post = Post.builder()
                 .member(member)

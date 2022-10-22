@@ -9,6 +9,7 @@ import com.ll.exam.Week_Mission.app.post.keyword.service.PostKeywordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +34,8 @@ public class PostHashTagService {
     }
 
 
-    private PostHashTag saveHashTag(Member member, Post post, String postKeywordContent) {
+    @Transactional
+    public PostHashTag saveHashTag(Member member, Post post, String postKeywordContent) {
         // PostHashKeyword가 생성되면 PostKeyword도 생성되므로, PostKeyword도 디비 영속화 처리
         PostKeyword postkeyword = postKeywordService.save(postKeywordContent);
 
