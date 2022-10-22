@@ -21,7 +21,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() // 로그아웃 테스트시 설정 필요
+                .authorizeRequests(
+                        authorizeRequests -> authorizeRequests
+                        .antMatchers("/**").permitAll() // 넓은 범위 URL을 아래로 배치
+                        .anyRequest().authenticated())
+                .csrf().disable()
                 .formLogin(
                         formLogin -> formLogin
                                 .loginPage("/member/login") // GET

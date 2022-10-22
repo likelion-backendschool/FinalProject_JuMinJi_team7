@@ -13,10 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -31,7 +28,7 @@ public class PostController {
     private final PostService postService;
     private final PostHashTagService postHashTagService;
 
-    @GetMapping("")
+    @GetMapping("/list")
     public String showListWithKeyWord(Model model) {
         List<Post> posts = postService.findAll();
 
@@ -71,8 +68,8 @@ public class PostController {
         return "redirect:/post/%d?msg=%s".formatted(post.getId(), msg);
     }
 
-    @GetMapping("/detail")
-    public String showdetail(@RequestParam long postId) {
+    @GetMapping("/{postId}")
+    public String showdetail(@PathVariable long postId) {
         return "post/detail";
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -59,15 +60,15 @@ public class MemberController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/profile")
-        public String showProfile(@AuthenticationPrincipal MemberContext memberContext, Model model) {
+    @GetMapping("/{id}")
+        public String showProfile(@PathVariable("id") long id , @AuthenticationPrincipal MemberContext memberContext, Model model) {
         Member member = memberService.findByUsername(memberContext.getUsername());
         model.addAttribute("member", member);
             return "member/profile";
         }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/profile/modify")
+    @GetMapping("/modify")
     public String showModify(@AuthenticationPrincipal MemberContext memberContext, Model model) {
         Member member = memberService.findByUsername(memberContext.getUsername());
         model.addAttribute("member", member);
@@ -75,7 +76,7 @@ public class MemberController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/profile/modify")
+    @PostMapping("/modify")
     public String modify(@AuthenticationPrincipal MemberContext memberContext, @Valid UpdateForm updateForm) {
         Member member = memberService.findByUsername(memberContext.getUsername());
 
