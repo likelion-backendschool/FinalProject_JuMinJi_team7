@@ -11,6 +11,6 @@ public class HomeController {
     @GetMapping("/")
     public String showMain(@AuthenticationPrincipal MemberContext memberContext, Model model) {
         model.addAttribute("memberContext", memberContext);
-        return "home";
+        return "home/main";
     }
 }
