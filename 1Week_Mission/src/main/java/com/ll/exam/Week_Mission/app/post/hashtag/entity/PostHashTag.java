@@ -31,5 +31,5 @@ public class PostHashTag extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "keyword_id")
     @ToString.Exclude
-    private PostKeyword keyword;
+    private PostKeyword postKeyword;
 }

@@ -1,6 +1,8 @@
 package com.ll.exam.Week_Mission.app.member.entity;
 
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
+import com.ll.exam.Week_Mission.app.post.entity.Post;
+import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
@@ -8,9 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.PrePersist;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,4 +46,10 @@ public class Member extends BaseEntity {
 
         return authorities;
     }
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Post> postList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<PostHashTag> postHashTagList = new ArrayList<>();
 }
