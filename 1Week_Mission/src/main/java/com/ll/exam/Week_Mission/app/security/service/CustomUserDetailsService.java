@@ -24,20 +24,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = memberRepository.findByUsername(username).orElseThrow(() -> {
-            throw new MemberNotFoundException(username + "멤버가 존재하지 않습니다.");
-        });
+        Member member = memberRepository.findByUsername(username).get();
 
-        Map<Integer, GrantedAuthority> authorities = new HashMap();
-        if (member.getAuthLevel() == 7) {
-            authorities.put(7, new SimpleGrantedAuthority("ADMIN"));
-        } else {
-            if(member.getNickname()!=null) {
-                authorities.put(3, new SimpleGrantedAuthority("GENERAL"));
-            } else {
-            authorities.put(3, new SimpleGrantedAuthority("AUTHOR"));
-        }
-    }
-        return new MemberContext(member, authorities);
+        return new MemberContext(member, member.genAuthorities());
     }
 }
+

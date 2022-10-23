@@ -1,5 +1,6 @@
 package com.ll.exam.Week_Mission.app.post.hashtag.repository;
 
+import com.ll.exam.Week_Mission.app.post.entity.Post;
 import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,5 +11,7 @@ public interface PostHashTagRepository extends JpaRepository<PostHashTag, Long> 
 
     List<PostHashTag> findByPostId(Long PostId);
 
-    Optional<PostHashTag> findByPostIdAndKeywordId(Long PostId, Long keywordId);
+    Optional<PostHashTag> findByPostIdAndPostkeywordId(Long PostId, Long keywordId);
+    List<PostHashTag> findAllByPostIdIn(long[] ids);
+    List<PostHashTag> findAllByPostId(Long postId);
 }

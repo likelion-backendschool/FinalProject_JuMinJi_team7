@@ -5,8 +5,10 @@ import com.ll.exam.Week_Mission.app.post.keyword.repository.PostKeywordRepositor
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class PostKeywordService {
