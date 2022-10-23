@@ -59,7 +59,7 @@
                         <a th:href="@{/member/logout}">Logout</a>
                     </li>
                     <li class="cta-primary" sec:authorize="isAuthenticated()">
-                        <a th:href="@{|/member/${memberContext?.getId()}|}" class="inline-flex" >Profile</a>
+                        <a th:href="@{/member}" class="inline-flex" >Profile</a>
                     </li>
                 </ul>
 

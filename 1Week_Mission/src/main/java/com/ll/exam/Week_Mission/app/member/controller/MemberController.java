@@ -70,8 +70,8 @@ public class MemberController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/{id}")
-        public String showProfile(@PathVariable("id") long id , @AuthenticationPrincipal MemberContext memberContext, Model model) {
+    @GetMapping("")
+        public String showProfile(@AuthenticationPrincipal MemberContext memberContext, Model model) {
         Member member = memberService.findByUsername(memberContext.getUsername());
         model.addAttribute("member", member);
             return "member/profile";
@@ -99,6 +99,6 @@ public class MemberController {
 
         memberService.modify(member,updateForm.getPassword(), updateForm.getEmail(), updateForm.getNickname());
 
-        return "redirect:/member/%d".formatted(member.getId());
+        return "redirect:/member";
     }
 }
