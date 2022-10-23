@@ -55,18 +55,6 @@ public class PostService {
         return postRepository.findById(id);
     }
 
-    public Post write(Long memberId, String subject, String content, String contentHtml) {
-        return write(new Member(memberId).getId(), subject, content, contentHtml);
-    }
-
-    public Post write(Long memberId, String subject, String content, String contentHtml, String hashTagContents) {
-        return write(new Member(memberId), subject, content, contentHtml, hashTagContents);
-    }
-
-    public Post write(Member author, String subject, String content, String contentHtml) {
-        return write(author, subject, content, contentHtml, "");
-    }
-
     @Transactional
     public Post write(Member member, String subject, String content, String contentHtml, String hashtagContents) {
         Post post = Post.builder()

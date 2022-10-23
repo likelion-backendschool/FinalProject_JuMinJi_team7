@@ -1,5 +1,7 @@
 package com.ll.exam.Week_Mission.app.post.controller;
 
+import com.ll.exam.Week_Mission.app.member.entity.Member;
+import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.post.dto.request.PostForm;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
 import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
@@ -29,7 +31,7 @@ import java.util.stream.Collectors;
 public class PostController {
 
     private final PostService postService;
-    private final PostHashTagService postHashTagService;
+    private final MemberService memberService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
@@ -51,8 +53,9 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/write")
     public String write(@AuthenticationPrincipal MemberContext memberContext, @Valid PostForm postForm) {
+        Member member = memberService.findByUsername(memberContext.getUsername());
 
-        Post post = postService.write(memberContext.getId(), postForm.getSubject(), postForm.getContent(), postForm.getContentHtml());
+        Post post = postService.write(member, postForm.getSubject(), postForm.getContent(), postForm.getContentHtml(), postForm.getPostTagContents());
         String msg = "%d번 게시물이 작성되었습니다.".formatted(post.getId());
         msg = Ut.url.encode(msg);
 
