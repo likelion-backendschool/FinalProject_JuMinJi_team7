@@ -113,7 +113,8 @@ public class MemberController {
         Member member = memberService.findByEmail(email).orElse(null);
 
         if (member == null) {
-            return "redirect:/member/findUsername?errorMsg=" + Ut.url.encode("해당 이메일로 일치하는 회원정보가 없습니다.");
+            String errorMsg="해당 이메일로 일치하는 회원정보가 없습니다.";
+            return "redirect:/member/findUsername?errorMsg=" + Ut.url.encode(errorMsg);
         }
 
         model.addAttribute("matchingUsername",member.getUsername());
