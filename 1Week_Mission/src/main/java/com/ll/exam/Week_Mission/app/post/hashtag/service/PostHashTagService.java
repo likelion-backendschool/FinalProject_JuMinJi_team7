@@ -56,6 +56,9 @@ public class PostHashTagService {
 
         return posthashtag;
     }
+    public List<PostHashTag> getPostTags(Post post) {
+        return postHashTagRepository.findAllByPostId(post.getId());
+    }
 
     public List<PostHashTag> findByPostId(long PostId){
         return postHashTagRepository.findByPostId(PostId);

@@ -4,6 +4,7 @@ import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.post.dto.request.PostForm;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
+import com.ll.exam.Week_Mission.app.post.exception.ActorCannotModifyException;
 import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
 import com.ll.exam.Week_Mission.app.post.hashtag.service.PostHashTagService;
 import com.ll.exam.Week_Mission.app.post.keyword.entity.PostKeyword;
@@ -45,6 +46,21 @@ public class PostController {
     }
 
     @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}")
+    public String detail(@PathVariable Long id, @AuthenticationPrincipal MemberContext memberContext, Model model) {
+        Post post = postService.findForPrintById(id).get();
+
+        Member actor = memberContext.getMember();
+
+        if (postService.actorCanModify(actor, post) == false) {
+            throw new ActorCannotModifyException("수정 권한이 없습니다.");
+        }
+        model.addAttribute("post", post);
+
+        return "post/detail";
+    }
+
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/write")
     public String showWrite() {
         return "post/write";
@@ -60,10 +76,5 @@ public class PostController {
         msg = Ut.url.encode(msg);
 
         return "redirect:/post/%d?msg=%s".formatted(post.getId(), msg);
-    }
-
-    @GetMapping("/{postId}")
-    public String showdetail(@PathVariable long postId) {
-        return "post/detail";
     }
 }

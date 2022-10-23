@@ -51,6 +51,26 @@ public class PostService {
         });
     }
 
+    public Optional<Post> findForPrintById(long id) {
+        Optional<Post> opPost = findById(id);
+
+        if (opPost.isEmpty()) return opPost;
+
+        List<PostHashTag> postTags = getPostTags(opPost.get());
+
+        opPost.get().getExtra().put("postTags", postTags);
+
+        return opPost;
+    }
+
+    public List<PostHashTag> getPostTags(Post post) {
+        return postHashTagService.getPostTags(post);
+    }
+
+    public boolean actorCanModify(Member member, Post post) {
+        return member.getId().equals(post.getMember().getId());
+    }
+
     public Optional<Post> findById(Long id) {
         return postRepository.findById(id);
     }

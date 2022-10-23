@@ -1,0 +1,7 @@
+package com.ll.exam.Week_Mission.app.post.exception;
+
+public class ActorCannotModifyException extends RuntimeException {
+    public ActorCannotModifyException(String message) {
+        super(message);
+    }
+}
