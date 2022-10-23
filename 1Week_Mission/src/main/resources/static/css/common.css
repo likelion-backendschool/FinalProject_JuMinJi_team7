@@ -6,7 +6,6 @@ html > body code[class*="language-"],
 html > body pre[class*="language-"],
 html > body code[class*="lang-"],
 html > body pre[class*="lang-"] {
-    font-family: "GmarketSansMedium";
     text-underline-position: under;
     letter-spacing: 0;
 }

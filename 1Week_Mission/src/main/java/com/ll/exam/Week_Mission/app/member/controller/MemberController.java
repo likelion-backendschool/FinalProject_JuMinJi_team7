@@ -87,11 +87,18 @@ public class MemberController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify")
-    public String modify(@AuthenticationPrincipal MemberContext memberContext, @Valid UpdateForm updateForm) {
+    public String modify(@AuthenticationPrincipal MemberContext memberContext, @Valid UpdateForm updateForm, BindingResult bindingResult) {
         Member member = memberService.findByUsername(memberContext.getUsername());
+
+        if (!updateForm.getPassword().equals(updateForm.getRePassword())) {
+            bindingResult.rejectValue("rePassword", "passwordMismatch",
+                    "두 비밀번호가 일치하지 않습니다.");
+
+            return "redirect:/member/modify?errorMsg=" + Ut.url.encode(String.valueOf(bindingResult.getFieldError().getDefaultMessage()));
+        }
 
         memberService.modify(member,updateForm.getPassword(), updateForm.getEmail(), updateForm.getNickname());
 
-        return "redirect:/member/profile";
+        return "redirect:/member/%d".formatted(member.getId());
     }
 }
