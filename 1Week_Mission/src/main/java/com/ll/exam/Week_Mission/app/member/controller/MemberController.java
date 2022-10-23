@@ -67,11 +67,12 @@ public class MemberController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("")
+    @GetMapping("/profile")
         public String showProfile(@AuthenticationPrincipal MemberContext memberContext, Model model) {
         Member member = memberService.findByUsername(memberContext.getUsername());
-        model.addAttribute("member", member);
         model.addAttribute("memberContext", memberContext);
+        model.addAttribute("member", member);
+
         return "member/profile";
         }
 
@@ -97,6 +98,27 @@ public class MemberController {
 
        memberService.modify(member, updateForm.getPassword(), updateForm.getEmail(), updateForm.getNickname());
 
-        return "redirect:/member";
+        return "redirect:/member/profile";
+    }
+
+    @PreAuthorize("isAnonymous()")
+    @GetMapping("/findUsername")
+    public String showFindUsername() {
+        return "member/findUsername";
+    }
+
+    @PreAuthorize("isAnonymous()")
+    @PostMapping("/findUsername")
+    public String findUsername(String email, Model model) {
+        Member member = memberService.findByEmail(email).orElse(null);
+
+        if (member == null) {
+            return "redirect:/member/findUsername?errorMsg=" + Ut.url.encode("해당 이메일로 일치하는 회원정보가 없습니다.");
+        }
+
+        model.addAttribute("matchingUsername",member.getUsername());
+        model.addAttribute("matchingEmail",member.getEmail());
+
+        return "member/findUsername";
     }
 }

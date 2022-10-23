@@ -22,31 +22,31 @@
                                     <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius" alt="User-Profile-Image">
                                 </div>
                                 <p>[[${member?.username}]]</p>
-                                <button class="btn btn-dark btn-sm" th:onclick="|location.href='@{/member/modify}'|">modify profile &nbsp;<i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i></button>
+                                <button class="btn btn-dark btn-sm" th:onclick="|location.href='@{/member/modify}'|">회원정보 수정 &nbsp;<i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i></button>
                             </div>
                         </div>
                         <div class="col-sm-8">
                             <div class="card-block">
-                                <h6 class="m-b-20 p-b-5 b-b-default f-w-600">Information</h6>
+                                <h6 class="m-b-20 p-b-5 b-b-default f-w-600">회원정보</h6>
 
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <p class="m-b-10 f-w-600">Email</p>
+                                        <p class="m-b-10 f-w-600">이메일</p>
                                         <h6 class="text-muted f-w-400">[[${member.email}]]</h6>
                                     </div>
                                     <div class="col-sm-6">
-                                        <p class="m-b-10 f-w-600">Join Date</p>
+                                        <p class="m-b-10 f-w-600">가입 일자</p>
                                         <h6 class="text-muted f-w-400">[[${#strings.substring(member.createDate,0,10)}]]</h6>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <p class="m-b-10 f-w-600">Auth Level</p>
+                                        <p class="m-b-10 f-w-600">권한 목록</p>
                                         <h6 class="text-muted f-w-400">[[${memberContext.getAuthorities()}]]</h6>
                                     </div>
                                     <div class="col-sm-6">
-                                        <p class="m-b-10 f-w-600">Nickname</p>
+                                        <p class="m-b-10 f-w-600">필명</p>
                                         <h6 class="text-muted f-w-400">[[${member?.nickname}]]</h6>
                                     </div>
                                 </div>
