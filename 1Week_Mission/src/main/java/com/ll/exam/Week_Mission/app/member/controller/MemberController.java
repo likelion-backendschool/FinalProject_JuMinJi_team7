@@ -11,12 +11,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -29,7 +27,6 @@ import javax.validation.Valid;
 public class MemberController {
     private final MemberService memberService;
     private final EmailService emailService;
-    private final PasswordEncoder passwordEncoder;
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
@@ -74,7 +71,8 @@ public class MemberController {
         public String showProfile(@AuthenticationPrincipal MemberContext memberContext, Model model) {
         Member member = memberService.findByUsername(memberContext.getUsername());
         model.addAttribute("member", member);
-            return "member/profile";
+        model.addAttribute("memberContext", memberContext);
+        return "member/profile";
         }
 
     @PreAuthorize("isAuthenticated()")
@@ -97,7 +95,7 @@ public class MemberController {
             return "redirect:/member/modify?errorMsg=" + Ut.url.encode(String.valueOf(bindingResult.getFieldError().getDefaultMessage()));
         }
 
-        memberService.modify(member,updateForm.getPassword(), updateForm.getEmail(), updateForm.getNickname());
+       memberService.modify(member, updateForm.getPassword(), updateForm.getEmail(), updateForm.getNickname());
 
         return "redirect:/member";
     }

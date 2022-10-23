@@ -28,15 +28,10 @@
                     <label class="text-black" for="password">비밀번호 재확인</label>
                     <input type="password" class="form-control" id="rePassword" name="rePassword" minlength="8" maxlength="15">
                 </div>
-                <div th:if="${member.nickname} != 'null'" class="form-group">
+                <div class="form-group">
                     <label class="text-black" for="nickname"><small><span style="color:#107BE9;">[선택] &nbsp;</span></small>필명</label>
                     <input  type="text" class="form-control" id="nickname" name="nickname" th:value="${member?.nickname}">
-                    <p>필명 등록 시 작가회원으로 활동하게 됩니다.</p>
-                </div>
-                <div th:if="${member.nickname} == 'null'" class="form-group">
-                    <label class="text-black" for="none"><small><span style="color:#107BE9;">[선택] &nbsp;</span></small>필명</label>
-                    <input type="text" class="form-control" id="none" name="nickname">
-                    <p>필명 등록 시 작가회원으로 활동하게 됩니다.</p>
+                    <p>필명 등록 시 <strong>작가회원</strong>으로 활동할 수 있습니다.</p>
                 </div>
                 <button type="submit" class="btn btn-primary py-2" style="font-size:14px;">수정</button>
             </form>

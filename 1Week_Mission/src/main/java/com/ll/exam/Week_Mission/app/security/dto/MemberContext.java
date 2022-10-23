@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.List;
 
 
 @Getter
@@ -19,8 +19,8 @@ public class MemberContext extends User {
     private final String nickname;
     private final Integer authLevel;
 
-    public MemberContext(Member member, Map<Integer, GrantedAuthority> authorities) {
-        super(member.getUsername(), member.getPassword(), authorities.values());
+    public MemberContext(Member member, List<GrantedAuthority> authorities) {
+        super(member.getUsername(), member.getPassword(), authorities);
         this.id = member.getId();
         this.createDate = member.getCreateDate();
         this.updateDate = member.getUpdateDate();
