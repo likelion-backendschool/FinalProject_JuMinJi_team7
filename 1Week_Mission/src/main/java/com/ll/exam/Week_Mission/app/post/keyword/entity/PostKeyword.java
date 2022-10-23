@@ -2,6 +2,7 @@ package com.ll.exam.Week_Mission.app.post.keyword.entity;
 
 
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
+import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -21,6 +22,6 @@ import java.util.List;
 public class PostKeyword extends BaseEntity {
     private String content;
 
-    @OneToMany(mappedBy = "postKeyword", cascade = CascadeType.REMOVE)
-    private List<PostKeyword> postKeywordList = new ArrayList<>();
+    @OneToMany(mappedBy = "postkeyword", cascade = CascadeType.REMOVE)
+    private List<PostHashTag> postHashTagList = new ArrayList<>();
 }

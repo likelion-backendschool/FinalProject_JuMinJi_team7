@@ -40,24 +40,28 @@ public class PostHashTagService {
         PostKeyword postkeyword = postKeywordService.save(postKeywordContent);
 
         // 중복 검사
-        Optional<PostHashTag> opHashTag = postHashTagRepository.findByPostIdAndKeywordId(post.getId(), postkeyword.getId());
+        Optional<PostHashTag> opHashTag = postHashTagRepository.findByPostIdAndPostkeywordId(post.getId(), postkeyword.getId());
         if (opHashTag.isPresent()) {
             return opHashTag.get();
         }
 
         // 중복이 아니면 저장
-        PostHashTag postHashTag = PostHashTag.builder()
+        PostHashTag posthashtag = PostHashTag.builder()
                 .member(member)
                 .post(post)
-                .keyword(postkeyword)
+                .postkeyword(postkeyword)
                 .build();
 
-        postHashTagRepository.save(postHashTag);
+        postHashTagRepository.save(posthashtag);
 
-        return postHashTag;
+        return posthashtag;
     }
 
     public List<PostHashTag> findByPostId(long PostId){
         return postHashTagRepository.findByPostId(PostId);
+    }
+
+    public List<PostHashTag> getPostTagsByPostIdIn(long[] ids) {
+        return postHashTagRepository.findAllByPostIdIn(ids);
     }
 }
