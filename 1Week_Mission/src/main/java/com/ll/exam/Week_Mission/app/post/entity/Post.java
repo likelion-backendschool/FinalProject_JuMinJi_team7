@@ -9,6 +9,8 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Entity
 @Setter
@@ -19,7 +21,9 @@ import java.util.List;
 @ToString(callSuper = true)
 public class Post extends BaseEntity {
     private String subject;
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
+    @Column(columnDefinition = "LONGTEXT")
     private String contentHtml;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,4 +32,56 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostHashTag> postHashTagList = new ArrayList<>();
+
+    public String getForPrintContentHtml() {
+        return contentHtml.replaceAll("toastui-editor-ww-code-block-highlighting", "");
+    }
+
+    public String getExtra_inputValue_hashTagContents() {
+        Map<String, Object> extra = getExtra();
+
+        if (extra.containsKey("postTags") == false) {
+            return "";
+        }
+
+        List<PostHashTag> postTags = (List<PostHashTag>) extra.get("postTags");
+
+        if (postTags.isEmpty()) {
+            return "";
+        }
+
+        return postTags
+                .stream()
+                .map(postTag -> "#" + postTag.getPostkeyword().getContent())
+                .sorted()
+                .collect(Collectors.joining(" "));
+    }
+
+    public String getExtra_postTagLinks() {
+        Map<String, Object> extra = getExtra();
+
+        if (extra.containsKey("postTags") == false) {
+            return "";
+        }
+
+        List<PostHashTag> postTags = (List<PostHashTag>) extra.get("postTags");
+
+        if (postTags.isEmpty()) {
+            return "";
+        }
+
+        return postTags
+                .stream()
+                .map(postTag -> {
+                    String text = "#" + postTag.getPostkeyword().getContent();
+
+                    return """
+                            <a href="%s" class="text-link">%s</a>
+                            """
+                            .stripIndent()
+                            .formatted(postTag.getPostkeyword().getListUrl(), text);
+                })
+                .sorted()
+                .collect(Collectors.joining(" "));
+    }
 }
