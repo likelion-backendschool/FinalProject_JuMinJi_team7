@@ -1,0 +1,217 @@
+<!doctype html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+        layout:decorate="~{fragment/layout}"
+>
+<head><!-- fixme: 공통 레이아웃 CSS, JS 적용 안되는 문제 -->
+  <!-- fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- bootstrap -->
+  <link rel="stylesheet" href="/../css/bootstrap.min.css">
+  <link rel="stylesheet" href="/../css/owl.carousel.min.css">
+  <link rel="stylesheet" href="/../css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="/../css/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/../fonts/icomoon/style.css">
+  <link rel="stylesheet" href="/../fonts/flaticon/font/flaticon.css">
+  <link rel="stylesheet" href="/../css/aos.css">
+  <link rel="stylesheet" href="/../css/style.css">
+
+  <link rel="stylesheet" href="/../css/common.css">
+
+  <!-- toastr -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
+
+<div class="untree_co-section bg-light">
+  <div class="container">
+    <section class="section section-write container mx-auto">
+    <div class="px-2 pt-4">
+
+      <h1 class="font-bold text-lg"><i class="fa-solid fa-pen"></i>글 수정</h1>
+
+      <form th:action method="POST" class="flex flex-col gap-3"
+          onsubmit="PostModify__submit(this); return false;">
+      <input type="hidden" name="content">
+      <input type="hidden" name="contentHtml">
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">No .</span>
+        </label>
+        <span class="badge rounded-pill bg-light" style="font-size:16px;"> [[${post.id}]] </span>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">날짜</span>
+        </label>
+        <div class="badge rounded-pill bg-light" style="font-size:16px;">
+          <i class="fa-solid fa-pen"></i>
+          <span class="ml-1">작성</span>
+          <span class="ml-1"
+                th:text="${#temporals.format(post.createDate, 'yy-MM-dd HH:mm')}"></span>
+        </div>
+        <div class="badge rounded-pill bg-light btn-lg" style="font-size:16px;">
+          <i class="fa-solid fa-eraser"></i>
+          <span class="ml-1">수정</span>
+          <span class="ml-1"
+                th:text="${#temporals.format(post.updateDate, 'yy-MM-dd HH:mm')}"></span>
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">제목</span>
+        </label>
+        <input autofocus type="text" name="subject" placeholder="제목" class="input input-bordered"
+               maxlength="50" th:value="${post.subject}"
+               style="width:600px">
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">태그</span>
+        </label>
+        <input type="text" name="postTagContents" placeholder="#태그1 #태그2 #태그3 ..."
+               class="input input-bordered"
+               maxlength="50" th:value="${post.extra_inputValue_hashTagContents}"
+               style="width:600px">
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">내용</span>
+        </label>
+      </div>
+      <!-- 토스트 UI 에디터 적용 시작-->
+      <div class="toast-ui-editor" toast-ui-editor--height="calc(100vh)">
+        <script type="text/x-template" th:utext="${post.content}"></script>
+      </div>
+      <!-- 토스트 UI 에디터 적용 끝 -->
+
+      <!-- 버튼 그룹 시작 -->
+      <div class="grid grid-cols-2 mt-2 gap-2">
+        <button type="submit" class="btn btn-primary py-2 px-4">
+          <i class="fa-solid fa-pen"></i>
+          <span class="ml-1" style="font-size:15px;">작성</span>
+        </button>
+        <button type="button" onclick="history.back();" class="btn btn-secondary btn-outline py-2 px-4">
+          <i class="fa-solid fa-angle-left"></i>
+          <span class="ml-1" style="font-size:15px;">취소</span>
+        </button>
+      </div>
+      <!-- 버튼 그룹 끝 -->
+    </form>
+
+    </div>
+    </section>
+  </div>
+  </div>
+</div>
+<!-- 토스트 UI 에디터 의존성 시작 -->
+<!-- 토스트 UI 에디터 코어 -->
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
+<link rel="stylesheet" href="https://nhn.github.io/tui.editor/latest/dist/cdn/theme/toastui-editor-dark.css">
+
+<!-- 토스트 UI 컬러피커 -->
+<link rel="stylesheet" href="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.css"/>
+<script src="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.js"></script>
+
+<!-- 토스트 UI 컬러피커와 에디터 연동 플러그인 -->
+<link rel="stylesheet"
+      href="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.css"/>
+<script src="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.js"></script>
+
+<!-- 토스트 UI 에디터 플러그인, 코드 신텍스 하이라이터 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism-okaidia.min.css">
+<link rel="stylesheet"
+      href="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight.min.css">
+<script src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js"></script>
+
+<!-- 토스트 UI 에디터 플러그인, 테이블 셀 병합 -->
+<script src="https://uicdn.toast.com/editor-plugin-table-merged-cell/latest/toastui-editor-plugin-table-merged-cell.min.js"></script>
+
+<!-- 토스트 UI 에디터 플러그인, UML -->
+<script src="https://uicdn.toast.com/editor-plugin-uml/latest/toastui-editor-plugin-uml.min.js"></script>
+
+<!-- 토스트 UI 차트 -->
+<link rel="stylesheet" href="https://uicdn.toast.com/chart/latest/toastui-chart.css">
+<script src="https://uicdn.toast.com/chart/latest/toastui-chart.js"></script>
+<!-- 토스트 UI 차트와 토스트 UI 에디터를 연결  -->
+<script src="https://uicdn.toast.com/editor-plugin-chart/latest/toastui-editor-plugin-chart.min.js"></script>
+
+<!-- katex -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.0/katex.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.0/katex.min.css">
+
+<!-- docpurify -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.8/purify.min.js"></script>
+<!-- 토스트 UI 에디터 의존성 끝 -->
+
+<script src="/../js/jquery-3.4.1.min.js"></script>
+<script src="/../js/jquery-migrate-3.0.1.min.js"></script>
+<script src="/../js/popper.min.js"></script>
+<script src="/../js/bootstrap.min.js"></script>
+<script src="/../js/owl.carousel.min.js"></script>
+<script src="/../js/jquery.easing.1.3.js"></script>
+<script src="/../js/jquery.animateNumber.min.js"></script>
+<script src="/../js/jquery.waypoints.min.js"></script>
+<script src="/../js/jquery.fancybox.min.js"></script>
+<script src="/../js/aos.js"></script>
+
+<script src="/../js/custom.js"></script>
+<script src="/../js/common.js"></script>
+<script layout:fragment="script" type='text/javascript'>
+  let PostModify__submitDone = false;
+
+  function PostModify__submit(form) {
+    if (PostModify__submitDone) {
+      return;
+    }
+
+    form.subject.value = form.subject.value.trim();
+
+    if (form.subject.value.length == 0) {
+      alert("제목을 입력해주세요.");
+      form.subject.focus();
+
+      return;
+    }
+
+    form.postTagContents.value = form.postTagContents.value.trim();
+
+    if (form.postTagContents.value.length == 0) {
+      alert("태그를 입력해주세요.");
+      form.postTagContents.focus();
+
+      return;
+    }
+
+    const editor = $(form).find(".toast-ui-editor").data("data-toast-editor");
+    const markdown = editor.getMarkdown().trim();
+    const html = editor.getHTML().trim();
+
+    form.content.value = markdown;
+    form.contentHtml.value = html;
+
+    if (form.content.value.length == 0 || form.contentHtml.value.length == 0) {
+      alert("내용을 입력해주세요");
+      editor.focus();
+      return;
+    }
+
+    form.submit();
+    PostModify__submitDone = true;
+  }
+</script>
+</body>
+</html>
