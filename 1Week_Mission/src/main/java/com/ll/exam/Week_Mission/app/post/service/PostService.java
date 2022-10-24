@@ -92,4 +92,13 @@ public class PostService {
 
         return post;
     }
+
+    public void modify(Member member, Post post, String subject, String content, String contentHtml, String postTagContents) {
+        post.setSubject(subject);
+        post.setContent(content);
+        post.setContentHtml(contentHtml);
+
+        // HashTag와 HashTagContents(Keyword) 저장 후 HashTag 리턴
+        postHashTagService.applyHashTags(member, post, postTagContents);
+    }
 }

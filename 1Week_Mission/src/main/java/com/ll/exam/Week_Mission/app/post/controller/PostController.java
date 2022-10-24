@@ -17,13 +17,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/post")
@@ -37,7 +35,9 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
     public String list(@AuthenticationPrincipal MemberContext memberContext, Model model) {
-        List<Post> posts = postService.findAllForPrintByMemberIdOrderByIdDesc(memberContext.getId());
+        Long actorId= memberContext.getId();
+
+        List<Post> posts = postService.findAllForPrintByMemberIdOrderByIdDesc(actorId);
 
         model.addAttribute("posts", posts);
         model.addAttribute("memberContext", memberContext);
@@ -50,10 +50,15 @@ public class PostController {
     public String detail(@PathVariable Long id, @AuthenticationPrincipal MemberContext memberContext, Model model) {
         Post post = postService.findForPrintById(id).get();
 
+        if (post == null) {
+            String errorMsg="%d번 게시글이 존재하지 않습니다".formatted(id);
+            return "redirect:/member/findUsername?errorMsg=" + Ut.url.encode(errorMsg);
+        }
+
         Member actor = memberContext.getMember();
 
         if (postService.actorCanModify(actor, post) == false) {
-            throw new ActorCannotModifyException("수정 권한이 없습니다.");
+            throw new ActorCannotModifyException("글 조회 권한이 없습니다.");
         }
         model.addAttribute("post", post);
 
@@ -69,10 +74,56 @@ public class PostController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/write")
     public String write(@AuthenticationPrincipal MemberContext memberContext, @Valid PostForm postForm) {
-        Member member = memberService.findByUsername(memberContext.getUsername());
+        Member actor = memberContext.getMember();
 
-        Post post = postService.write(member, postForm.getSubject(), postForm.getContent(), postForm.getContentHtml(), postForm.getPostTagContents());
+        Post post = postService.write(actor, postForm.getSubject(), postForm.getContent(), postForm.getContentHtml(), postForm.getPostTagContents());
+
         String msg = "%d번 게시물이 작성되었습니다.".formatted(post.getId());
+        msg = Ut.url.encode(msg);
+
+        return "redirect:/post/%d?msg=%s".formatted(post.getId(), msg);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/modify")
+    public String showModify(@PathVariable long id, @AuthenticationPrincipal MemberContext memberContext, Model model) {
+        Post post = postService.findForPrintById(id).get();
+
+        if (post == null) {
+            String errorMsg="%d번 게시글이 존재하지 않습니다".formatted(id);
+            return "redirect:/member/findUsername?errorMsg=" + Ut.url.encode(errorMsg);
+        }
+
+        Member actor = memberContext.getMember();
+
+        if (postService.actorCanModify(actor, post) == false) {
+            throw new ActorCannotModifyException("글 수정 권한이 없습니다.");
+        }
+
+        model.addAttribute("post", post);
+
+        return "post/modify";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/{id}/modify")
+    public String modify(@PathVariable long id, @AuthenticationPrincipal MemberContext memberContext, @Valid PostForm postForm) {
+        Post post = postService.findById(id).get();
+
+        if (post == null) {
+            String errorMsg="%d번 게시글이 존재하지 않습니다".formatted(id);
+            return "redirect:/member/findUsername?errorMsg=" + Ut.url.encode(errorMsg);
+        }
+
+        Member actor = memberContext.getMember();
+
+        if (postService.actorCanModify(actor, post) == false) {
+            throw new ActorCannotModifyException("글 수정 권한이 없습니다.");
+        }
+
+        postService.modify(actor, post, postForm.getSubject(), postForm.getContent(), postForm.getContentHtml(), postForm.getPostTagContents());
+
+        String msg = "%d번 게시물이 수정되었습니다.".formatted(post.getId());
         msg = Ut.url.encode(msg);
 
         return "redirect:/post/%d?msg=%s".formatted(post.getId(), msg);
