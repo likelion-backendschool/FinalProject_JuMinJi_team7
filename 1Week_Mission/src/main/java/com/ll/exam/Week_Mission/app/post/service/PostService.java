@@ -67,10 +67,6 @@ public class PostService {
         return postHashTagService.getPostTags(post);
     }
 
-    public boolean actorCanModify(Member member, Post post) {
-        return member.getId().equals(post.getMember().getId());
-    }
-
     public Optional<Post> findById(Long id) {
         return postRepository.findById(id);
     }
@@ -100,5 +96,17 @@ public class PostService {
 
         // HashTag와 HashTagContents(Keyword) 저장 후 HashTag 리턴
         postHashTagService.applyHashTags(member, post, postTagContents);
+    }
+
+    public void remove(Post post) {
+        postRepository.delete(post);
+    }
+
+    public boolean actorCanModify(Member member, Post post) {
+        return member.getId().equals(post.getMember().getId());
+    }
+
+    public boolean actorCanRemove(Member author, Post post) {
+        return actorCanModify(author, post);
     }
 }

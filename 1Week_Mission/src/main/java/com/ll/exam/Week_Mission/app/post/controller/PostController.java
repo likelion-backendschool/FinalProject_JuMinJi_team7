@@ -5,6 +5,7 @@ import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.post.dto.request.PostForm;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
 import com.ll.exam.Week_Mission.app.post.exception.ActorCannotModifyException;
+import com.ll.exam.Week_Mission.app.post.exception.ActorCannotRemoveException;
 import com.ll.exam.Week_Mission.app.post.service.PostService;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
 import com.ll.exam.Week_Mission.util.Ut;
@@ -51,7 +52,7 @@ public class PostController {
 
         if (post == null) {
             String errorMsg="%d번 게시글이 존재하지 않습니다".formatted(id);
-            return "redirect:/member/findUsername?errorMsg=" + Ut.url.encode(errorMsg);
+            return "redirect:/post/list?errorMsg=" + Ut.url.encode(errorMsg);
         }
 
         Member actor = memberContext.getMember();
@@ -90,7 +91,7 @@ public class PostController {
 
         if (post == null) {
             String errorMsg="%d번 게시글이 존재하지 않습니다".formatted(id);
-            return "redirect:/member/findUsername?errorMsg=" + Ut.url.encode(errorMsg);
+            return "redirect:/post/list?errorMsg=" + Ut.url.encode(errorMsg);
         }
 
         Member actor = memberContext.getMember();
@@ -111,7 +112,7 @@ public class PostController {
 
         if (post == null) {
             String errorMsg="%d번 게시글이 존재하지 않습니다".formatted(id);
-            return "redirect:/member/findUsername?errorMsg=" + Ut.url.encode(errorMsg);
+            return "redirect:/post/list?errorMsg=" + Ut.url.encode(errorMsg);
         }
 
         Member actor = memberContext.getMember();
@@ -126,5 +127,29 @@ public class PostController {
         msg = Ut.url.encode(msg);
 
         return "redirect:/post/%d?msg=%s".formatted(post.getId(), msg);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/{id}/remove")
+    public String remove(@PathVariable long id, @AuthenticationPrincipal MemberContext memberContext) {
+        Post post = postService.findById(id).get();
+
+        if (post == null) {
+            String errorMsg="%d번 게시글이 존재하지 않습니다".formatted(id);
+            return "redirect:/post/list?errorMsg=" + Ut.url.encode(errorMsg);
+        }
+
+        Member actor = memberContext.getMember();
+
+        if (postService.actorCanRemove(actor, post) == false) {
+            throw new ActorCannotRemoveException("글 삭제 권한이 없습니다.");
+        }
+
+        postService.remove(post);
+
+        String msg = "%d번 게시물이 삭제되었습니다.".formatted(post.getId());
+        msg = Ut.url.encode(msg);
+
+        return "redirect:/post/list?msg=%s".formatted(post.getId(), msg);
     }
 }
