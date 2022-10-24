@@ -43,11 +43,11 @@ public class PostService {
                 ));
 
         posts.stream().forEach(post -> {
-            List<PostHashTag> postHashTags = postTagsByPostIdsMap.get(post.getId());
+            List<PostHashTag> postTags = postTagsByPostIdsMap.get(post.getId());
 
-            if (postHashTags == null || postHashTags.size() == 0) return;
+            if (postTags == null || postTags.size() == 0) return;
 
-            post.getExtra().put("PostHashTag", postHashTags);
+            post.getExtra().put("postTags", postTags);
         });
     }
 

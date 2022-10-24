@@ -29,4 +29,7 @@ public class PostKeyword extends BaseEntity {
     public long getExtra_postTagsCount() {
         return (long) getExtra().get("postTagsCount");
     }
+    public long getExtra_countPostsByKeyword() {
+        return (long) getExtra().get("countPostsByKeyword");
+    }
 }

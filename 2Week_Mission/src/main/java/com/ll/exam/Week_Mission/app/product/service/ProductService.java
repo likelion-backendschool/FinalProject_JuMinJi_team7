@@ -153,6 +153,7 @@ public class ProductService {
         PostKeyword postKeyword = product.getPostKeyword();
         List<PostHashTag> postTags = postTagService.getPostTags(author.getId(), postKeyword.getId());
 
+        // 게시글 태그 리스트에서 게시글 리스트만 추출하여 리턴
         return postTags
                 .stream()
                 .map(PostHashTag::getPost)

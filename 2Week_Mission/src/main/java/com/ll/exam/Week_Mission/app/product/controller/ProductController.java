@@ -8,6 +8,7 @@ import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
 import com.ll.exam.Week_Mission.app.post.hashtag.service.PostHashTagService;
 import com.ll.exam.Week_Mission.app.post.keyword.entity.PostKeyword;
 import com.ll.exam.Week_Mission.app.post.keyword.service.PostKeywordService;
+import com.ll.exam.Week_Mission.app.post.service.PostService;
 import com.ll.exam.Week_Mission.app.product.domain.tag.entity.ProductTag;
 import com.ll.exam.Week_Mission.app.product.dto.request.ProductForm;
 import com.ll.exam.Week_Mission.app.product.dto.request.ProductModifyForm;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -39,28 +41,28 @@ public class ProductController {
     //@PreAuthorize("isAuthenticated() and hasAuthority('AUTHOR')")
     @GetMapping("/create")
     public String showCreate(@AuthenticationPrincipal MemberContext memberContext, Model model) {
-        // 1. 멤버 리턴
+        // 1. 회원 리턴
         Member member = memberContext.getMember();
 
-        // 2. 멤버의 PostHashTagList 리턴
+        // 2. 해당 회원의 게시글 해시태그 리턴
         List <PostHashTag> postHashTags = postHashTagService.findByMemberId(member.getId());
 
-        // 3-1. PostHashTag 리스트에서 Post 리스트만 추출
-        List<Post> posts = new ArrayList<>();
-        for(PostHashTag temp: postHashTags) {
-            posts.add(temp.getPost());
-        }
-
-        // 3-2. PostHashTag 리스트에서 PostKeyword 리스트만 추출
+        // 3. 게시글 해시태그 리스트에서 게시글 키워드 리스트만 추출
         List<PostKeyword> postKeywords = new ArrayList<>();
         for(PostHashTag temp: postHashTags) {
             postKeywords.add(temp.getPostkeyword());
         }
 
-        // 4. PostKeyword 리스트 중복 제거
-        //postKeywords = postKeywords.stream().distinct().toList();
+        // 4. 게시글 키워드 리스트 중복 제거
+        postKeywords = postKeywords.stream().distinct().toList();
 
-        model.addAttribute("posts", posts);
+        // 5. 게시글 키워드별 게시글 수 리스트 extra 맵에 추가
+        postKeywords.stream().forEach(postkeyword -> {
+            postkeyword.getExtra().put("countPostsByKeyword", postHashTagService.findByMemberIdAndPostkeywordId(member.getId(), postkeyword.getId())
+                    .stream()
+                    .count());
+        });
+
         model.addAttribute("postKeywords", postKeywords);
 
         return "product/create";

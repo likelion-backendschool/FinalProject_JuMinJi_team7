@@ -19,14 +19,11 @@
           </label>
           <select class="select select-bordered" name="postKeywordId">
             <option disabled="disabled" selected>- 글 태그 선택 -</option>
-            <span th:each="posts, num : ${posts}">
-              <option th:if="${num.index}==${num2.index}"
-                    th:each="postKeyword, num2 : ${postKeywords}"
+              <option th:each="postKeyword : ${postKeywords}"
                     th:value="${postKeyword.id}"
-                    th:text="|${posts.id}번 게시글 - ${postKeyword.content} |">
+                    th:text="|${postKeyword.content} - 글 ${postKeyword.getExtra_countPostsByKeyword()}건 |">
 
               </option>
-            </span>
           </select>
         </div>
 

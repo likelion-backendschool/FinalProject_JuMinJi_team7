@@ -84,4 +84,9 @@ public class PostHashTagService {
     public List<PostHashTag> findByMemberId(Long memberId) {
         return postHashTagRepository.findByMemberId(memberId);
     }
+
+    public List<PostHashTag> findByMemberIdAndPostkeywordId(long authorId, long postKeywordId) {
+        return postHashTagRepository.findAllByMemberIdAndPostkeywordId(authorId, postKeywordId);
+    }
+
 }
