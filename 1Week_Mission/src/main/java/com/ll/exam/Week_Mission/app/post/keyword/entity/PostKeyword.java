@@ -24,4 +24,12 @@ public class PostKeyword extends BaseEntity {
 
     @OneToMany(mappedBy = "postkeyword", cascade = CascadeType.REMOVE)
     private List<PostHashTag> postHashTagList = new ArrayList<>();
+
+    public Object getListUrl() {
+        return "/post/tag/" + content;
+    }
+
+    public long getExtra_postTagsCount() {
+        return (long) getExtra().get("postTagsCount");
+    }
 }
