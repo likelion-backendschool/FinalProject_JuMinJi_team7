@@ -6,6 +6,7 @@ import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
 import com.ll.exam.Week_Mission.app.post.hashtag.repository.PostHashTagRepository;
 import com.ll.exam.Week_Mission.app.post.keyword.entity.PostKeyword;
 import com.ll.exam.Week_Mission.app.post.keyword.service.PostKeywordService;
+import com.ll.exam.Week_Mission.app.product.domain.tag.entity.ProductTag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -66,5 +67,21 @@ public class PostHashTagService {
 
     public List<PostHashTag> getPostTagsByPostIdIn(long[] ids) {
         return postHashTagRepository.findAllByPostIdIn(ids);
+    }
+
+    public List<PostHashTag> getPostTags(Member member, String postKeywordContent) {
+        return postHashTagRepository.findAllByMemberIdAndPostkeyword_contentOrderByPost_idDesc(member.getId(), postKeywordContent);
+    }
+
+    public List<PostHashTag> getPostTags(long authorId, long postKeywordId) {
+        return postHashTagRepository.findAllByMemberIdAndPostkeywordIdOrderByPost_idDesc(authorId, postKeywordId);
+    }
+
+    public List<ProductTag> getPostTags(String productTagContent) {
+        return postHashTagRepository.findAllByPostkeyword_contentOrderByPost_idDesc(productTagContent);
+    }
+
+    public List<PostHashTag> findByMemberId(Long memberId) {
+        return postHashTagRepository.findByMemberId(memberId);
     }
 }

@@ -1,8 +1,8 @@
-package com.ll.exam.Week_Mission.app.post.keyword.entity;
-
+package com.ll.exam.Week_Mission.app.product.domain.keyword.entity;
 
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
+import com.ll.exam.Week_Mission.app.product.domain.tag.entity.ProductTag;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -19,11 +19,12 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder
 @ToString(callSuper = true)
-public class PostKeyword extends BaseEntity {
+public class ProductKeyword extends BaseEntity {
+
     private String content;
 
     public Object getListUrl() {
-        return "/post/tag/" + content;
+        return "/product/tag/" + content;
     }
 
     public long getExtra_postTagsCount() {

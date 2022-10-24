@@ -3,6 +3,8 @@ package com.ll.exam.Week_Mission.app.base.initData;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.post.service.PostService;
+import com.ll.exam.Week_Mission.app.product.entity.Product;
+import com.ll.exam.Week_Mission.app.product.service.ProductService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +18,8 @@ public class BaseInitData {
     @Bean
     CommandLineRunner initData(
             MemberService memberService,
-            PostService postService
+            PostService postService,
+            ProductService productService
     ) {
         return args -> {
             if (initDataDone) {
@@ -58,6 +61,11 @@ public class BaseInitData {
             postService.write(member1, "제목 6", "내용 6", "내용 6", "#IT #프론트엔드 #REACT");
             postService.write(member2, "제목 7", "내용 7", "내용 7", "#IT# 프론트엔드 #HTML #CSS");
             postService.write(member2, "제목 8", "내용 8", "내용 8", "#IT #스프링부트 #자바");
+
+            Product product1 = productService.create(member1, "상품명1 상품명1 상품명1 상품명1 상품명1 상품명1", 30_000, "카프카", "#IT #카프카");
+            Product product2 = productService.create(member2, "상품명2", 40_000, "스프링부트", "#IT #REACT");
+            Product product3 = productService.create(member1, "상품명3", 50_000, "REACT", "#IT #REACT");
+            Product product4 = productService.create(member2, "상품명4", 60_000, "HTML", "#IT #HTML");
         };
     }
 }

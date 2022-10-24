@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -28,5 +29,13 @@ public class PostKeywordService {
         postKeywordRepository.save(postkeyword);
 
         return postkeyword;
+    }
+
+    public Optional<PostKeyword> findById(long id) {
+        return postKeywordRepository.findById(id);
+    }
+
+    public PostKeyword findByContentOrSave(String content) {
+        return save(content);
     }
 }
