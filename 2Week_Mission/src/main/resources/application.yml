@@ -1,0 +1,32 @@
+spring:
+  profiles:
+    active: dev
+    include:
+      - base-addi
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username:
+    password:
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.gmail.com
+      mail.smtp.starttls.enable: true
+logging:
+  level:
+    root: info
+    com.ll.exam.com.ll.exam.Week_Mission: debug
+    org.hibernate.type.descriptor.sql: trace
+custom:
+  site:
+    name: MEOTBOOKS
+    baseUrl: "http://localhost:8010"
