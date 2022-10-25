@@ -2,8 +2,8 @@ package com.ll.exam.Week_Mission.app.post.service;
 
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
-import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
-import com.ll.exam.Week_Mission.app.post.hashtag.service.PostHashTagService;
+import com.ll.exam.Week_Mission.app.post.domain.hashtag.entity.PostHashTag;
+import com.ll.exam.Week_Mission.app.post.domain.hashtag.service.PostHashTagService;
 import com.ll.exam.Week_Mission.app.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

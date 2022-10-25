@@ -2,19 +2,16 @@ package com.ll.exam.Week_Mission.app.member.entity;
 
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
-import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
+import com.ll.exam.Week_Mission.app.post.domain.hashtag.entity.PostHashTag;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Setter

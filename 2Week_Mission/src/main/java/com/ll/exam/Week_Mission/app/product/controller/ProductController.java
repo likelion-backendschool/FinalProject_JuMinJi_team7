@@ -2,13 +2,11 @@ package com.ll.exam.Week_Mission.app.product.controller;
 
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
-import com.ll.exam.Week_Mission.app.post.exception.ActorCannotModifyException;
-import com.ll.exam.Week_Mission.app.post.exception.ActorCannotRemoveException;
-import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
-import com.ll.exam.Week_Mission.app.post.hashtag.service.PostHashTagService;
-import com.ll.exam.Week_Mission.app.post.keyword.entity.PostKeyword;
-import com.ll.exam.Week_Mission.app.post.keyword.service.PostKeywordService;
-import com.ll.exam.Week_Mission.app.post.service.PostService;
+import com.ll.exam.Week_Mission.app.exception.ActorCannotModifyException;
+import com.ll.exam.Week_Mission.app.exception.ActorCannotRemoveException;
+import com.ll.exam.Week_Mission.app.post.domain.hashtag.entity.PostHashTag;
+import com.ll.exam.Week_Mission.app.post.domain.hashtag.service.PostHashTagService;
+import com.ll.exam.Week_Mission.app.post.domain.keyword.entity.PostKeyword;
 import com.ll.exam.Week_Mission.app.product.domain.tag.entity.ProductTag;
 import com.ll.exam.Week_Mission.app.product.dto.request.ProductForm;
 import com.ll.exam.Week_Mission.app.product.dto.request.ProductModifyForm;
@@ -28,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -38,7 +35,35 @@ public class ProductController {
     private final ProductService productService;
     private final PostHashTagService postHashTagService;
 
-    //@PreAuthorize("isAuthenticated() and hasAuthority('AUTHOR')")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/list")
+    public String list(Model model, @AuthenticationPrincipal MemberContext memberContext) {
+        List<Product> products = productService.findAllForPrintByOrderByIdDesc(memberContext.getMember());
+
+        model.addAttribute("products", products);
+
+        return "product/list";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}")
+    public String detail(@PathVariable Long id, Model model) {
+        Product product = productService.findForPrintById(id).get();
+
+        if (product == null) {
+            String errorMsg="%d번 도서 상품이 존재하지 않습니다".formatted(id);
+            return "redirect:/product/list?errorMsg=" + Ut.url.encode(errorMsg);
+        }
+
+        List<Post> posts = productService.findPostsByProduct(product);
+
+        model.addAttribute("product", product);
+        model.addAttribute("posts", posts);
+
+        return "product/detail";
+    }
+
+    @PreAuthorize("isAuthenticated() and hasAuthority('AUTHOR')")
     @GetMapping("/create")
     public String showCreate(@AuthenticationPrincipal MemberContext memberContext, Model model) {
         // 1. 회원 리턴
@@ -72,40 +97,23 @@ public class ProductController {
     @PostMapping("/create")
     public String create(@AuthenticationPrincipal MemberContext memberContext, @Valid ProductForm productForm) {
         Member author = memberContext.getMember();
+
         Product product = productService.create(author, productForm.getSubject(), productForm.getPrice(), productForm.getPostKeywordId(), productForm.getProductTagContents());
-        return "redirect:/product/" + product.getId();
+
+        String msg = "%d번 도서 상품이 등록되었습니다.".formatted(product.getId());
+        msg = Ut.url.encode(msg);
+        return "redirect:/product/%d?msg=%s".formatted(product.getId(), msg);
     }
 
-    @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Model model) {
-        Product product = productService.findForPrintById(id).get();
-
-        if (product == null) {
-            String errorMsg="%d번 상품이 존재하지 않습니다".formatted(id);
-            return "redirect:/product/list?errorMsg=" + Ut.url.encode(errorMsg);
-        }
-
-        List<Post> posts = productService.findPostsByProduct(product);
-
-        model.addAttribute("product", product);
-        model.addAttribute("posts", posts);
-
-        return "product/detail";
-    }
-
-    @GetMapping("/list")
-    public String list(Model model, @AuthenticationPrincipal MemberContext memberContext) {
-        List<Product> products = productService.findAllForPrintByOrderByIdDesc(memberContext.getMember());
-
-        model.addAttribute("products", products);
-
-        return "product/list";
-    }
-
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() and hasAuthority('AUTHOR')")
     @GetMapping("/{id}/modify")
     public String showModify(@PathVariable long id, @AuthenticationPrincipal MemberContext memberContext, Model model) {
         Product product = productService.findForPrintById(id).get();
+
+        if (product == null) {
+            String errorMsg="%d번 도서 상품이 존재하지 않습니다".formatted(id);
+            return "redirect:/product/list?errorMsg=" + Ut.url.encode(errorMsg);
+        }
 
         Member actor = memberContext.getMember();
 
@@ -118,7 +126,7 @@ public class ProductController {
         return "product/modify";
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() and hasAuthority('AUTHOR')")
     @PostMapping("/{id}/modify")
     public String modify(@PathVariable long id, @AuthenticationPrincipal MemberContext memberContext, @Valid ProductModifyForm productForm) {
         Product product = productService.findById(id).get();
@@ -135,10 +143,16 @@ public class ProductController {
 
         return "redirect:/product/%d?msg=%s".formatted(product.getId(), msg);    }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() and hasAuthority('AUTHOR')")
     @PostMapping("/{id}/remove")
     public String remove(@PathVariable long id, @AuthenticationPrincipal MemberContext memberContext) {
         Product product = productService.findById(id).get();
+
+        if (product == null) {
+            String errorMsg="%d번 게시글이 존재하지 않습니다".formatted(id);
+            return "redirect:/product/list?errorMsg=" + Ut.url.encode(errorMsg);
+        }
+
         Member actor = memberContext.getMember();
 
         if (productService.actorCanRemove(actor, product) == false) {

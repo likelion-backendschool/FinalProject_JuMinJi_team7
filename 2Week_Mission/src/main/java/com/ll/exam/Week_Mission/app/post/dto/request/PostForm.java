@@ -13,6 +13,6 @@ public class PostForm {
     private String content;
     @NotEmpty(message="내용을 입력해주세요.")
     private String contentHtml;
-    @NotBlank
+    @NotBlank(message = "해시태그를 하나 이상 입력해주세요.")
     private String postTagContents;
 }

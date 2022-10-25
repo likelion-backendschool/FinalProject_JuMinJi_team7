@@ -13,7 +13,7 @@ public class ProductKeywordService {
     private final ProductKeywordRepository productKeywordRepository;
 
     public ProductKeyword save(String content) {
-        Optional<ProductKeyword> optKeyword = productKeywordRepository.findByContent(content);
+        Optional<ProductKeyword> optKeyword = findByContent(content);
 
         if (optKeyword.isPresent()) {
             return optKeyword.get();
@@ -31,13 +31,5 @@ public class ProductKeywordService {
 
     public Optional<ProductKeyword> findByContent(String content) {
         return productKeywordRepository.findByContent(content);
-    }
-
-    public ProductKeyword findByContentOrSave(String content) {
-        return save(content);
-    }
-
-    public Optional<ProductKeyword> findById(long id) {
-        return productKeywordRepository.findById(id);
     }
 }

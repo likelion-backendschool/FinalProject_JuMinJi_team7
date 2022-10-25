@@ -1,16 +1,11 @@
-package com.ll.exam.Week_Mission.app.post.keyword.entity;
+package com.ll.exam.Week_Mission.app.post.domain.keyword.entity;
 
 
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
-import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Setter
@@ -26,9 +21,6 @@ public class PostKeyword extends BaseEntity {
         return "/post/tag/" + content;
     }
 
-    public long getExtra_postTagsCount() {
-        return (long) getExtra().get("postTagsCount");
-    }
     public long getExtra_countPostsByKeyword() {
         return (long) getExtra().get("countPostsByKeyword");
     }

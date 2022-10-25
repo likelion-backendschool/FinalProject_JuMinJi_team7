@@ -1,12 +1,11 @@
-package com.ll.exam.Week_Mission.app.post.keyword.service;
+package com.ll.exam.Week_Mission.app.post.domain.keyword.service;
 
-import com.ll.exam.Week_Mission.app.post.keyword.entity.PostKeyword;
-import com.ll.exam.Week_Mission.app.post.keyword.repository.PostKeywordRepository;
+import com.ll.exam.Week_Mission.app.post.domain.keyword.entity.PostKeyword;
+import com.ll.exam.Week_Mission.app.post.domain.keyword.repository.PostKeywordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -16,10 +15,10 @@ public class PostKeywordService {
     private final PostKeywordRepository postKeywordRepository;
 
     public PostKeyword save(String keywordContent) {
-        Optional<PostKeyword> optKeyword = postKeywordRepository.findByContent(keywordContent);
+        PostKeyword optKeyword = postKeywordRepository.findByContent(keywordContent);
 
-        if (optKeyword.isPresent()) {
-            return optKeyword.get();
+        if (optKeyword!=null) {
+            return optKeyword;
         }
 
         PostKeyword postkeyword = PostKeyword.builder()
@@ -35,7 +34,8 @@ public class PostKeywordService {
         return postKeywordRepository.findById(id);
     }
 
-    public PostKeyword findByContentOrSave(String content) {
-        return save(content);
+    // BaseInitData 생성 테스트용 메서드
+    public long findIdByContent(String keywordContent) {
+        return postKeywordRepository.findByContent(keywordContent).getId();
     }
 }

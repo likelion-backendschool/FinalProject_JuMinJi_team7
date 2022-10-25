@@ -1,11 +1,10 @@
 package com.ll.exam.Week_Mission.app.post.controller;
 
 import com.ll.exam.Week_Mission.app.member.entity.Member;
-import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.post.dto.request.PostForm;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
-import com.ll.exam.Week_Mission.app.post.exception.ActorCannotModifyException;
-import com.ll.exam.Week_Mission.app.post.exception.ActorCannotRemoveException;
+import com.ll.exam.Week_Mission.app.exception.ActorCannotModifyException;
+import com.ll.exam.Week_Mission.app.exception.ActorCannotRemoveException;
 import com.ll.exam.Week_Mission.app.post.service.PostService;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
 import com.ll.exam.Week_Mission.util.Ut;
@@ -30,7 +29,6 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final MemberService memberService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")

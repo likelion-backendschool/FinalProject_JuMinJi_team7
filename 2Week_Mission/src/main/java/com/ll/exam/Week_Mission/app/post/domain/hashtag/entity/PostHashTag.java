@@ -1,9 +1,9 @@
-package com.ll.exam.Week_Mission.app.post.hashtag.entity;
+package com.ll.exam.Week_Mission.app.post.domain.hashtag.entity;
 
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
-import com.ll.exam.Week_Mission.app.post.keyword.entity.PostKeyword;
+import com.ll.exam.Week_Mission.app.post.domain.keyword.entity.PostKeyword;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

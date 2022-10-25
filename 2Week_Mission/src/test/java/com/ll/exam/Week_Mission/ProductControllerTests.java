@@ -1,7 +1,7 @@
 package com.ll.exam.Week_Mission;
 
-import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
-import com.ll.exam.Week_Mission.app.post.hashtag.service.PostHashTagService;
+import com.ll.exam.Week_Mission.app.post.domain.hashtag.entity.PostHashTag;
+import com.ll.exam.Week_Mission.app.post.domain.hashtag.service.PostHashTagService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

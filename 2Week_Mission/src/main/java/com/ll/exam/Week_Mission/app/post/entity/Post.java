@@ -2,7 +2,7 @@ package com.ll.exam.Week_Mission.app.post.entity;
 
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
-import com.ll.exam.Week_Mission.app.post.hashtag.entity.PostHashTag;
+import com.ll.exam.Week_Mission.app.post.domain.hashtag.entity.PostHashTag;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -32,10 +32,6 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostHashTag> postHashTagList = new ArrayList<>();
-
-    public String getForPrintContentHtml() {
-        return contentHtml.replaceAll("toastui-editor-ww-code-block-highlighting", "");
-    }
 
     public String getExtra_inputValue_hashTagContents() {
         Map<String, Object> extra = getExtra();

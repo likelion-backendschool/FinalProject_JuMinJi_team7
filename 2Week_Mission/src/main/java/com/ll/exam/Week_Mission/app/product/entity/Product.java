@@ -2,7 +2,7 @@ package com.ll.exam.Week_Mission.app.product.entity;
 
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
-import com.ll.exam.Week_Mission.app.post.keyword.entity.PostKeyword;
+import com.ll.exam.Week_Mission.app.post.domain.keyword.entity.PostKeyword;
 import com.ll.exam.Week_Mission.app.product.domain.tag.entity.ProductTag;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -48,10 +48,6 @@ public class Product extends BaseEntity {
 
     public boolean isOrderable() {
         return true;
-    }
-
-    public String getJdenticon() {
-        return "product__" + getId();
     }
 
     public String getExtra_inputValue_hashTagContents() {
