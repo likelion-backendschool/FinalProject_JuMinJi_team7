@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.exam.Week_Mission.app.exception.ActorCannotAccessException;
 import com.ll.exam.Week_Mission.app.exception.PaymentFailedException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
-import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.order.entity.Order;
 import com.ll.exam.Week_Mission.app.order.service.OrderService;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
@@ -25,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -37,6 +37,17 @@ public class OrderController {
     @Value("${spring.custom.toss-payments.secret-key}")
     private String SECRET_KEY;
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/list")
+    public String list(@AuthenticationPrincipal MemberContext memberContext, Model model) {
+        Long actorId= memberContext.getId();
+
+        List<Order> orders = orderService.findAllByBuyerId(actorId);
+
+        model.addAttribute("orders", orders);
+
+        return "order/list";
+    }
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public String showDetail(@AuthenticationPrincipal MemberContext memberContext, @PathVariable long id, Model model) {

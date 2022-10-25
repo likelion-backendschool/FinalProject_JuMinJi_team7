@@ -25,6 +25,10 @@ public class OrderService {
     private final CartService cartService;
     private final OrderRepository orderRepository;
 
+    public List<Order> findAllByBuyerId(long actorId){
+       return orderRepository.findAllByBuyerId(actorId);
+    }
+
     /* CartItem -> OrderItem */
     @Transactional
     public Order createFromCart(Member buyer) {
