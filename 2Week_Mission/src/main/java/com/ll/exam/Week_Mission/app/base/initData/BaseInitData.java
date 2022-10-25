@@ -4,6 +4,8 @@ import com.ll.exam.Week_Mission.app.cart.entity.CartItem;
 import com.ll.exam.Week_Mission.app.cart.service.CartService;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.service.MemberService;
+import com.ll.exam.Week_Mission.app.order.entity.Order;
+import com.ll.exam.Week_Mission.app.order.service.OrderService;
 import com.ll.exam.Week_Mission.app.post.domain.keyword.service.PostKeywordService;
 import com.ll.exam.Week_Mission.app.post.service.PostService;
 import com.ll.exam.Week_Mission.app.product.entity.Product;
@@ -12,6 +14,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+
+import java.util.Arrays;
 
 @Configuration
 @Profile({"dev", "test"})
@@ -24,7 +28,8 @@ public class BaseInitData {
             PostService postService,
             ProductService productService,
             PostKeywordService postKeywordService,
-            CartService cartService
+            CartService cartService,
+            OrderService orderService
     ) {
         return args -> {
             if (initDataDone) {
@@ -75,6 +80,7 @@ public class BaseInitData {
 
             CartItem cartItem1 = cartService.addItem(member1, product2); // CartServiceTests 시 @Rollback(false)로 DB 기록을 제대로 확인하려면 이 부분 주석처리 필요
             CartItem cartItem2 = cartService.addItem(member1, product4); // CartServiceTests 시 @Rollback(false)로 DB 기록을 제대로 확인하려면 이 부분 주석처리 필요
+            CartItem cartItem3 = cartService.addItem(member2, product1); // CartServiceTests 시 @Rollback(false)로 DB 기록을 제대로 확인하려면 이 부분 주석처리 필요
 
             memberService.addCash(member1, 10_000, "충전__무통장입금");
             memberService.addCash(member1, 20_000, "충전__무통장입금");
@@ -82,6 +88,24 @@ public class BaseInitData {
             memberService.addCash(member1, 1_000_000, "충전__무통장입금");
 
             memberService.addCash(member2, 2_000_000, "충전__무통장입금");
+
+            // 1번 주문 : 결제완료
+            Order order1 = orderService.createFromCart(member1);
+
+            int order1PayPrice = order1.calculatePayPrice();
+            orderService.payByRestCashOnly(order1);
+
+            // 2번 주문 : 결제 후 환불
+            Order order2 = orderService.createFromCart(member2);
+
+            orderService.payByRestCashOnly(order2);
+
+            orderService.refund(order2);
+
+            // 3번 주문 : 결제 전
+            CartItem cartItem4 = cartService.addItem(member2, product3); // CartServiceTests 시 @Rollback(false)로 DB 기록을 제대로 확인하려면 이 부분 주석처리 필요
+
+            Order order3 = orderService.createFromCart(member2);
         };
     }
 }

@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -47,4 +49,9 @@ public class CartService {
     public boolean hasItem(Member buyer, Product product) {
         return cartItemRepository.existsByBuyerIdAndProductId(buyer.getId(), product.getId());
     }
+
+    public List<CartItem> findByBuyerId(Member buyer) {
+        return cartItemRepository.findByBuyerId(buyer.getId());
+    }
+
 }

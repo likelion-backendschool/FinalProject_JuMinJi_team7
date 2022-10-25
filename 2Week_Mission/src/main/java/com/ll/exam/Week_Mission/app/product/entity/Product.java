@@ -42,8 +42,9 @@ public class Product extends BaseEntity {
         return getPrice();
     }
 
+    // 판매자 : 대행자 정산비율 -> 5 : 5
     public int getWholesalePrice() {
-        return (int) Math.ceil(getPrice() * 0.4);
+        return (int) Math.ceil(getPrice() * 0.5);
     }
 
     public boolean isOrderable() {
