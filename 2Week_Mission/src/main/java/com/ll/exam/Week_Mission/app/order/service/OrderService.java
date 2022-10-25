@@ -2,6 +2,7 @@ package com.ll.exam.Week_Mission.app.order.service;
 
 import com.ll.exam.Week_Mission.app.cart.entity.CartItem;
 import com.ll.exam.Week_Mission.app.cart.service.CartService;
+import com.ll.exam.Week_Mission.app.exception.DataNotFoundException;
 import com.ll.exam.Week_Mission.app.exception.PaymentFailedException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.service.MemberService;
@@ -100,5 +101,13 @@ public class OrderService {
 
         order.setRefundDone();
         orderRepository.save(order);
+    }
+
+    public Order findById(long id) {
+        return orderRepository.findById(id).orElseThrow(()-> new DataNotFoundException("해당 주문이 존재하지 않습니다"));
+    }
+
+    public boolean actorCanSee(Member actor, Order order) {
+        return actor.getId().equals(order.getBuyer().getId());
     }
 }
