@@ -26,7 +26,6 @@ import javax.validation.Valid;
 @RequestMapping("/member")
 public class MemberController {
     private final MemberService memberService;
-    private final EmailService emailService;
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
@@ -42,7 +41,6 @@ public class MemberController {
     @GetMapping("/join")
     public String showJoin() {return "member/join";}
 
-    @SneakyThrows // to catch emailService Errors(UnsupportedEncodingException, RuntimeException)
     @PreAuthorize("isAnonymous()")
     @PostMapping("/join")
     public String join(@Valid JoinForm joinForm, BindingResult bindingResult) {
@@ -60,8 +58,6 @@ public class MemberController {
         }
 
         memberService.join(joinForm.getUsername(), joinForm.getPassword(), joinForm.getEmail(), joinForm.getNickname());
-
-        emailService.sendPlainTextEmail(joinForm.getEmail(), emailService.getWelcomeSubject(), emailService.getWelcomeMessage());
 
         return "redirect:/member/login?msg=" + Ut.url.encode("회원가입이 완료되었습니다.");
     }

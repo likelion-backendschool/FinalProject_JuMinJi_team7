@@ -1,9 +1,11 @@
 package com.ll.exam.Week_Mission.app.member.service;
 
+import com.ll.exam.Week_Mission.app.email.service.EmailService;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.repository.MemberRepository;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.Email;
 import java.util.Optional;
 
 @Service
@@ -19,6 +22,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public Member join(String username, String password, String email, String nickname) {
 
@@ -31,7 +35,14 @@ public class MemberService {
 
         memberRepository.save(member);
 
+        //sendWelcomeEmail(email); // 테스트 진행하는 동안 임의로 주석처리
+
         return member;
+    }
+
+    @SneakyThrows // to catch emailService Errors(UnsupportedEncodingException, RuntimeException)
+    private void sendWelcomeEmail(String email){
+        emailService.sendPlainTextEmail(email, emailService.getWelcomeSubject(), emailService.getWelcomeMessage());
     }
 
     @Transactional(readOnly = true)
