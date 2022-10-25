@@ -27,6 +27,8 @@ public class Member extends BaseEntity {
     private String email;
     private String nickname;
     private Integer authLevel;
+    private long restCash;
+
     public Member (long id) { super(id); }
     @PrePersist
     public void prePersist() {

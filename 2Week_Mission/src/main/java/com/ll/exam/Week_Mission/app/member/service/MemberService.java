@@ -1,5 +1,7 @@
 package com.ll.exam.Week_Mission.app.member.service;
 
+import com.ll.exam.Week_Mission.app.cash.entity.CashLog;
+import com.ll.exam.Week_Mission.app.cash.service.CashService;
 import com.ll.exam.Week_Mission.app.email.service.EmailService;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.repository.MemberRepository;
@@ -23,6 +25,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final CashService cashService;
 
     public Member join(String username, String password, String email, String nickname) {
 
@@ -73,8 +76,20 @@ public class MemberService {
         SecurityContextHolder.setContext(context);
     }
 
+    @Transactional(readOnly = true)
     public Optional<Member> findByEmail(String email) {
         return memberRepository.findByEmail(email);
     }
+
+    public long addCash(Member member, long price, String eventType) {
+        CashLog cashLog = cashService.addCash(member, price, eventType);
+
+        long newRestCash = member.getRestCash() + cashLog.getPrice();
+        member.setRestCash(newRestCash);
+        memberRepository.save(member);
+
+        return newRestCash;
+    }
+
 }
 

@@ -1,5 +1,7 @@
 package com.ll.exam.Week_Mission.app.base.initData;
 
+import com.ll.exam.Week_Mission.app.cart.entity.CartItem;
+import com.ll.exam.Week_Mission.app.cart.service.CartService;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.post.domain.keyword.service.PostKeywordService;
@@ -21,7 +23,8 @@ public class BaseInitData {
             MemberService memberService,
             PostService postService,
             ProductService productService,
-            PostKeywordService postKeywordService
+            PostKeywordService postKeywordService,
+            CartService cartService
     ) {
         return args -> {
             if (initDataDone) {
@@ -69,6 +72,16 @@ public class BaseInitData {
             Product product2 = productService.create(member2, "상품명2", 40_000, postKeywordService.findIdByContent("스프링부트"), "#IT #REACT");
             Product product3 = productService.create(member1, "상품명3", 50_000, postKeywordService.findIdByContent("REACT"), "#IT #REACT");
             Product product4 = productService.create(member2, "상품명4", 60_000, postKeywordService.findIdByContent("HTML"), "#IT #HTML");
+
+            CartItem cartItem1 = cartService.addItem(member1, product2); // CartServiceTests 시 @Rollback(false)로 DB 기록을 제대로 확인하려면 이 부분 주석처리 필요
+            CartItem cartItem2 = cartService.addItem(member1, product4); // CartServiceTests 시 @Rollback(false)로 DB 기록을 제대로 확인하려면 이 부분 주석처리 필요
+
+            memberService.addCash(member1, 10_000, "충전__무통장입금");
+            memberService.addCash(member1, 20_000, "충전__무통장입금");
+            memberService.addCash(member1, -5_000, "출금__일반");
+            memberService.addCash(member1, 1_000_000, "충전__무통장입금");
+
+            memberService.addCash(member2, 2_000_000, "충전__무통장입금");
         };
     }
 }
