@@ -81,8 +81,24 @@
                                                     <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:300px;">
                                                         <tr>
                                                             <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px;">
-                                                                <span style="font-weight: 800;">주문일자</span>
+                                                                <span style="font-weight: 800;">주문완료</span>
                                                                 <span>  [[${#temporals.format(order.createDate, 'yy-MM-dd HH:mm')}]]</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr th:if="${order.isPaid}">
+                                                            <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px;">
+                                                                <span style="font-weight: 800;">결제완료</span>
+                                                                <span>  [[${#temporals.format(order.payDate, 'yy-MM-dd HH:mm')}]]</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr th:if="${order.isCanceled}">
+                                                            <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px;">
+                                                                <span style="font-weight: 800;">취소완료</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr th:if="${order.isRefunded}">
+                                                            <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px;">
+                                                                <span style="font-weight: 800;">환불완료</span>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -94,7 +110,7 @@
                             </tr>
                             <tr>
                                 <td align="center" style="padding: 35px;">
-                                    <button style="margin-bottom:10px;" onclick="payment();" class="move-to-list-btn">카드결제</button>
+                                    <button th:if="${order.payable}" style="margin-bottom:10px;" onclick="payment();" class="move-to-list-btn">카드결제</button>
                                     <button onclick="location.href='/order/list'" target="_blank" class="move-to-list-btn">주문 목록으로 돌아가기</button>
                                 </td>
                             </tr>
