@@ -112,7 +112,7 @@
     const orderId = /*[[ ${order.id} ]]*/ null;
     const buyerName = /*[[ ${order.buyer.username} ]]*/ null;
     const orderName = /*[[ ${order.name} ]]*/ null;
-    const orderPayPrice = /*[[${order.calculatePayPrice}]]*/ null;
+    const orderPayPrice = /*[[ ${order.calculatePayPrice} ]]*/ null;
 
     const tossPayments = TossPayments("test_ck_LBa5PzR0ArnjzO7zv7orvmYnNeDM");
 
@@ -121,7 +121,7 @@
 
         const paymentData = {
             amount: orderPayPrice,
-            orderId: "order__" + orderId, // + "__" + (Math.random() + "").substring(2), // 테스트용 난수 생성
+            orderId: "order__" + orderId, /* + "__" + (Math.random() + "").substring(2), */
             orderName,
             customerName: buyerName,
             successUrl: window.location.origin + "/order/" + orderId + "/success",

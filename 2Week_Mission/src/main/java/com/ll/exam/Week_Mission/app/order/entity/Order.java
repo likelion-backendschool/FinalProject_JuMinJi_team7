@@ -38,15 +38,6 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    public String getName() {
-        String name = orderItems.get(0).getProduct().getSubject();
-
-        if ( orderItems.size() > 1 ) {
-            name += " 외 %d권".formatted(orderItems.size() - 1);
-        }
-
-        return name;
-    }
 
     /* 판매 금액 계산 */
     public int calculatePayPrice() {

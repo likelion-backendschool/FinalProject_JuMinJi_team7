@@ -58,6 +58,8 @@ public class OrderService {
 
         order = orderItemsToOrder(order, orderItems);
 
+        order = makeName(order);
+
         orderRepository.save(order);
 
         order.setReadyStatus(true);
@@ -72,7 +74,15 @@ public class OrderService {
             // order의 orderItems 리스트 속성에 orderItem 저장
            order.getOrderItems().add(orderItem);
         }
+        return order;
+    }
 
+    public Order makeName(Order order) {
+        String name = order.getOrderItems().get(0).getProduct().getSubject();
+
+        if ( order.getOrderItems().size() > 1 ) {
+            name += " 외 %d권".formatted(order.getOrderItems().size() - 1);
+        }
         return order;
     }
 
@@ -89,6 +99,19 @@ public class OrderService {
         }
 
         memberService.addCash(buyer, payPrice * -1, "주문결제__예치금결제");
+
+        order.setPaymentDone();
+        orderRepository.save(order);
+    }
+
+    /* Order -> PaymentDone */
+    @Transactional
+    public void payByTossPayments(Order order) {
+        Member buyer = order.getBuyer();
+        int payPrice = order.calculatePayPrice();
+
+        memberService.addCash(buyer, payPrice, "주문결제충전__토스페이먼츠");
+        memberService.addCash(buyer, payPrice * -1, "주문결제__토스페이먼츠");
 
         order.setPaymentDone();
         orderRepository.save(order);
