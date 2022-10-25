@@ -109,4 +109,21 @@ public class PostService {
     public boolean actorCanRemove(Member author, Post post) {
         return actorCanModify(author, post);
     }
+
+    public List<PostHashTag> getPostTags(Member author, String postKeywordContent) {
+        List<PostHashTag> postTags = postHashTagService.getPostTags(author, postKeywordContent);
+
+        loadForPrintDataOnPostTagList(postTags);
+
+        return postTags;
+    }
+
+    private void loadForPrintDataOnPostTagList(List<PostHashTag> postTags) {
+        List<Post> posts = postTags
+                .stream()
+                .map(PostHashTag::getPost)
+                .collect(toList());
+
+        loadForPrintData(posts);
+    }
 }

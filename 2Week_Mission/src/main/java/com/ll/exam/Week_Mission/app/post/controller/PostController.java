@@ -1,6 +1,7 @@
 package com.ll.exam.Week_Mission.app.post.controller;
 
 import com.ll.exam.Week_Mission.app.member.entity.Member;
+import com.ll.exam.Week_Mission.app.post.domain.hashtag.entity.PostHashTag;
 import com.ll.exam.Week_Mission.app.post.dto.request.PostForm;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
 import com.ll.exam.Week_Mission.app.exception.ActorCannotModifyException;
@@ -149,5 +150,14 @@ public class PostController {
         msg = Ut.url.encode(msg);
 
         return "redirect:/post/list?msg=%s".formatted(post.getId(), msg);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/tag/{tagContent}")
+    public String tagList(Model model, @PathVariable String tagContent, @AuthenticationPrincipal MemberContext memberContext) {
+        List<PostHashTag> postTags = postService.getPostTags(memberContext.getMember(), tagContent);
+
+        model.addAttribute("postTags", postTags);
+        return "post/tagList";
     }
 }

@@ -13,4 +13,5 @@ public interface PostHashTagRepository extends JpaRepository<PostHashTag, Long> 
     List<PostHashTag> findAllByMemberIdAndPostkeywordIdOrderByPost_idDesc(long memberId, long postKeywordId);
     List<PostHashTag> findByMemberId(Long memberId);
     List<PostHashTag> findAllByMemberIdAndPostkeywordId(long authorId, long postKeywordId);
+    List<PostHashTag> findAllByMemberIdAndPostkeyword_contentOrderByPost_idDesc(Long id, String postKeywordContent);
 }

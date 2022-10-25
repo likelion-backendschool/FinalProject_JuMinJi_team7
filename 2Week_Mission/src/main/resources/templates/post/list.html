@@ -31,6 +31,7 @@
             <div class="post-meta">
               <span style="color:grey;">작성 [[${#strings.substring(posts.createDate,0,10)}]]</span><br>
               <span style="color:grey;">수정 [[${#strings.substring(posts.updateDate,0,10)}]]</span><br>
+              <span th:utext="${posts.extra_postTagLinks}"></span>
             </div>
           </div>
           <p class="mb-0"><a th:href="@{|/post/${posts.id}|}" class="read-more-arrow">

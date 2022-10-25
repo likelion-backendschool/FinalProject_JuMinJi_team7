@@ -4,7 +4,24 @@
         xmlns:th="http://thymeleaf.org"
         layout:decorate="~{fragment/layout}"
 >
+<head><!-- fixme: 공통 레이아웃 CSS, JS 적용 안되는 문제 -->
+  <!-- fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- bootstrap -->
+  <link rel="stylesheet" href="/../css/bootstrap.min.css">
+  <link rel="stylesheet" href="/../css/owl.carousel.min.css">
+  <link rel="stylesheet" href="/../css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="/../css/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/../fonts/icomoon/style.css">
+  <link rel="stylesheet" href="/../fonts/flaticon/font/flaticon.css">
+  <link rel="stylesheet" href="/../css/aos.css">
+  <link rel="stylesheet" href="/../css/style.css">
+
+  <link rel="stylesheet" href="/../css/common.css">
+</head>
 <body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
 
 <div class="untree_co-section bg-light">
@@ -12,13 +29,15 @@
 
     <div class="row mb-5">
       <div class="col-12 text-center" data-aos="fade-up" data-aos-delay="0">
-        <h2 class="heading"><i class="fa-solid fa-book"></i>도서 목록</h2>
-      </div>
+        <h2 class="heading"><i class="fa-solid fa-book"></i>도서 태그</h2>
+        <span>
+        <a th:href="@{/product/list}" class="float-right text-link">전체보기<i class="fa-solid fa-angle-right"></i></a>
+        </span>
     </div> <!-- /.row -->
 
     <div class="row">
 
-      <div th:each="product : ${products}" class="col-md-6 mb-4 mt-4 mb-lg-0 col-lg-4"  data-aos="fade-up" data-aos-delay="0">
+      <div th:each="productTag : ${productTags}" th:with="product = ${productTag.product}" class="col-md-6 mb-4 mt-4 mb-lg-0 col-lg-4"  data-aos="fade-up" data-aos-delay="0">
         <div class="news-item">
           <div class="vcard d-flex align-items-center mb-4">
 
@@ -57,5 +76,19 @@
     </div>
   </div>
 </div>
+</div>
+
+<script src="/../js/jquery-3.4.1.min.js"></script>
+<script src="/../js/jquery-migrate-3.0.1.min.js"></script>
+<script src="/../js/popper.min.js"></script>
+<script src="/../js/bootstrap.min.js"></script>
+<script src="/../js/owl.carousel.min.js"></script>
+<script src="/../js/jquery.easing.1.3.js"></script>
+<script src="/../js/jquery.animateNumber.min.js"></script>
+<script src="/../js/jquery.waypoints.min.js"></script>
+<script src="/../js/jquery.fancybox.min.js"></script>
+<script src="/../js/aos.js"></script>
+<script src="/../js/custom.js"></script>
+<script src="/../js/common.js"></script>
 </body>
 </html>
