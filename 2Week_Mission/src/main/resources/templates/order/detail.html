@@ -5,7 +5,7 @@
         layout:decorate="~{fragment/layout}"
 >
 <head>
-    <link rel="stylesheet" href="/../css/order.detail.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 </head>
 <body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
 
@@ -58,10 +58,50 @@
                                                 <table cellspacing="0" cellpadding="0" border="0" width="100%">
                                                     <tr>
                                                         <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;">
-                                                            총 결제내역
+                                                            총 결제금액
                                                         </td>
                                                         <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;">
                                                             [[${order.calculatePayPrice}]]
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${order.payable}">
+                                            <td align="left" style="padding-top: 20px;">
+                                                <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                    <tr>
+                                                        <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;">
+                                                            보유 예치금 : [[${restCash}]]
+                                                        </td>
+                                                        <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;">
+                                                            <div th:with="maxUseRestCash = ${order.calculatePayPrice > restCash ? restCash : order.calculatePayPrice}">
+                                                                <span>사용할 예치금 : </span>
+                                                                <input type="number" id="PaymentForm__useRestCash"
+                                                                       th:placeholder="|0 ~ ${maxUseRestCash}|"
+                                                                       class="input input-bordered min-w-[300px]" min="0" th:max="${maxUseRestCash}"
+                                                                       onkeydown="PaymentForm__useRestCashFix();"
+                                                                       onkeyup="PaymentForm__useRestCashFix();"
+                                                                >
+                                                                <label class="inline-flex items-center ml-3">
+                                                                    <span>전액사용</span>
+                                                                    <input onchange="PaymentForm__useRestCashAllChanged();" id="PaymentForm__useRestCashAll"
+                                                                           type="checkbox" class="ml-2 checkbox">
+                                                                </label>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${order.payable}">
+                                            <td align="left" style="padding-top: 20px;">
+                                                <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                    <tr>
+                                                        <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;">
+                                                            PG 결제금액
+                                                        </td>
+                                                        <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;">
+                                                            <span id="PaymentForm__pgPayPriceDisplay"></span>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -125,6 +165,7 @@
 <script src="https://js.tosspayments.com/v1"></script>
 <script layout:fragment="script" type='text/javascript' th:inline="javascript">
     /*<![CDATA[*/
+
     const orderId = /*[[ ${order.id} ]]*/ null;
     const buyerName = /*[[ ${order.buyer.username} ]]*/ null;
     const orderName = /*[[ ${order.name} ]]*/ null;
@@ -132,11 +173,28 @@
 
     const tossPayments = TossPayments("test_ck_LBa5PzR0ArnjzO7zv7orvmYnNeDM");
 
+    /*]]>*/
+</script>
+<script layout:fragment="script" type='text/javascript'>
+    const $PaymentForm__useRestCash = $("#PaymentForm__useRestCash");
+    const $PaymentForm__useRestCashAll = $("#PaymentForm__useRestCashAll");
+    const $PaymentForm__pgPayPriceDisplay = $("#PaymentForm__pgPayPriceDisplay");
+
+    /* 카드결제 버튼 클릭시 작동하는 토스페이먼츠 메서드 */
     function payment() {
+
+        let useRestCash = parseInt($PaymentForm__useRestCash.val());
+
+        // 전액 예치금 결제시 예치금결제전용 페이지로 이동
+        if ( orderPayPrice == useRestCash ) {
+            window.location.href = "/order/" + orderId + "/payByRestCashOnly";
+        }
+
         const method = "카드";
 
         const paymentData = {
-            amount: orderPayPrice,
+            // 토스페이먼츠 결제예정금액 = (주문 결제금액) - (예치금 사용금액)
+            amount: orderPayPrice - useRestCash,
             orderId: "order__" + orderId, // + "__" + (Math.random() + "").substring(2),
             orderName,
             customerName: buyerName,
@@ -146,7 +204,47 @@
 
         tossPayments.requestPayment(method, paymentData);
     }
-    /*]]>*/
+</script>
+<script layout:fragment="script" type='text/javascript'>
+    function PaymentForm__useRestCashFix() {
+        let useRestCash = parseInt($PaymentForm__useRestCash.val());
+
+        if (isNaN(useRestCash)) {
+            useRestCash = 0;
+        }
+
+        const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
+
+        if (useRestCash > maxUseRestCash) {
+            useRestCash = maxUseRestCash;
+            $PaymentForm__useRestCash.val(maxUseRestCash);
+        }
+
+        if ( useRestCash == maxUseRestCash ) {
+            $PaymentForm__useRestCashAll.prop('checked', true);
+        }
+        else {
+            $PaymentForm__useRestCashAll.prop('checked', false);
+        }
+
+        const pgPayPrice = orderPayPrice - useRestCash;
+
+        $PaymentForm__pgPayPriceDisplay.text(pgPayPrice);
+    }
+
+    function PaymentForm__useRestCashAllChanged() {
+        if ( $PaymentForm__useRestCashAll.prop('checked') ) {
+            const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
+            $PaymentForm__useRestCash.val(maxUseRestCash);
+        }
+        else {
+            $PaymentForm__useRestCash.val(0);
+        }
+
+        PaymentForm__useRestCashFix();
+    }
+
+    PaymentForm__useRestCashFix();
 </script>
 </body>
 </html>

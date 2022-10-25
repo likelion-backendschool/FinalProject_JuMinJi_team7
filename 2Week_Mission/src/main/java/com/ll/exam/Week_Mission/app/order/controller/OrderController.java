@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.exam.Week_Mission.app.exception.ActorCannotAccessException;
 import com.ll.exam.Week_Mission.app.exception.PaymentFailedException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
+import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.order.entity.Order;
 import com.ll.exam.Week_Mission.app.order.service.OrderService;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
@@ -32,6 +33,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/order")
 public class OrderController {
+    private final MemberService memberService;
     private final OrderService orderService;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper;
@@ -43,13 +45,16 @@ public class OrderController {
     public String showDetail(@AuthenticationPrincipal MemberContext memberContext, @PathVariable long id, Model model) {
         Order order = orderService.findById(id);
 
-        Member actor = memberContext.getMember();
+        Member actor = memberService.findByUsername(memberContext.getUsername());
+
+        long restCash = actor.getRestCash();
 
         if (orderService.actorCanSee(actor, order) == false) {
             throw new ActorCannotAccessException("주문 페이지 접근 권한이 없습니다.");
         }
 
         model.addAttribute("order", order);
+        model.addAttribute("restCash", restCash);
 
         return "order/detail";
     }
@@ -88,7 +93,6 @@ public class OrderController {
         }
 
         HttpHeaders headers = new HttpHeaders();
-        // headers.setBasicAuth(SECRET_KEY, ""); // spring framework 5.2 이상 버전에서 지원
         headers.set("Authorization", "Basic " + Base64.getEncoder().encodeToString((SECRET_KEY + ":").getBytes()));
         headers.setContentType(MediaType.APPLICATION_JSON);
 
