@@ -121,7 +121,7 @@
 
         const paymentData = {
             amount: orderPayPrice,
-            orderId: "order__" + orderId, /* + "__" + (Math.random() + "").substring(2), */
+            orderId: "order__" + orderId, // + "__" + (Math.random() + "").substring(2),
             orderName,
             customerName: buyerName,
             successUrl: window.location.origin + "/order/" + orderId + "/success",

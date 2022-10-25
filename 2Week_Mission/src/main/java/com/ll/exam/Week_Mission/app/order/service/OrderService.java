@@ -56,9 +56,9 @@ public class OrderService {
                 .buyer(buyer)
                 .build();
 
-        order = orderItemsToOrder(order, orderItems);
+        orderItemsToOrder(order, orderItems);
 
-        order = makeName(order);
+        makeName(order);
 
         orderRepository.save(order);
 
@@ -66,7 +66,7 @@ public class OrderService {
         return order;
     }
 
-    public Order orderItemsToOrder (Order order, List<OrderItem> orderItems){
+    public void orderItemsToOrder (Order order, List<OrderItem> orderItems){
         for (OrderItem orderItem : orderItems) {
             // orderItem의 order 속성에 order 저장
             orderItem.setOrder(order);
@@ -74,16 +74,17 @@ public class OrderService {
             // order의 orderItems 리스트 속성에 orderItem 저장
            order.getOrderItems().add(orderItem);
         }
-        return order;
     }
 
-    public Order makeName(Order order) {
+    public void makeName(Order order) {
         String name = order.getOrderItems().get(0).getProduct().getSubject();
 
         if ( order.getOrderItems().size() > 1 ) {
             name += " 외 %d권".formatted(order.getOrderItems().size() - 1);
         }
-        return order;
+
+        order.setName(name);
+
     }
 
     /* Order -> PaymentDone */

@@ -38,7 +38,6 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-
     /* 판매 금액 계산 */
     public int calculatePayPrice() {
         int payPrice = 0;
