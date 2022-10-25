@@ -13,11 +13,6 @@
     <div class="container">
         <div class="px-2 pt-4">
 
-
-            <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: Open Sans, Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
-                For what reason would it be advisable for me to think about business content? That might be little bit risky to have crew member like them.
-            </div>
-
             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                     <td align="center" style="background-color: #eeeeee;" bgcolor="#eeeeee">
@@ -38,7 +33,7 @@
                                                 <table cellspacing="0" cellpadding="0" border="0" width="100%">
                                                     <tr>
                                                         <td width="75%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;">
-                                                            # 주문 번호
+                                                            # 주문 상품
                                                         </td>
                                                         <td width="25%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;">
                                                             [[${order.getName()}]]
@@ -99,19 +94,8 @@
                             </tr>
                             <tr>
                                 <td align="center" style="padding: 35px;">
-                                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
-                                        <tr>
-                                            <td align="center" style="padding: 25px 0 15px 0;">
-                                                <table border="0" cellspacing="0" cellpadding="0">
-                                                    <tr>
-                                                        <td align="center" style="border-radius: 5px;">
-                                                            <button onclick="location.href='/order/list'" target="_blank" class="move-to-list-btn">주문 목록으로 돌아가기</button>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                    <button style="margin-bottom:10px;" onclick="payment();" class="move-to-list-btn">카드결제</button>
+                                    <button onclick="location.href='/order/list'" target="_blank" class="move-to-list-btn">주문 목록으로 돌아가기</button>
                                 </td>
                             </tr>
                         </table>
@@ -119,13 +103,34 @@
                 </tr>
             </table>
 
-
-
-
-
         </div>
     </div>
 </div>
+<script src="https://js.tosspayments.com/v1"></script>
+<script layout:fragment="script" type='text/javascript' th:inline="javascript">
+    /*<![CDATA[*/
+    const orderId = /*[[ ${order.id} ]]*/ null;
+    const buyerName = /*[[ ${order.buyer.username} ]]*/ null;
+    const orderName = /*[[ ${order.name} ]]*/ null;
+    const orderPayPrice = /*[[${order.calculatePayPrice}]]*/ null;
 
+    const tossPayments = TossPayments("test_ck_LBa5PzR0ArnjzO7zv7orvmYnNeDM");
+
+    function payment() {
+        const method = "카드";
+
+        const paymentData = {
+            amount: orderPayPrice,
+            orderId: "order__" + orderId,
+            orderName,
+            customerName: buyerName,
+            successUrl: window.location.origin + "/success",
+            failUrl: window.location.origin + "/fail",
+        };
+
+        tossPayments.requestPayment(method, paymentData);
+    }
+    /*]]>*/
+</script>
 </body>
 </html>
