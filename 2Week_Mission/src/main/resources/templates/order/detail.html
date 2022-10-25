@@ -195,7 +195,7 @@
         const paymentData = {
             // 토스페이먼츠 결제예정금액 = (주문 결제금액) - (예치금 사용금액)
             amount: orderPayPrice - useRestCash,
-            orderId: "order__" + orderId, // + "__" + (Math.random() + "").substring(2),
+            orderId: "order__" + orderId + "__" + (Math.random() + "").substring(2),
             orderName,
             customerName: buyerName,
             successUrl: window.location.origin + "/order/" + orderId + "/success",

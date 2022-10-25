@@ -31,7 +31,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/order")
 public class OrderController {
-    private final MemberService memberService;
     private final OrderService orderService;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper;
@@ -43,7 +42,7 @@ public class OrderController {
     public String showDetail(@AuthenticationPrincipal MemberContext memberContext, @PathVariable long id, Model model) {
         Order order = orderService.findById(id);
 
-        Member actor = memberService.findByUsername(memberContext.getUsername());
+        Member actor = memberContext.getMember();
 
         long restCash = actor.getRestCash();
 
@@ -63,8 +62,6 @@ public class OrderController {
         Order order = orderService.findById(id);
 
         Member actor = memberContext.getMember();
-
-        long restCash = actor.getRestCash();
 
         if (orderService.actorCanPayment(actor, order) == false) {
             throw new ActorCannotAccessException("주문 페이지 접근 권한이 없습니다.");
@@ -97,6 +94,7 @@ public class OrderController {
             @RequestParam String paymentKey,
             @RequestParam String orderId,
             @RequestParam Long amount,
+            @AuthenticationPrincipal MemberContext memberContext,
             Model model
     ) throws Exception {
 
@@ -114,8 +112,16 @@ public class OrderController {
 
         Map<String, String> payloadMap = new HashMap<>();
         payloadMap.put("orderId", orderId);
-        // 데이터 무결성 위해 서버에서 판매금액 더블체크
-        payloadMap.put("amount", String.valueOf(order.calculatePayPrice()));
+        payloadMap.put("amount", String.valueOf(amount));
+
+        // 사용하려는 예치금 계산
+        Member actor = memberContext.getMember();
+        long restCash = actor.getRestCash();
+        long payPriceRestCash = order.calculatePayPrice() - amount;
+
+        if (payPriceRestCash > restCash) {
+            throw new PaymentFailedException("보유 예치금이 부족합니다.");
+        }
 
         HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(payloadMap), headers);
 
@@ -124,7 +130,7 @@ public class OrderController {
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             // 주문 결제완료 처리
-            orderService.payByTossPayments(order);
+            orderService.payByTossPayments(order, payPriceRestCash);
 
             model.addAttribute("orderId", order.getId());
 
