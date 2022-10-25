@@ -9,6 +9,7 @@ import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.order.entity.Order;
 import com.ll.exam.Week_Mission.app.order.service.OrderService;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
+import com.ll.exam.Week_Mission.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -17,10 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
@@ -57,6 +55,24 @@ public class OrderController {
         model.addAttribute("restCash", restCash);
 
         return "order/detail";
+    }
+
+    @GetMapping("/{id}/payByRestCashOnly")
+    @PreAuthorize("isAuthenticated()")
+    public String showDetailFullPaymentWithRestCash(@AuthenticationPrincipal MemberContext memberContext, @PathVariable long id) {
+        Order order = orderService.findById(id);
+
+        Member actor = memberContext.getMember();
+
+        long restCash = actor.getRestCash();
+
+        if (orderService.actorCanPayment(actor, order) == false) {
+            throw new ActorCannotAccessException("주문 페이지 접근 권한이 없습니다.");
+        }
+
+        orderService.payByRestCashOnly(order);
+
+        return "redirect:/order/%d?msg=%s".formatted(order.getId(), Ut.url.encode("예치금으로 전액 결제완료되었습니다."));
     }
 
     /* toss-payments handler */
@@ -128,4 +144,7 @@ public class OrderController {
         model.addAttribute("code", code);
         return "order/fail";
     }
+
+
+
 }

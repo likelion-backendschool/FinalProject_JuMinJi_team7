@@ -134,4 +134,6 @@ public class OrderService {
     public boolean actorCanSee(Member actor, Order order) {
         return actor.getId().equals(order.getBuyer().getId());
     }
+
+    public boolean actorCanPayment(Member actor, Order order) {return actorCanSee(actor, order);}
 }
