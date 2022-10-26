@@ -121,13 +121,13 @@ public class MemberController {
         return "member/findUsername";
     }
 
-    @GetMapping("/myBook")
+    @GetMapping("/mybook")
     public String myProduct(@AuthenticationPrincipal MemberContext memberContext, Model model){
         Member member = memberContext.getMember();
 
         List<MyBook> myBooks = myBookService.findByMemberId(member.getId());
 
         model.addAttribute("myBooks", myBooks);
-        return "member/myBook";
+        return "member/mybook";
     }
 }
