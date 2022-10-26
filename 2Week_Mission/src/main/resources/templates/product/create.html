@@ -8,7 +8,7 @@
 <div class="untree_co-section bg-light">
   <div class="container">
     <div class="px-2 pt-4">
-      <h1 class="font-bold text-lg"><i class="fa-solid fa-book-medical"></i>도서 등록</h1>
+      <h1 class="font-bold text-lg"><i class="fa-solid fa-tags"></i>&nbsp;도서 등록</h1>
 
       <form th:action method="POST" class="flex flex-col gap-3"
             onsubmit="ProductCreate__submit(this); return false;">
@@ -53,13 +53,13 @@
         </div>
 
         <div class="grid grid-cols-2 mt-2 gap-2">
-          <button type="button" onclick="history.back();" class="btn btn-secondary btn-outline">
+          <button type="button" onclick="history.back();" class="btn btn-secondary btn-outline py-2 px-4">
             <i class="fa-solid fa-angle-left"></i>
-            <span class="ml-1">취소</span>
+            <span class="ml-1" style="font-size:15px;">취소</span>
           </button>
-          <button class="btn btn-primary" type="submit">
+          <button class="btn btn-primary py-2 px-4" type="submit">
             <i class="fa-solid fa-book-medical"></i>
-            <span class="ml-1">도서 등록</span>
+            <span class="ml-1" style="font-size:15px;">도서 등록</span>
           </button>
         </div>
       </form>
