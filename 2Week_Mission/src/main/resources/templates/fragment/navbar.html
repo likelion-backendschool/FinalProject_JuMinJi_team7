@@ -40,6 +40,13 @@
                             <li><a href="/product/list" class="nav-link">도서 목록</a></li>
                         </ul>
                     </li>
+                    <li class="has-children">
+                        <a href="#" class="nav-link">도서 구매</a>
+                        <ul class="dropdown">
+                            <li><a href="/member/mybook" class="nav-link">구매도서 목록</a></li>
+                            <li><a href="/order/list" class="nav-link">주문 목록</a></li>
+                        </ul>
+                    </li>
                 </ul>
 
                 <ul class="js-clone-nav d-none mt-1 d-lg-inline-block site-menu float-right">
@@ -54,6 +61,9 @@
                     </li>
                     <li class="cta-primary" sec:authorize="isAuthenticated()">
                         <a th:href="@{/member/profile}" class="inline-flex" >프로필</a>
+                    </li>
+                    <li class="cta-button-outline" sec:authorize="isAuthenticated()">
+                        <a th:href="@{/cart/list}" class="inline-flex" ><i class="fa-solid fa-cart-plus"></i></a>
                     </li>
                 </ul>
 
