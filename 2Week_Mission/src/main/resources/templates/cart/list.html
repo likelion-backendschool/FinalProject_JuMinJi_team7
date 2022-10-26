@@ -61,7 +61,7 @@
               </form>
 
                 <a href="javascript:;" onclick="OrderCartItemsForm__submit();" class="btn btn-primary btn-sm btn-outline py-2 px-4">
-                  <span class="ml-1" style="font-size:15px;">주문하기</span>
+                  <span class="ml-1" style="font-size:15px;">전체 주문하기</span>
                 </a>
                 <form method="POST" name="orderCartItemsForm" th:action="@{|/order/create|}" hidden></form>
             </div>
@@ -71,8 +71,7 @@
         </div>
       </div>
     </div>
-
-
+    </div>
   </div>
 </div>
 <script layout:fragment="script" type='text/javascript'>
@@ -83,9 +82,11 @@
 
   $cartItemCheckboxAll.change(function () {
     const allChecked = $(this).prop('checked');
-    $cartItemCheckbox.prop('checked', allChecked); // 아이템 체크박스들 체크상태 동기화
+    // 아이템 체크박스들 체크상태 동기화
+    $cartItemCheckbox.prop('checked', allChecked);
   });
 
+  <!-- 선택삭제 처리 -->
   function CartItemCheckbox__changed() {
     const allChecked = $cartItemCheckbox.length == $('.cartItemCheckbox:checked').length;
 
@@ -112,8 +113,9 @@
     RemoveCartItemsForm__submitDone = true;
   }
 
+  <!-- 전체주문 처리 -->
   function OrderCartItemsForm__submit() {
-
+    document.orderCartItemsForm.submit();
   }
 </script>
 </body>

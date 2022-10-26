@@ -83,6 +83,16 @@ public class OrderController {
         return "redirect:/order/%d?msg=%s".formatted(order.getId(), Ut.url.encode("예치금으로 전액 결제완료되었습니다."));
     }
 
+    @PostMapping("/create")
+    @PreAuthorize("isAuthenticated()")
+    public String createOrder(@AuthenticationPrincipal MemberContext memberContext) {
+        Member member = memberContext.getMember();
+        Order order = orderService.createFromCart(member);
+        String redirect = "redirect:/order/%d".formatted(order.getId()) + "?msg=" + Ut.url.encode("%d번 주문이 생성되었습니다.".formatted(order.getId()));
+
+        return redirect;
+    }
+
     /* toss-payments handler */
     @PostConstruct
     private void init() {
