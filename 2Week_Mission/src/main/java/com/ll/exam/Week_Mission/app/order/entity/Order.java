@@ -45,6 +45,16 @@ public class Order extends BaseEntity {
         return true;
     }
 
+    public boolean isRefundable() {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        if ( isPaid == false ) return false;
+        if ( isCanceled ) return false;
+        if ( isRefunded ) return false;
+        if( currentDateTime.isAfter(payDate.plusMinutes(2))) return false;
+
+        return true;
+    }
+
     /* 판매 금액 계산 */
     public int calculatePayPrice() {
         int payPrice = 0;

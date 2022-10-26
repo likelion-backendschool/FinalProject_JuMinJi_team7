@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.exam.Week_Mission.app.exception.ActorCannotAccessException;
 import com.ll.exam.Week_Mission.app.exception.OrderCannotBeCanceledException;
+import com.ll.exam.Week_Mission.app.exception.OrderCannotBeRefundedException;
 import com.ll.exam.Week_Mission.app.exception.PaymentFailedException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.order.entity.Order;
@@ -180,7 +181,7 @@ public class OrderController {
     /* cancel order */
     @PostMapping("/{id}/cancel")
     @PreAuthorize("isAuthenticated()")
-    public String cancelOrder(@PathVariable long id, @AuthenticationPrincipal MemberContext memberContext) {
+    public String cancel(@PathVariable long id, @AuthenticationPrincipal MemberContext memberContext) {
         Order order = orderService.findById(id);
 
         if(order.isPayable() == false) {
@@ -196,6 +197,27 @@ public class OrderController {
         orderService.cancel(order);
 
         return "redirect:/order/%d?msg=%s".formatted(order.getId(), Ut.url.encode("%d번 주문이 취소되었습니다."));
+    }
+
+    /* refund order */
+    @PostMapping("/{id}/refund")
+    @PreAuthorize("isAuthenticated()")
+    public String refund(@PathVariable long id, @AuthenticationPrincipal MemberContext memberContext) {
+        Order order = orderService.findById(id);
+
+        if(order.isRefundable() == false) {
+            throw new OrderCannotBeRefundedException("해당 주문은 환불 불가능합니다.");
+        }
+
+        Member actor = memberContext.getMember();
+
+        if (orderService.actorCanSee(actor, order) == false) {
+            throw new ActorCannotAccessException("환불 페이지 접근 권한이 없습니다.");
+        }
+
+        orderService.refund(order);
+
+        return "redirect:/order/%d?msg=%s".formatted(order.getId(), Ut.url.encode("%d번 주문이 환불되었습니다."));
     }
 
 }

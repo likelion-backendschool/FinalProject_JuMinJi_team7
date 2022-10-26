@@ -76,8 +76,9 @@
                                                         </td>
                                                         <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;">
                                                             <div th:with="maxUseRestCash = ${order.calculatePayPrice > restCash ? restCash : order.calculatePayPrice}">
-                                                                <span>사용할 예치금 : </span>
+                                                                <span>사용 예치금 : </span>
                                                                 <input type="number" id="PaymentForm__useRestCash"
+                                                                       value="0"
                                                                        th:placeholder="|0 ~ ${maxUseRestCash}|"
                                                                        class="input input-bordered min-w-[300px]" min="0" th:max="${maxUseRestCash}"
                                                                        onkeydown="PaymentForm__useRestCashFix();"
@@ -151,9 +152,12 @@
                             </tr>
                             <tr>
                                 <td align="center" style="padding: 35px;">
-                                    <button th:if="${order.payable}" onclick="payment();" class="move-to-list-btn" style="margin-bottom:10px;"  >카드 결제</button>
-                                    <button th:if="${order.isPayable}" href="javascript:;" onclick="OrderCancelForm__submit();" class="move-to-list-btn">주문취소</button>
+                                    <div> 환불 요청은 결제 이후 10분 이내에만 가능합니다.</div>
+                                    <button th:if="${order.payable}" onclick="payment();" class="move-to-list-btn" style="margin-bottom:10px;">카드 결제</button>
+                                    <button th:if="${order.isPayable}" href="javascript:;" onclick="OrderCancelForm__submit();" class="move-to-list-btn" style="margin-bottom:10px;">주문취소</button>
                                     <form method="POST" name="orderCancelForm" th:action="@{|/order/${order.id}/cancel|}" hidden></form>
+                                    <button th:if="${order.isRefundable()}" href="javascript:;" onclick="OrderRefundForm__submit();" class="move-to-list-btn">환불요청</button>
+                                    <form method="POST" name="orderRefundForm" th:action="@{|/order/${order.id}/refund|}" hidden></form>
                                 </td>
                             </tr>
                         </table>
@@ -168,6 +172,10 @@
 <script layout:fragment="script" type='text/javascript'>
     function OrderCancelForm__submit() {
         document.orderCancelForm.submit();
+    }
+
+    function OrderRefundForm__submit() {
+        document.orderRefundForm.submit();
     }
 </script>
 <script layout:fragment="script" type='text/javascript' th:inline="javascript">
