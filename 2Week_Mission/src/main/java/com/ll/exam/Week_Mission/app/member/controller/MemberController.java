@@ -1,14 +1,14 @@
 package com.ll.exam.Week_Mission.app.member.controller;
 
-import com.ll.exam.Week_Mission.app.email.service.EmailService;
 import com.ll.exam.Week_Mission.app.member.dto.request.JoinForm;
 import com.ll.exam.Week_Mission.app.member.dto.request.UpdateForm;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.service.MemberService;
+import com.ll.exam.Week_Mission.app.mybook.entity.MyBook;
+import com.ll.exam.Week_Mission.app.mybook.service.MyBookService;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
 import com.ll.exam.Week_Mission.util.Ut;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
     private final MemberService memberService;
+    private final MyBookService myBookService;
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
@@ -117,5 +119,15 @@ public class MemberController {
         model.addAttribute("matchingEmail",member.getEmail());
 
         return "member/findUsername";
+    }
+
+    @GetMapping("/myBook")
+    public String myProduct(@AuthenticationPrincipal MemberContext memberContext, Model model){
+        Member member = memberContext.getMember();
+
+        List<MyBook> myBooks = myBookService.findByMemberId(member.getId());
+
+        model.addAttribute("myBooks", myBooks);
+        return "member/myBook";
     }
 }

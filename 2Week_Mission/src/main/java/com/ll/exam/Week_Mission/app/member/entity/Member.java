@@ -1,6 +1,7 @@
 package com.ll.exam.Week_Mission.app.member.entity;
 
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
+import com.ll.exam.Week_Mission.app.mybook.entity.MyBook;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
 import com.ll.exam.Week_Mission.app.post.domain.hashtag.entity.PostHashTag;
 import lombok.*;
@@ -51,4 +52,7 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<PostHashTag> postHashTagList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<MyBook> myBookList = new ArrayList<>();
 }
