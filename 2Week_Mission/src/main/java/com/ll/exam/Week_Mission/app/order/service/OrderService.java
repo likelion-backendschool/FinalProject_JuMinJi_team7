@@ -70,6 +70,7 @@ public class OrderService {
         return order;
     }
 
+    @Transactional
     public void orderItemsToOrder (Order order, List<OrderItem> orderItems){
         for (OrderItem orderItem : orderItems) {
             // orderItem의 order 속성에 order 저장
@@ -80,6 +81,7 @@ public class OrderService {
         }
     }
 
+    @Transactional
     public void makeName(Order order) {
         String name = order.getOrderItems().get(0).getProduct().getSubject();
 

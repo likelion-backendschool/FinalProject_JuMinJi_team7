@@ -108,6 +108,13 @@ public class BaseInitData {
             CartItem cartItem5 = cartService.addItem(member2, product1);
 
             Order order3 = orderService.createFromCart(member2);
+
+            //
+            cartService.addItem(member1, product2);
+            cartService.addItem(member1, product4);
+
+            cartService.addItem(member2, product1);
+            cartService.addItem(member2, product3);
         };
     }
 }

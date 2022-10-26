@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ import java.util.List;
 public class CartService {
     private final CartItemRepository cartItemRepository;
 
+    @Transactional
     public CartItem addItem(Member buyer, Product product) {
         CartItem existingCartItem = cartItemRepository.findByBuyerIdAndProductId(buyer.getId(), product.getId()).orElse(null);
 
@@ -54,4 +56,11 @@ public class CartService {
         return cartItemRepository.findByBuyerId(buyer.getId());
     }
 
+    public Optional<CartItem> findById(long id) {
+        return cartItemRepository.findById(id);
+    }
+
+    public boolean actorCanDelete(Member buyer, CartItem cartItem) {
+        return buyer.getId().equals(cartItem.getBuyer().getId());
+    }
 }
