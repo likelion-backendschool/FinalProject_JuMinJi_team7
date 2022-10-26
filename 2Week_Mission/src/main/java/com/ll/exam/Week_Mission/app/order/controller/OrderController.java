@@ -153,7 +153,7 @@ public class OrderController {
             // 주문 결제완료 처리
             orderService.payByTossPayments(order, payPriceRestCash);
 
-            model.addAttribute("orderId", order.getId());
+            model.addAttribute("orderName", order.getName());
 
             return "order/success";
         } else {

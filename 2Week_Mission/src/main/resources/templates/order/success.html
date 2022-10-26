@@ -52,10 +52,10 @@
                         <table cellspacing="0" cellpadding="0" border="0" width="100%">
                           <tr>
                             <td width="75%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;">
-                              # 주문번호
+                              # 주문명
                             </td>
                             <td width="25%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;">
-                              [[${orderId}]]
+                              [[${orderName}]]
                             </td>
                           </tr>
                           <tr>
@@ -71,6 +71,11 @@
                       </td>
                     </tr>
                   </table>
+                </td>
+              </tr>
+              <tr>
+                <td align="center" style="padding: 35px;">
+                  <button onclick="location.href='/order/list'" target="_blank" class="move-to-list-btn">주문 목록으로 돌아가기</button>
                 </td>
               </tr>
             </table>
