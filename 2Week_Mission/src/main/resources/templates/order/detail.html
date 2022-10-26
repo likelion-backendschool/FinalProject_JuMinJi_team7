@@ -88,6 +88,7 @@
                                                                     <input onchange="PaymentForm__useRestCashAllChanged();" id="PaymentForm__useRestCashAll"
                                                                            type="checkbox" class="ml-2 checkbox">
                                                                 </label>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -150,8 +151,10 @@
                             </tr>
                             <tr>
                                 <td align="center" style="padding: 35px;">
-                                    <button th:if="${order.payable}" style="margin-bottom:10px;" onclick="payment();" class="move-to-list-btn">카드결제</button>
-                                    <button onclick="location.href='/order/list'" target="_blank" class="move-to-list-btn">주문 목록으로 돌아가기</button>
+                                    <button th:if="${order.payable}" onclick="payment();" class="move-to-list-btn" style="margin-bottom:10px;"  >카드 결제</button>
+                                    <button onclick="location.href='/order/list'" target="_blank" class="move-to-list-btn" style="margin-bottom:10px;">주문 목록</button>
+                                    <button th:if="${order.isCanceled}!=true" href="javascript:;" onclick="OrderCancelForm__submit();" class="move-to-list-btn">주문취소</button>
+                                    <form method="POST" name="orderCancelForm" th:action="@{|/order/${order.id}/cancel|}" hidden></form>
                                 </td>
                             </tr>
                         </table>
@@ -163,6 +166,11 @@
     </div>
 </div>
 <script src="https://js.tosspayments.com/v1"></script>
+<script layout:fragment="script" type='text/javascript'>
+    function OrderCancelForm__submit() {
+        document.orderCancelForm.submit();
+    }
+</script>
 <script layout:fragment="script" type='text/javascript' th:inline="javascript">
     /*<![CDATA[*/
 
