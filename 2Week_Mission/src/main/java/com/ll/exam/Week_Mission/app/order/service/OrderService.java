@@ -6,6 +6,7 @@ import com.ll.exam.Week_Mission.app.exception.DataNotFoundException;
 import com.ll.exam.Week_Mission.app.exception.PaymentFailedException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.service.MemberService;
+import com.ll.exam.Week_Mission.app.mybook.service.MyBookService;
 import com.ll.exam.Week_Mission.app.order.entity.Order;
 import com.ll.exam.Week_Mission.app.order.entity.OrderItem;
 import com.ll.exam.Week_Mission.app.order.repository.OrderRepository;
@@ -24,6 +25,7 @@ public class OrderService {
     private final MemberService memberService;
     private final CartService cartService;
     private final OrderRepository orderRepository;
+    private final MyBookService myBookService;
 
     public List<Order> findAllByBuyerId(long actorId){
        return orderRepository.findAllByBuyerId(actorId);
@@ -108,6 +110,7 @@ public class OrderService {
         memberService.addCash(buyer, payPrice * -1, "주문__%d__사용__예치금".formatted(order.getId()));
 
         order.setPaymentDone();
+        productToMyBook(buyer, order);
         orderRepository.save(order);
     }
 
@@ -131,7 +134,16 @@ public class OrderService {
         }
 
         order.setPaymentDone();
+        productToMyBook(buyer, order);
         orderRepository.save(order);
+    }
+
+    @Transactional
+    public void productToMyBook(Member member, Order order){
+        List<OrderItem> orderItems = order.getOrderItems();
+        for(OrderItem temp : orderItems){
+            myBookService.create(member,temp.getProduct());
+        }
     }
 
     @Transactional
