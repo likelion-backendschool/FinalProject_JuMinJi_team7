@@ -1,7 +1,0 @@
-spring:
-  mail:
-    username: alswl0w0@gmail.com
-    password: uiorqjmsesbkwknd
-  custom:
-    toss-payments:
-      secret-key: test_sk_YPBal2vxj81nqzw4G0R35RQgOAND
