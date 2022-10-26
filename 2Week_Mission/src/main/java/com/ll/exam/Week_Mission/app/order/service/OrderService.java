@@ -147,12 +147,22 @@ public class OrderService {
     }
 
     @Transactional
-    public void refund(Order order) {
+    public Order cancel(Order order) {
+
+        order.setCanceled(true);
+
+        return refund(order);
+    }
+
+    @Transactional
+    public Order refund(Order order) {
         int payPrice = order.getPayPrice();
         memberService.addCash(order.getBuyer(), payPrice, "주문__%d__환불__예치금".formatted(order.getId()));
 
         order.setRefundDone();
         orderRepository.save(order);
+
+        return order;
     }
 
     public Order findById(long id) {

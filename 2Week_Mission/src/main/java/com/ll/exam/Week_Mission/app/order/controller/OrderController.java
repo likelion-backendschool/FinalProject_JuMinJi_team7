@@ -37,6 +37,7 @@ public class OrderController {
     @Value("${spring.custom.toss-payments.secret-key}")
     private String SECRET_KEY;
 
+    /* order list */
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
     public String list(@AuthenticationPrincipal MemberContext memberContext, Model model) {
@@ -48,6 +49,8 @@ public class OrderController {
 
         return "order/list";
     }
+
+    /* order detail */
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public String showDetail(@AuthenticationPrincipal MemberContext memberContext, @PathVariable long id, Model model) {
@@ -67,6 +70,7 @@ public class OrderController {
         return "order/detail";
     }
 
+    /* payment only with restCash detail */
     @GetMapping("/{id}/payByRestCashOnly")
     @PreAuthorize("isAuthenticated()")
     public String showDetailFullPaymentWithRestCash(@AuthenticationPrincipal MemberContext memberContext, @PathVariable long id) {
@@ -83,14 +87,14 @@ public class OrderController {
         return "redirect:/order/%d?msg=%s".formatted(order.getId(), Ut.url.encode("예치금으로 전액 결제완료되었습니다."));
     }
 
+    /* create order */
     @PostMapping("/create")
     @PreAuthorize("isAuthenticated()")
     public String createOrder(@AuthenticationPrincipal MemberContext memberContext) {
         Member member = memberContext.getMember();
         Order order = orderService.createFromCart(member);
-        String redirect = "redirect:/order/%d".formatted(order.getId()) + "?msg=" + Ut.url.encode("%d번 주문이 생성되었습니다.".formatted(order.getId()));
 
-        return redirect;
+        return "redirect:/order/%d".formatted(order.getId()) + "?msg=" + Ut.url.encode("%d번 주문이 생성되었습니다.".formatted(order.getId()));
     }
 
     /* toss-payments handler */
@@ -172,6 +176,21 @@ public class OrderController {
         return "order/fail";
     }
 
+    /* cancel order */
+    @PostMapping("/{id}/cancel")
+    @PreAuthorize("isAuthenticated()")
+    public String cancelOrder(@PathVariable long id, @AuthenticationPrincipal MemberContext memberContext) {
+        Order order = orderService.findById(id);
 
+        Member actor = memberContext.getMember();
+
+        if (orderService.actorCanSee(actor, order) == false) {
+            throw new ActorCannotAccessException("취소 페이지 접근 권한이 없습니다.");
+        }
+
+        orderService.cancel(order);
+
+        return "redirect:/order/%d?msg=%s".formatted(order.getId(), Ut.url.encode("%d번 주문이 취소되었습니다."));
+    }
 
 }
