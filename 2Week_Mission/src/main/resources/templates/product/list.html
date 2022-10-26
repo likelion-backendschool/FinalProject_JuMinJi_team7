@@ -4,7 +4,9 @@
         xmlns:th="http://thymeleaf.org"
         layout:decorate="~{fragment/layout}"
 >
-
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
 <body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
 
 <div class="untree_co-section bg-light">
@@ -45,10 +47,11 @@
 
 
           <span style="margin-right: 0px; margin-left: 85px;">
-            <a th:href class="btn btn-sm">
+                <a href="javascript:;" onclick="CartForm__submit();" class="btn-sm">
               <i class="fa-solid fa-cart-plus"></i>
               <span class="ml-2">장바구니</span>
             </a>
+                <form method="POST" name="cartForm" th:action="@{|/cart/add/${product.id}|}" hidden></form>
           </span>
 
         </div> <!-- /.news-item -->
@@ -57,5 +60,10 @@
     </div>
   </div>
 </div>
+<script layout:fragment="script" type='text/javascript'>
+  function CartForm__submit() {
+    document.cartForm.submit();
+  }
+</script>
 </body>
 </html>

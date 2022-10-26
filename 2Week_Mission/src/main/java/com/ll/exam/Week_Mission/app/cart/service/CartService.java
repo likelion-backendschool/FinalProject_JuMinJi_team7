@@ -3,6 +3,7 @@ package com.ll.exam.Week_Mission.app.cart.service;
 import com.ll.exam.Week_Mission.app.cart.entity.CartItem;
 import com.ll.exam.Week_Mission.app.cart.repository.CartItemRepository;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
+import com.ll.exam.Week_Mission.app.post.entity.Post;
 import com.ll.exam.Week_Mission.app.product.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -62,5 +63,16 @@ public class CartService {
 
     public boolean actorCanDelete(Member buyer, CartItem cartItem) {
         return buyer.getId().equals(cartItem.getBuyer().getId());
+    }
+
+    @Transactional
+    public void addOneItem(Member buyer, Product product) {
+
+        CartItem cartItem = CartItem.builder()
+                .buyer(buyer)
+                .product(product)
+                .build();
+
+        cartItemRepository.save(cartItem);
     }
 }

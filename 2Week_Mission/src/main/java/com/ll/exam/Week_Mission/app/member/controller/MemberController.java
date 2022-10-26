@@ -122,7 +122,7 @@ public class MemberController {
     }
 
     @GetMapping("/mybook")
-    public String myProduct(@AuthenticationPrincipal MemberContext memberContext, Model model){
+    public String showMyBook(@AuthenticationPrincipal MemberContext memberContext, Model model){
         Member member = memberContext.getMember();
 
         List<MyBook> myBooks = myBookService.findByMemberId(member.getId());
