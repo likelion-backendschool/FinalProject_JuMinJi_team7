@@ -152,8 +152,7 @@
                             <tr>
                                 <td align="center" style="padding: 35px;">
                                     <button th:if="${order.payable}" onclick="payment();" class="move-to-list-btn" style="margin-bottom:10px;"  >카드 결제</button>
-                                    <button onclick="location.href='/order/list'" target="_blank" class="move-to-list-btn" style="margin-bottom:10px;">주문 목록</button>
-                                    <button th:if="${order.isCanceled}!=true" href="javascript:;" onclick="OrderCancelForm__submit();" class="move-to-list-btn">주문취소</button>
+                                    <button th:if="${order.isPayable}" href="javascript:;" onclick="OrderCancelForm__submit();" class="move-to-list-btn">주문취소</button>
                                     <form method="POST" name="orderCancelForm" th:action="@{|/order/${order.id}/cancel|}" hidden></form>
                                 </td>
                             </tr>

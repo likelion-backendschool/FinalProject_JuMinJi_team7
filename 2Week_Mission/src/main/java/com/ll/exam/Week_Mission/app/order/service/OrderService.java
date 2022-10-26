@@ -27,8 +27,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MyBookService myBookService;
 
-    public List<Order> findAllByBuyerId(long actorId){
-       return orderRepository.findAllByBuyerId(actorId);
+    public List<Order> findAllByBuyerId(long actorId) {
+        return orderRepository.findAllByBuyerId(actorId);
     }
 
     /* CartItem -> OrderItem */
@@ -73,13 +73,13 @@ public class OrderService {
     }
 
     @Transactional
-    public void orderItemsToOrder (Order order, List<OrderItem> orderItems){
+    public void orderItemsToOrder(Order order, List<OrderItem> orderItems) {
         for (OrderItem orderItem : orderItems) {
             // orderItem의 order 속성에 order 저장
             orderItem.setOrder(order);
 
             // order의 orderItems 리스트 속성에 orderItem 저장
-           order.getOrderItems().add(orderItem);
+            order.getOrderItems().add(orderItem);
         }
     }
 
@@ -87,7 +87,7 @@ public class OrderService {
     public void makeName(Order order) {
         String name = order.getOrderItems().get(0).getProduct().getSubject();
 
-        if ( order.getOrderItems().size() > 1 ) {
+        if (order.getOrderItems().size() > 1) {
             name += " 외 %d권".formatted(order.getOrderItems().size() - 1);
         }
 
@@ -129,7 +129,7 @@ public class OrderService {
         memberService.addCash(buyer, pgPayPrice, "주문__%d__충전__토스페이먼츠".formatted(order.getId()));
         memberService.addCash(buyer, pgPayPrice * -1, "주문__%d__사용__토스페이먼츠".formatted(order.getId()));
 
-        if ( useRestCash > 0 ) {
+        if (useRestCash > 0) {
             memberService.addCash(buyer, useRestCash * -1, "주문__%d__사용__예치금".formatted(order.getId()));
         }
 
@@ -139,19 +139,16 @@ public class OrderService {
     }
 
     @Transactional
-    public void productToMyBook(Member member, Order order){
+    public void productToMyBook(Member member, Order order) {
         List<OrderItem> orderItems = order.getOrderItems();
-        for(OrderItem temp : orderItems){
-            myBookService.create(member,temp.getProduct());
+        for (OrderItem temp : orderItems) {
+            myBookService.create(member, temp.getProduct());
         }
     }
 
     @Transactional
-    public Order cancel(Order order) {
-
+    public void cancel(Order order) {
         order.setCanceled(true);
-
-        return refund(order);
     }
 
     @Transactional
@@ -166,12 +163,15 @@ public class OrderService {
     }
 
     public Order findById(long id) {
-        return orderRepository.findById(id).orElseThrow(()-> new DataNotFoundException("해당 주문이 존재하지 않습니다"));
+        return orderRepository.findById(id).orElseThrow(() -> new DataNotFoundException("해당 주문이 존재하지 않습니다"));
     }
 
     public boolean actorCanSee(Member actor, Order order) {
         return actor.getId().equals(order.getBuyer().getId());
     }
 
-    public boolean actorCanPayment(Member actor, Order order) {return actorCanSee(actor, order);}
+    public boolean actorCanPayment(Member actor, Order order) {
+        return actorCanSee(actor, order);
+    }
+
 }

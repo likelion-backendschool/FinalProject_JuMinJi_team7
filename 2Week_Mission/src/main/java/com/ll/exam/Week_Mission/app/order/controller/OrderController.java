@@ -3,6 +3,7 @@ package com.ll.exam.Week_Mission.app.order.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.exam.Week_Mission.app.exception.ActorCannotAccessException;
+import com.ll.exam.Week_Mission.app.exception.OrderCannotBeCanceledException;
 import com.ll.exam.Week_Mission.app.exception.PaymentFailedException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.order.entity.Order;
@@ -181,6 +182,10 @@ public class OrderController {
     @PreAuthorize("isAuthenticated()")
     public String cancelOrder(@PathVariable long id, @AuthenticationPrincipal MemberContext memberContext) {
         Order order = orderService.findById(id);
+
+        if(order.isPayable() == false) {
+            throw new OrderCannotBeCanceledException("해당 주문은 취소 불가능합니다.");
+        }
 
         Member actor = memberContext.getMember();
 
