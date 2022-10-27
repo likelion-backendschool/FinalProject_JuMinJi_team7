@@ -44,16 +44,16 @@ public class MemberService {
     }
 
     @SneakyThrows // to catch emailService Errors(UnsupportedEncodingException, RuntimeException)
-    private void sendWelcomeEmail(String email){
+    private void sendWelcomeEmail(String email) {
         emailService.sendPlainTextEmail(email, emailService.getWelcomeSubject(), emailService.getWelcomeMessage());
     }
 
     @Transactional(readOnly = true)
     public Member findByUsername(String username) {
         return memberRepository.findByUsername(username).orElse(null);
-        }
+    }
 
-    public void modify(Member member,String password, String email, String nickname) {
+    public void modify(Member member, String password, String email, String nickname) {
         member.setPassword(passwordEncoder.encode(password));
         member.setEmail(email);
         member.setNickname(nickname);
@@ -90,6 +90,5 @@ public class MemberService {
 
         return newRestCash;
     }
-
 }
 

@@ -7,6 +7,7 @@ import com.ll.exam.Week_Mission.app.exception.OrderCannotBeCanceledException;
 import com.ll.exam.Week_Mission.app.exception.OrderCannotBeRefundedException;
 import com.ll.exam.Week_Mission.app.exception.PaymentFailedException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
+import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.order.entity.Order;
 import com.ll.exam.Week_Mission.app.order.service.OrderService;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
@@ -34,6 +35,7 @@ import java.util.Map;
 @RequestMapping("/order")
 public class OrderController {
     private final OrderService orderService;
+    private final MemberService memberService;
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper;
     @Value("${spring.custom.toss-payments.secret-key}")
@@ -58,7 +60,7 @@ public class OrderController {
     public String showDetail(@AuthenticationPrincipal MemberContext memberContext, @PathVariable long id, Model model) {
         Order order = orderService.findById(id);
 
-        Member actor = memberContext.getMember();
+        Member actor = memberService.findByUsername(memberContext.getUsername());
 
         long restCash = actor.getRestCash();
 
