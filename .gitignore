@@ -4,6 +4,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 1Week_Mission/src/main/resources/application-base-addi.yml
+2Week_Mission/src/main/resources/application-base-addi.yml
+application-base-addi.yml
 
 ### STS ###
 .apt_generated
