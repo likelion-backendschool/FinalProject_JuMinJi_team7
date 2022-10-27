@@ -29,7 +29,7 @@
             </div>
           </div>
           <div class="news-contents mb-4">
-            <h3>[[${product.subject}]]</a></h3>
+            <h3><a>[[${product.subject}]]</a></h3>
             <div class="post-meta">
               <span style="color:grey;">[[${#strings.substring(product.createDate,0,10)}]] 작성</span><br>
               <span>[[${product.author.username}]]</span><br>
@@ -47,11 +47,11 @@
 
 
           <span style="margin-right: 0px; margin-left: 85px;">
-                <a href="javascript:;" onclick="CartForm__submit();" class="btn-sm">
+                <a href="javascript:;" onclick="$(this).next().submit();"  class="btn-sm">
               <i class="fa-solid fa-cart-plus"></i>
               <span class="ml-2">장바구니</span>
             </a>
-                <form method="POST" name="cartForm" th:action="@{|/cart/add/${product.id}|}" hidden></form>
+                <form th:action="@{|/cart/add/${product.id}|}" method="POST"></form>
           </span>
 
         </div> <!-- /.news-item -->
@@ -62,7 +62,7 @@
 </div>
 <script layout:fragment="script" type='text/javascript'>
   function CartForm__submit() {
-    document.cartForm.submit();
+    $(".cartForm").submit();
   }
 </script>
 </body>

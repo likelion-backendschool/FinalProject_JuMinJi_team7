@@ -50,7 +50,7 @@ public class Order extends BaseEntity {
         if ( isPaid == false ) return false;
         if ( isCanceled ) return false;
         if ( isRefunded ) return false;
-        if( currentDateTime.isAfter(payDate.plusMinutes(2))) return false;
+        if( currentDateTime.isAfter(payDate.plusMinutes(10))) return false;
 
         return true;
     }

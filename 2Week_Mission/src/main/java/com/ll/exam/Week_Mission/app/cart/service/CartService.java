@@ -3,7 +3,6 @@ package com.ll.exam.Week_Mission.app.cart.service;
 import com.ll.exam.Week_Mission.app.cart.entity.CartItem;
 import com.ll.exam.Week_Mission.app.cart.repository.CartItemRepository;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
-import com.ll.exam.Week_Mission.app.post.entity.Post;
 import com.ll.exam.Week_Mission.app.product.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,12 @@ public class CartService {
         if (existingCartItem!=null) {
             return existingCartItem;
         }
+
+       return create(buyer, product);
+    }
+
+    @Transactional
+    public CartItem create(Member buyer, Product product) {
 
         CartItem cartItem = CartItem.builder()
                 .buyer(buyer)
@@ -53,8 +58,8 @@ public class CartService {
         return cartItemRepository.existsByBuyerIdAndProductId(buyer.getId(), product.getId());
     }
 
-    public List<CartItem> findByBuyerId(Member buyer) {
-        return cartItemRepository.findByBuyerId(buyer.getId());
+    public List<CartItem> findByBuyerIdOrderByIdDesc(Member buyer) {
+        return cartItemRepository.findByBuyerIdOrderByIdDesc(buyer.getId());
     }
 
     public Optional<CartItem> findById(long id) {
@@ -63,16 +68,5 @@ public class CartService {
 
     public boolean actorCanDelete(Member buyer, CartItem cartItem) {
         return buyer.getId().equals(cartItem.getBuyer().getId());
-    }
-
-    @Transactional
-    public void addOneItem(Member buyer, Product product) {
-
-        CartItem cartItem = CartItem.builder()
-                .buyer(buyer)
-                .product(product)
-                .build();
-
-        cartItemRepository.save(cartItem);
     }
 }

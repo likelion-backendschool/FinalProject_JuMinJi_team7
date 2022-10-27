@@ -35,7 +35,7 @@ public class OrderService {
     @Transactional
     public Order createFromCart(Member buyer) {
 
-        List<CartItem> cartItems = cartService.findByBuyerId(buyer);
+        List<CartItem> cartItems = cartService.findByBuyerIdOrderByIdDesc(buyer);
 
         List<OrderItem> orderItems = new ArrayList<>();
 
