@@ -1,0 +1,106 @@
+<!doctype html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://thymeleaf.org"
+        layout:decorate="~{fragment/layout}"
+>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
+
+<div class="untree_co-section bg-light">
+  <div class="container">
+
+  <div class="px-2 pt-4">
+    <h1 class="font-bold text-lg"><i class="fa-solid fa-pen-fancy"></i>&nbsp;글 작성</h1>
+    <form th:action method="POST" class="flex flex-col gap-3"
+          onsubmit="PostWrite__submit(this); return false;">
+      <input type="hidden" name="content">
+      <input type="hidden" name="contentHtml">
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">제목</span>
+        </label>
+        <input autofocus type="text" name="subject" placeholder="제목" class="input input-bordered"
+               maxlength="50">
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">태그</span>
+        </label>
+        <input type="text" name="postTagContents" placeholder="#태그1 #태그2 #태그3 ..."
+               class="input input-bordered"
+               maxlength="50">
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">내용</span>
+        </label>
+      </div>
+
+      <div class="toast-ui-editor" toast-ui-editor--height="calc(100vh - 300px)"></div>
+
+      <div class="grid grid-cols-2 mt-2 gap-2">
+        <button type="submit" class="btn btn-primary py-2 px-4">
+          <i class="fa-solid fa-pen"></i>
+          <span class="ml-1" style="font-size:15px;">작성</span>
+        </button>
+        <button type="button" onclick="history.back();" class="btn btn-secondary btn-outline py-2 px-4">
+          <i class="fa-solid fa-angle-left"></i>
+          <span class="ml-1" style="font-size:15px;">취소</span>
+        </button>
+      </div>
+    </form>
+  </div>
+  </div>
+</div>
+
+<script layout:fragment="script" type='text/javascript'>
+  let PostWrite__submitDone = false;
+
+  function PostWrite__submit(form) {
+  if (PostWrite__submitDone) {
+  return;
+  }
+
+  form.subject.value = form.subject.value.trim();
+
+  if (form.subject.value.length == 0) {
+  alert("제목을 입력해주세요.");
+  form.subject.focus();
+
+  return;
+  }
+
+  form.postTagContents.value = form.postTagContents.value.trim();
+
+  if (form.postTagContents.value.length == 0) {
+  alert("태그를 입력해주세요.");
+  form.postTagContents.focus();
+
+  return;
+  }
+
+  const editor = $(form).find(".toast-ui-editor").data("data-toast-editor");
+  const markdown = editor.getMarkdown().trim();
+  const html = editor.getHTML().trim();
+
+  form.content.value = markdown;
+  form.contentHtml.value = html;
+
+  if (form.content.value.length == 0 || form.contentHtml.value.length == 0) {
+    alert("내용을 입력해주세요");
+    editor.focus();
+
+    return;
+  }
+
+  form.submit();
+  PostWrite__submitDone = true;
+  }
+</script>
+</body>
+</html>

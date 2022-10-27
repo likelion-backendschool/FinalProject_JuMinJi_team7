@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://${testDbIp:127.0.0.1}:3306/ebook_market__test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
+    username: ${testDbId:user1}
+    password: ${testDbPw:Ttest12341234@}
+  jpa:
+    hibernate:
+      ddl-auto: create
