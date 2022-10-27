@@ -45,6 +45,13 @@ public class Order extends BaseEntity {
         return true;
     }
 
+    public boolean isCancellable() {
+        if ( isPaid == false ) return true;
+        if ( isCanceled == false ) return true;
+
+        return true;
+    }
+
     public boolean isRefundable() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         if ( isPaid == false ) return false;

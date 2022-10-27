@@ -5,7 +5,9 @@ import com.ll.exam.Week_Mission.app.cash.repository.CashLogRepository;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class CashService {

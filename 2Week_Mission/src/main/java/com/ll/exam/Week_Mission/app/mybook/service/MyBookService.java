@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,12 +17,10 @@ import java.util.List;
 public class MyBookService {
     private final MyBookRepository myBookRepository;
 
-    public List<MyBook> findByMemberId(long memberId){
-        return myBookRepository.findByMemberId(memberId);
-    }
-
     @Transactional
     public void create(Member member, Product product) {
+
+        findByMemberIdAndProductId(member.getId(), product.getId());
 
         MyBook myBook = MyBook.builder()
                 .member(member)
@@ -30,4 +29,13 @@ public class MyBookService {
 
         myBookRepository.save(myBook);
     }
+
+    public List<MyBook> findByMemberId(long memberId){
+        return myBookRepository.findByMemberId(memberId);
+    }
+
+    public Optional<MyBook> findByMemberIdAndProductId(long memberId, long productId){
+        return myBookRepository.findByMemberIdAndProductId(memberId, productId);
+    }
+
 }

@@ -38,10 +38,13 @@
                                                         <td width="25%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;">
                                                             [[${order.getName()}]]
                                                         </td>
+                                                        <td width="25%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                                            &nbsp;
+                                                        </td>
                                                     </tr>
                                                     <tr th:each="orderItem, num : ${order.orderItems}">
                                                         <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
-                                                            Purchased Item ([[${num.count}]])
+                                                            주문 상품 ([[${num.count}]])
                                                         </td>
                                                         <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
                                                             [[${orderItem.product.subject}]]
@@ -153,7 +156,7 @@
                             <tr>
                                 <td align="center" style="padding: 35px;">
                                     <div> 환불 요청은 결제 이후 10분 이내에만 가능합니다.</div>
-                                    <button th:if="${order.payable}" onclick="payment();" class="move-to-list-btn" style="margin-bottom:10px;">카드 결제</button>
+                                    <button th:if="${order.payable}" onclick="payment();" class="move-to-list-btn" style="margin-bottom:10px; padding-right:45px; padding-left:45px;">결제</button>
                                     <button th:if="${order.isPayable}" href="javascript:;" onclick="OrderCancelForm__submit();" class="move-to-list-btn" style="margin-bottom:10px;">주문취소</button>
                                     <form method="POST" name="orderCancelForm" th:action="@{|/order/${order.id}/cancel|}" hidden></form>
                                     <button th:if="${order.isRefundable()}" href="javascript:;" onclick="OrderRefundForm__submit();" class="move-to-list-btn">환불요청</button>

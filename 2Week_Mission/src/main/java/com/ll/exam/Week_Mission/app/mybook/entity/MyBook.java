@@ -8,9 +8,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 
 @Entity
@@ -20,6 +18,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 @SuperBuilder
 @ToString(callSuper = true)
+@Table(indexes = {@Index(name = "mybook_index",columnList = "member_id, product_id")})
 public class MyBook extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
