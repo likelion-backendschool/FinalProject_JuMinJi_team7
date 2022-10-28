@@ -28,8 +28,10 @@
 ## I. 구현하기 어려웠던 기능 접근방법
 #### 1.장바구니 품목 선택 삭제
 이 기능은 컨트롤러, 서비스, 레포지토리 뿐만 아니라 프론트인 타임리프에서도 처리를 해줬어야 됐기 때문에 구현 전, 그리고 구현하면서 자바스크립트(제이쿼리)에 대해서 공부를 했습니다. <br>
-- 자바스크립트 `map()` 메서드 : 적용 요소의 인덱스와 값을 자동으로 받아서 `해당 요소값을 해당 요소의 인덱스만큼 반복`하는 반복문 (https://mjn5027.tistory.com/80)
-- `name`과 `value`의 차이, `input box`를 `type="hidden"`으로 숨겨서 `form` 내의 데이터 서버로 전송하기 <br> (https://greeenhong.tistory.com/291?category=989109)
+- 자바스크립트 `map()` 메서드 : 적용 요소의 인덱스와 값을 자동으로 받아서 `해당 요소값을 해당 요소의 인덱스만큼 반복`하는 반복문 <br> [
+참고자료](https://mjn5027.tistory.com/80)
+- `name`과 `value`의 차이, `input box`를 `type="hidden"`으로 숨겨서 `form` 내의 데이터 서버로 전송하기 <br>
+[참고자료](https://greeenhong.tistory.com/291?category=989109)
 ```java
  <input onchange="CartItemCheckbox__changed();" type="checkbox" class="cartItemCheckbox checkbox" th:value="${cartItem.id}">
  
@@ -98,23 +100,21 @@
 ```
 ## II. 구현 중 생긴 이슈
 
-#### 1. 토스페이먼츠 필수 파라미터 누락 문제
+#### 1. 자바스크립트에 타임리프 변수가 적용되지 않았던 문제(->토스페이먼츠 필수 파라미터 누락 문제)
 토스페이먼츠가 다음 단계로 안넘어가 console창을 확인해보니 필수 파라미터가 누락되었다며 400 에러가 뜨는 경우가 있었습니다.
-1-1. 자바스크립트에 타임리프 변수가 적용되지 않았던 문제 <br>
-자바스크립트 선언문에 th:inline="javascript"을 추가해주지 않아 타임리프 변수가 제대로 적용되지 않았고 아래 stackOverFlow 사이트를 참고하여 해결할 수 있었습니다.
-(https://stackoverflow.com/questions/25687816/setting-up-a-javascript-variable-from-spring-model-by-using-thymeleaf)
-1-2.
+자바스크립트 선언문에 th:inline="javascript"을 추가해주지 않아 타임리프 변수가 제대로 적용되지 않았고 [StackOverFlow](https://stackoverflow.com/questions/25687816/setting-up-a-javascript-variable-from-spring-model-by-using-thymeleaf)를 참고하여 해결할 수 있었습니다.
+
+
 
 #### 2. `.gitignore`에 추가해야 하는 파일을 추가하지 않아 원격저장소에 올라갔던 문제
-뒤늦게 `.gitignore`에 추가 후 원격저장소에서 브랜치를 삭제하고 다시 push해도 브랜치에 여전히 해당 파일이 남아있는 문제가 생겼었습니다.
-https://inpa.tistory.com/entry/GIT-%E2%9A%A1%EF%B8%8F-Github%EC%97%90-%EC%9E%98%EB%AA%BB-%EC%98%AC%EB%9D%BC%EA%B0%84-%ED%8C%8C%EC%9D%BC-%EC%82%AD%EC%A0%9C%ED%95%98%EA%B8%B0 를 참고하여 프로젝트 폴더의 git에 들어가서 파일 삭제 작업 진행
-
+뒤늦게 `.gitignore`에 추가 후 원격저장소에서 브랜치를 삭제하고 다시 push해도 브랜치에 여전히 해당 파일이 남아있는 문제가 생겼었습니다.프로젝트 폴더의 git에 들어가서 파일 삭제 작업 진행 후 커밋했더니 원격 브랜치에서도 파일이 삭제된 것을 확인할 수 있었습니다. <br>
+[참고자료](https://inpa.tistory.com/entry/GIT-%E2%9A%A1%EF%B8%8F-Github%EC%97%90-%EC%9E%98%EB%AA%BB-%EC%98%AC%EB%9D%BC%EA%B0%84-%ED%8C%8C%EC%9D%BC-%EC%82%AD%EC%A0%9C%ED%95%98%EA%B8%B0) 
 #### 3. @Valid를 통한 폼 데이터 유효성 검사 시에 숫자형의 경우 @NotEmpty와 @NotBlank로 검사 시 오류 났던 문제
 |  @NotBlank      |  @NotEmpty |@NotNull|
 |-----------------|------------|--------|
 |null, "", " " 불가|null, "" 불가|null 불가|
 
-https://sanghye.tistory.com/36
+[참고자료](https://sanghye.tistory.com/36)
 
 
 ## III. 개발 목표
@@ -167,6 +167,6 @@ https://sanghye.tistory.com/36
 - 기능 별 분리
 
 ## VI. 그 외 참고자료
-- JPA 지원 인덱스기능 <br>
- https://velog.io/@ljinsk3/JPA%EB%A1%9C-%EC%9D%B8%EB%8D%B1%EC%8A%A4-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0 <br>
- https://recordsoflife.tistory.com/601
+#### JPA 지원 `@Index` <br>
+- [성능개선 참고자료](https://velog.io/@ljinsk3/JPA%EB%A1%9C-%EC%9D%B8%EB%8D%B1%EC%8A%A4-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0) <br>
+- [사용법 참고자료](https://recordsoflife.tistory.com/601)
