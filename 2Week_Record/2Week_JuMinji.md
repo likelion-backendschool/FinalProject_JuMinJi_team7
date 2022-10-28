@@ -169,3 +169,7 @@ https://sanghye.tistory.com/36
 - Order에서 OrderItem을 가져오거나 Product에서 HashTag를 가져오는 등 특정 배열(테이블)에 속한 특정 요소(칼럼)들을 가져오는 스트림문을 가독성을 높이도록 좀 더 깔끔하게 리팩토링 예정입니다.
 - 중복 코드 제거
 - 기능 별 분리
+
+## VI. 그 외 참고자료
+- JPA 지원 인덱스기능 <br>
+ https://velog.io/@ljinsk3/JPA%EB%A1%9C-%EC%9D%B8%EB%8D%B1%EC%8A%A4-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0
