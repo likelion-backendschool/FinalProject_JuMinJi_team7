@@ -29,18 +29,10 @@
 #### 1.장바구니 품목 선택 삭제
 이 기능은 컨트롤러, 서비스, 레포지토리 뿐만 아니라 프론트인 타임리프에서도 처리를 해줬어야 됐기 때문에 구현 전, 그리고 구현하면서 자바스크립트(제이쿼리)에 대해서 공부를 했습니다. <br>
 - 자바스크립트 `map()` 메서드 : 적용 요소의 인덱스와 값을 자동으로 받아서 `해당 요소값을 해당 요소의 인덱스만큼 반복`하는 반복문 (https://mjn5027.tistory.com/80)
-```java
- <input onchange="CartItemCheckbox__changed();" type="checkbox" class="cartItemCheckbox checkbox" th:value="${cartItem.id}">
-
- <script>
- const $checked = $('.cartItemCheckbox:checked');
- // $checked 요소를 el에 담아 index만큼 $checked 요소의 value값(cartItem.id)를 변수ids에 저장    
- const ids = $checked.map((index, el) => $(el).val()).get();
-    form.ids.value = ids;
- </script>
-```
 - `name`과 `value`의 차이, `input box`를 `type="hidden"`으로 숨겨서 `form` 내의 데이터 서버로 전송하기 <br> (https://greeenhong.tistory.com/291?category=989109)
 ```java
+ <input onchange="CartItemCheckbox__changed();" type="checkbox" class="cartItemCheckbox checkbox" th:value="${cartItem.id}">
+ 
 <a href="javascript:;" onclick="RemoveCartItemsForm__submit();" class="btn btn-outline-secondary btn-sm py-2 px-4">
   <span class="ml-1" style="font-size:15px;">선택삭제</span>
  </a>
@@ -61,6 +53,10 @@
       // form submit
       return;
     }
+     const $checked = $('.cartItemCheckbox:checked');
+ // $checked 요소를 el에 담아 index만큼 $checked 요소의 value값(cartItem.id)를 변수ids에 저장    
+ const ids = $checked.map((index, el) => $(el).val()).get();
+    form.ids.value = ids;
   </script>
 ```
 #### 2. (PG 결제+ 보유 예치금)에서 보유예치금을 제외한 값을 PG 결제값으로 넘기기
