@@ -144,7 +144,7 @@ public class OrderController {
         payloadMap.put("amount", String.valueOf(amount));
 
         // 사용하려는 예치금 계산
-        Member actor = memberContext.getMember();
+        Member actor = memberService.findByUsername(memberContext.getUsername());
         long restCash = actor.getRestCash();
         long payPriceRestCash = order.calculatePayPrice() - amount;
 
