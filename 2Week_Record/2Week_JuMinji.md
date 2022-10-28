@@ -172,4 +172,5 @@ https://sanghye.tistory.com/36
 
 ## VI. 그 외 참고자료
 - JPA 지원 인덱스기능 <br>
- https://velog.io/@ljinsk3/JPA%EB%A1%9C-%EC%9D%B8%EB%8D%B1%EC%8A%A4-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0
+ https://velog.io/@ljinsk3/JPA%EB%A1%9C-%EC%9D%B8%EB%8D%B1%EC%8A%A4-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0 <br>
+ https://recordsoflife.tistory.com/601
