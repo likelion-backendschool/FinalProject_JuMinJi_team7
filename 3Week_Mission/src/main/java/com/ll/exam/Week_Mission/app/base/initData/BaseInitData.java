@@ -37,6 +37,7 @@ public class BaseInitData {
             }
 
             initDataDone = true;
+            Member adm = memberService.join("adm", "12341234", "adm@meotbooks.com", "adm");
             Member member1 = memberService.join("user1", "12341234", "user1@meotbooks.com", "user1Author");
             Member member2 = memberService.join("user2", "12341234", "user2@meotbooks.com", "user2Author");
             Member member3 = memberService.join("user3", "12341234", "user3@meotbooks.com", null);

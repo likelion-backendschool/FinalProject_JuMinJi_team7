@@ -42,6 +42,10 @@ public class Member extends BaseEntity {
             authorities.add(new SimpleGrantedAuthority("AUTHOR"));
         }
 
+        if(authLevel.getCode()==7){
+            authorities.add(new SimpleGrantedAuthority("ADMIN"));
+        }
+
         return authorities;
     }
 

@@ -30,12 +30,14 @@ public class MemberService {
 
     public Member join(String username, String password, String email, String nickname) {
 
+        AuthLevel authLevel = username.equals("adm")? AuthLevel.ADMIN : AuthLevel.NORMAL;
+
         Member member = Member.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
                 .email(email)
                 .nickname(nickname)
-                .authLevel(AuthLevel.NORMAL)
+                .authLevel(authLevel)
                 .restCash(0)
                 .build();
 

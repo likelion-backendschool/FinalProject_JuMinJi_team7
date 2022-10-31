@@ -1,5 +1,6 @@
 package com.ll.exam.Week_Mission.app.security.dto;
 
+import com.ll.exam.Week_Mission.app.member.entity.AuthLevel;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +18,7 @@ public class MemberContext extends User {
     private final String username;
     private final String email;
     private final String nickname;
+    private AuthLevel authLevel;
 
 
     public MemberContext(Member member, List<GrantedAuthority> authorities) {
@@ -27,6 +29,7 @@ public class MemberContext extends User {
         this.username = member.getUsername();
         this.email = member.getEmail();
         this.nickname = member.getNickname();
+        this.authLevel = member.getAuthLevel();
     }
 
     public Member getMember() {
@@ -38,6 +41,7 @@ public class MemberContext extends User {
                 .username(username)
                 .email(email)
                 .nickname(nickname)
+                .authLevel(authLevel)
                 .build();
     }
 }
