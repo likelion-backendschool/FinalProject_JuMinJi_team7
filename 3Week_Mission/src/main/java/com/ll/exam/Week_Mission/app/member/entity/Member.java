@@ -27,14 +27,12 @@ public class Member extends BaseEntity {
     private String password;
     private String email;
     private String nickname;
-    private Integer authLevel;
+    @Convert(converter = AuthLevel.Converter.class)
+    private AuthLevel authLevel;
     private long restCash;
 
-    public Member (long id) { super(id); }
-    @PrePersist
-    public void prePersist() {
-        this.authLevel = this.authLevel == null ? 3 : this.authLevel;
-    }
+    public Member (long id) { super(id);}
+
 
     public List<GrantedAuthority> genAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();

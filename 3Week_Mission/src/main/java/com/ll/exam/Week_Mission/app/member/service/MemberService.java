@@ -3,6 +3,7 @@ package com.ll.exam.Week_Mission.app.member.service;
 import com.ll.exam.Week_Mission.app.cash.entity.CashLog;
 import com.ll.exam.Week_Mission.app.cash.service.CashService;
 import com.ll.exam.Week_Mission.app.email.service.EmailService;
+import com.ll.exam.Week_Mission.app.member.entity.AuthLevel;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.repository.MemberRepository;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
@@ -34,6 +35,8 @@ public class MemberService {
                 .password(passwordEncoder.encode(password))
                 .email(email)
                 .nickname(nickname)
+                .authLevel(AuthLevel.NORMAL)
+                .restCash(0)
                 .build();
 
         memberRepository.save(member);
