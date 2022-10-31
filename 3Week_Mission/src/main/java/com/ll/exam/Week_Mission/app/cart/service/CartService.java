@@ -2,12 +2,14 @@ package com.ll.exam.Week_Mission.app.cart.service;
 
 import com.ll.exam.Week_Mission.app.cart.entity.CartItem;
 import com.ll.exam.Week_Mission.app.cart.repository.CartItemRepository;
+import com.ll.exam.Week_Mission.app.exception.DataNotFoundException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.product.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,5 +70,22 @@ public class CartService {
 
     public boolean actorCanDelete(Member buyer, CartItem cartItem) {
         return buyer.getId().equals(cartItem.getBuyer().getId());
+    }
+
+    public String[] splitAndRemoveItems(Member buyer, String ids) {
+
+        String[] idsArr = ids.split(",");
+
+        Arrays.stream(idsArr)
+                .mapToLong(Long::parseLong)
+                .forEach(id -> {
+                    CartItem cartItem = findById(id).orElseThrow(()-> new DataNotFoundException("해당 장바구니 품목이 존재하지 않습니다."));
+
+                    if (actorCanDelete(buyer, cartItem)) {
+                        removeItem(buyer, cartItem.getProduct());
+                    }
+                });
+
+        return idsArr;
     }
 }
