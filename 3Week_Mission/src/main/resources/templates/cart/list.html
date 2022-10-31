@@ -1,0 +1,120 @@
+<!doctype html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://thymeleaf.org"
+        layout:decorate="~{fragment/layout}"
+>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
+
+<div class="untree_co-section bg-light">
+  <div class="container">
+
+    <div class="row mb-5">
+      <div class="col-12 text-center" data-aos-delay="0">
+        <h2 class="heading">장바구니 목록</h2>
+      </div>
+    </div> <!-- /.row -->
+
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0">
+                <thead>
+                <tr class="align-self-center">
+                  <th><input type="checkbox" class="cartItemCheckboxAll checkbox"></th>
+                  <th>도서상품명</th>
+                  <th>작가명</th>
+                  <th>판매가</th>
+                  <th>주문가능여부</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cartItem, num : ${cartItems}">
+                  <td>
+                    <input onchange="CartItemCheckbox__changed();" type="checkbox" class="cartItemCheckbox checkbox" th:value="${cartItem.id}">
+                  </td>
+                  <td>[[${cartItem.product.subject}]]</td>
+                  <td>[[${cartItem.product.author.username}]]</td>
+                  <td>[[${cartItem.product.salePrice}]]</td>
+                  <td>
+                    <span th:if="${cartItem.product.isOrderable()}"class="badge badge-boxed bg-light text-dark">주문가능</span>
+                    <span th:unless="${cartItem.product.isOrderable()}"class="badge badge-boxed badge-soft-primary">주문불가</span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+
+              <!-- 버튼 그룹 시작 -->
+              <div style="margin-top:20px; text-align: right;">
+                <p> 주문은 상품 별로 한 권씩만 가능합니다.</p>
+              <a href="javascript:;" onclick="RemoveCartItemsForm__submit();" class="btn btn-outline-secondary btn-sm py-2 px-4">
+                <span class="ml-1" style="font-size:15px;">선택삭제</span>
+              </a>
+              <form method="POST" name="removeCartItemsForm" th:action="@{|/cart/remove|}" hidden>
+                <input type="hidden" name="ids">
+              </form>
+
+                <a href="javascript:;" onclick="OrderCartItemsForm__submit();" class="btn btn-primary btn-sm btn-outline py-2 px-4">
+                  <span class="ml-1" style="font-size:15px;">전체 주문하기</span>
+                </a>
+                <form method="POST" name="orderCartItemsForm" th:action="@{|/order/create|}" hidden></form>
+            </div>
+              <!-- 버튼 그룹 끝 -->
+
+            </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+<script layout:fragment="script" type='text/javascript'>
+  // 전체선택 체크박스
+  const $cartItemCheckboxAll = $('.cartItemCheckboxAll');
+  // 아이템 체크박스
+  const $cartItemCheckbox = $('.cartItemCheckbox');
+
+  $cartItemCheckboxAll.change(function () {
+    const allChecked = $(this).prop('checked');
+    // 아이템 체크박스들 체크상태 동기화
+    $cartItemCheckbox.prop('checked', allChecked);
+  });
+
+  function CartItemCheckbox__changed() {
+    const allChecked = $cartItemCheckbox.length == $('.cartItemCheckbox:checked').length;
+
+    $cartItemCheckboxAll.prop('checked', allChecked);
+  }
+
+  let RemoveCartItemsForm__submitDone = false;
+
+  <!-- 선택삭제 처리 -->
+  function RemoveCartItemsForm__submit() {
+    if (RemoveCartItemsForm__submitDone) return;
+
+    const $checked = $('.cartItemCheckbox:checked');
+
+    if ($checked.length == 0) {
+      alert('삭제할 장바구니 품목을 선택해주세요.');
+      return;
+    }
+
+    const ids = $checked.map((index, el) => $(el).val()).get();
+    form.ids.value = ids;
+    console.log(ids)
+    form.submit();
+    RemoveCartItemsForm__submitDone = true;
+  }
+
+  <!-- 전체주문 처리 -->
+  function OrderCartItemsForm__submit() {
+    document.orderCartItemsForm.submit();
+  }
+</script>
+</body>
+</html>
