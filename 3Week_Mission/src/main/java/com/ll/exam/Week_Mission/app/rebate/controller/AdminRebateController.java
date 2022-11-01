@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.http.HttpRequest;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -55,5 +56,20 @@ public class AdminRebateController {
          rebateService.rebate(rebateOrderItemId);
 
         return "redirect:/adm/rebate/rebateOrderItemList?msg=" + Ut.url.encode("%d번 상품이 정산완료됐습니다.".formatted(rebateOrderItemId));
+    }
+
+    @PostMapping("/rebate")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String rebate(String ids) {
+
+        String[] idsArr = ids.split(",");
+
+        Arrays.stream(idsArr)
+                .mapToLong(Long::parseLong)
+                .forEach(id -> {
+                    rebateService.rebate(id);
+                });
+
+        return "redirect:/adm/rebate/rebateOrderItemList?msg=" + Ut.url.encode("%d건의 품목이 정산처리되었습니다.".formatted(idsArr.length));
     }
 }
