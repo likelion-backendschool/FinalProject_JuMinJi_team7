@@ -2,6 +2,8 @@ package com.ll.exam.Week_Mission.app.base.initData;
 
 import com.ll.exam.Week_Mission.app.cart.entity.CartItem;
 import com.ll.exam.Week_Mission.app.cart.service.CartService;
+import com.ll.exam.Week_Mission.app.cash.entity.EventGroup;
+import com.ll.exam.Week_Mission.app.cash.entity.PayGroup;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.order.entity.Order;
@@ -14,8 +16,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-
-import java.util.Arrays;
 
 @Configuration
 @Profile({"dev", "test"})
@@ -84,12 +84,11 @@ public class BaseInitData {
             CartItem cartItem2 = cartService.addItem(member1, product4);
             CartItem cartItem3 = cartService.addItem(member2, product1);
 
-            memberService.addCash(member1, 10_000, "충전__무통장입금");
-            memberService.addCash(member1, 20_000, "충전__무통장입금");
-            memberService.addCash(member1, -5_000, "출금__일반");
-            memberService.addCash(member1, 1_000_000, "충전__무통장입금");
+            memberService.addCash(member1, 10_000, EventGroup.CHARGE, PayGroup.REMITTANCE, null);
+            memberService.addCash(member1, 20_000, EventGroup.CHARGE, PayGroup.REMITTANCE, null);
+            memberService.addCash(member1, 1_000_000, EventGroup.CHARGE, PayGroup.REMITTANCE, null);
 
-            memberService.addCash(member2, 2_000_000, "충전__무통장입금");
+            memberService.addCash(member2, 2_000_000, EventGroup.CHARGE, PayGroup.REMITTANCE, null);
 
             // 1번 주문 : 결제완료
             Order order1 = orderService.createFromCart(member1);

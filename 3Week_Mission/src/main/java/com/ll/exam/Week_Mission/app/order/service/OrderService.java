@@ -2,6 +2,8 @@ package com.ll.exam.Week_Mission.app.order.service;
 
 import com.ll.exam.Week_Mission.app.cart.entity.CartItem;
 import com.ll.exam.Week_Mission.app.cart.service.CartService;
+import com.ll.exam.Week_Mission.app.cash.entity.EventGroup;
+import com.ll.exam.Week_Mission.app.cash.entity.PayGroup;
 import com.ll.exam.Week_Mission.app.exception.DataNotFoundException;
 import com.ll.exam.Week_Mission.app.exception.PaymentFailedException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
@@ -107,7 +109,7 @@ public class OrderService {
             throw new PaymentFailedException("예치금이 부족합니다.");
         }
 
-        memberService.addCash(buyer, payPrice * -1, "주문__%d__사용__예치금".formatted(order.getId()));
+        memberService.addCash(buyer, payPrice * -1, EventGroup.ORDER, PayGroup.CASH, order);
 
         order.setPaymentDone();
         productToMyBook(buyer, order);
@@ -126,11 +128,11 @@ public class OrderService {
 
         long pgPayPrice = payPrice - useRestCash;
 
-        memberService.addCash(buyer, pgPayPrice, "주문__%d__충전__토스페이먼츠".formatted(order.getId()));
-        memberService.addCash(buyer, pgPayPrice * -1, "주문__%d__사용__토스페이먼츠".formatted(order.getId()));
+        memberService.addCash(buyer, pgPayPrice, EventGroup.CHARGE, PayGroup.CARD, order);
+        memberService.addCash(buyer, pgPayPrice * -1, EventGroup.ORDER, PayGroup.CARD, order);
 
         if (useRestCash > 0) {
-            memberService.addCash(buyer, useRestCash * -1, "주문__%d__사용__예치금".formatted(order.getId()));
+            memberService.addCash(buyer, useRestCash * -1, EventGroup.ORDER, PayGroup.CASH, order);
         }
 
         order.setPaymentDone();
@@ -154,7 +156,7 @@ public class OrderService {
     @Transactional
     public Order refund(Order order) {
         int payPrice = order.getPayPrice();
-        memberService.addCash(order.getBuyer(), payPrice, "주문__%d__환불__예치금".formatted(order.getId()));
+        memberService.addCash(order.getBuyer(), payPrice, EventGroup.REFUND, PayGroup.CASH, order);
 
         order.setRefundDone();
         orderRepository.save(order);

@@ -1,11 +1,14 @@
 package com.ll.exam.Week_Mission.app.member.service;
 
 import com.ll.exam.Week_Mission.app.cash.entity.CashLog;
+import com.ll.exam.Week_Mission.app.cash.entity.EventGroup;
+import com.ll.exam.Week_Mission.app.cash.entity.PayGroup;
 import com.ll.exam.Week_Mission.app.cash.service.CashService;
 import com.ll.exam.Week_Mission.app.email.service.EmailService;
 import com.ll.exam.Week_Mission.app.member.entity.AuthLevel;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.repository.MemberRepository;
+import com.ll.exam.Week_Mission.app.order.entity.Order;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -16,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.Email;
 import java.util.Optional;
 
 @Service
@@ -86,8 +88,8 @@ public class MemberService {
         return memberRepository.findByEmail(email);
     }
 
-    public long addCash(Member member, long price, String eventType) {
-        CashLog cashLog = cashService.addCash(member, price, eventType);
+    public long addCash(Member member, long price, EventGroup eventGroup, PayGroup payGroup, Order order) {
+        CashLog cashLog = cashService.addCash(member, price, eventGroup, payGroup, order);
 
         long newRestCash = member.getRestCash() + cashLog.getPrice();
         member.setRestCash(newRestCash);

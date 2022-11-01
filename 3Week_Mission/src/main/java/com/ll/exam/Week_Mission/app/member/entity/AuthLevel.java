@@ -19,6 +19,7 @@ public enum AuthLevel {
     private int code;
     private String value;
 
+    /* AuthLevel code <-> Integer code */
     public static class Converter implements AttributeConverter<AuthLevel, Integer> {
         @Override
         public Integer convertToDatabaseColumn(AuthLevel attribute) {
@@ -27,7 +28,7 @@ public enum AuthLevel {
 
         @Override
         public AuthLevel convertToEntityAttribute(Integer dbData) {
-            return EnumSet.allOf(AuthLevel.class).stream()
+            return EnumSet.allOf(AuthLevel.class).stream() // EnumSet -> null X, EnumSet 메서드 사용 시 비트연산으로 계산속도 빠름
                     .filter(e -> e.getCode() == dbData)
                     .findAny()
                     .orElseThrow(NotMatchAuthLevelException::new);
