@@ -27,15 +27,16 @@
                                     <th>No.</th>
                                     <th width="10%">결제일자</th>
                                     <th width="5%">품번</th>
-                                    <th width="10%">상품명</th>
+                                    <th width="8%">상품명</th>
                                     <th width="8%">결제가격</th>
                                     <th>PG Fee</th>
                                     <th width="8%">환불가격</th>
                                     <th>판매자</th>
                                     <th>예상정산가</th>
                                     <th>정산번호</th>
+                                    <th width="10%">정산일자</th>
                                     <th>정산여부</th>
-                                    <th width="10%">비고</th>
+                                    <th width="5%">비고</th>
 
                                 </tr>
                                 </thead>
@@ -43,7 +44,7 @@
                                 <tr th:each="item, num : ${items}">
 
                                     <td>[[${num.count}]]</td>
-                                    <td>[[${item.payDate}]]</td>
+                                    <td>[[${#temporals.format(item.payDate, 'yy-MM-dd HH:mm:ss')}]]</td>
                                     <td>[[${item.orderItem.id}]]</td>
                                     <td>[[${item.productSubject}]]</td>
                                     <td>[[${item.payPrice}]]</td>
@@ -51,15 +52,16 @@
                                     <td>[[${item.refundPrice}]]</td>
                                     <td>[[${item.sellerName}]]</td>
                                     <td>[[${item.calculateRebatePrice}]]</td>
-                                    <td> [[${item.rebateCashLog?.id}]]</td>
+                                    <td>[[${item.rebateCashLog?.id}]]</td>
+                                    <td>[[${#temporals.format(item.rebateDate, 'yy-MM-dd HH:mm:ss')}]]</td>
                                     <td>
                                         <span th:if="${item.rebateAvailable} and ${item.rebateCashLog?.id} == null" class="badge badge-boxed badge-soft-primary">정산준비중</span>
+                                        <span th:if="${item.rebateAvailable == false} and ${item.rebateCashLog?.id} == null" class="badge badge-boxed bg-light text-dark">정산불필요</span>
                                         <span th:if="${item.rebateCashLog?.id} != null" class="badge badge-boxed badge-soft-primary">정산완료</span>
-                                        <span th:if="${item.rebateAvailable == false}" class="badge badge-boxed bg-light text-dark">정산불필요</span>
                                     </td>
                                     <td>
                                         <a th:if="${item.rebateAvailable}" href="javascript:;" onclick="$(this).next().submit();" class="badge badge-dark">건별정산</a>
-                                        <form method="POST" th:action="@{|/adm/rebate/rebateOne/${item.orderItem.id}|}" target="_blank" hidden>
+                                        <form method="POST" th:action="@{|/adm/rebate/rebateOne/${item.orderItem.id}|}" hidden>
 
                                         </form>
                                     </td>

@@ -110,10 +110,15 @@ public class RebateOrderItem extends BaseEntity {
     }
 
     public boolean rebateAvailable() {
-        if (refundPrice == payPrice) {
+        if (refundPrice == payPrice || rebateDate != null) {
             return false;
         }
 
         return true;
+    }
+
+    public void setRebateDone(long cashLogId) {
+        rebateDate = LocalDateTime.now();
+        this.rebateCashLog = new CashLog(cashLogId);
     }
 }

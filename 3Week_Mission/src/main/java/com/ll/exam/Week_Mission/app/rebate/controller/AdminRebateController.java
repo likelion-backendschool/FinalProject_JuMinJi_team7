@@ -7,11 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.net.http.HttpRequest;
 import java.util.List;
 
 @Controller
@@ -47,5 +47,13 @@ public class AdminRebateController {
         model.addAttribute("items", rebateOrderItems);
 
         return "adm/rebate/rebateOrderItemList";
+    }
+
+    @PostMapping("/rebateOne/{rebateOrderItemId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String rebateOne(@PathVariable long rebateOrderItemId) { // Todo: 이전 rebateOrderItemList 페이지에서 파라미터(yearMonth) 가져와 redirect 하도록 리팩토링
+         rebateService.rebate(rebateOrderItemId);
+
+        return "redirect:/adm/rebate/rebateOrderItemList?msg=" + Ut.url.encode("%d번 상품이 정산완료됐습니다.".formatted(rebateOrderItemId));
     }
 }

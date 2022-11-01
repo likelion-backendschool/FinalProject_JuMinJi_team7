@@ -95,7 +95,7 @@ public class MemberService {
         member.setRestCash(newRestCash);
         memberRepository.save(member);
 
-        return newRestCash;
+        return cashLog.getId();
     }
 }
 

@@ -29,4 +29,8 @@ public class CashLog extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     private Member member;
 
+    public CashLog(long id) {
+        super(id);
+    }
+
 }

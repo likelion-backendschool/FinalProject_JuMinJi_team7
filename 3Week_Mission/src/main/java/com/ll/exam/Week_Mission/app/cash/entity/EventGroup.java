@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum EventGroup {
     ORDER("주문"),
     REFUND("환불"),
-    CHARGE("충전");
+    CHARGE("충전"),
+    REBATE("정산");;
 
 
     EventGroup(String value) {
