@@ -71,21 +71,4 @@ public class CartService {
     public boolean actorCanDelete(Member buyer, CartItem cartItem) {
         return buyer.getId().equals(cartItem.getBuyer().getId());
     }
-
-    public String[] splitAndRemoveItems(Member buyer, String ids) {
-
-        String[] idsArr = ids.split(",");
-
-        Arrays.stream(idsArr)
-                .mapToLong(Long::parseLong)
-                .forEach(id -> {
-                    CartItem cartItem = findById(id).orElseThrow(()-> new DataNotFoundException("해당 장바구니 품목이 존재하지 않습니다."));
-
-                    if (actorCanDelete(buyer, cartItem)) {
-                        removeItem(buyer, cartItem.getProduct());
-                    }
-                });
-
-        return idsArr;
-    }
 }

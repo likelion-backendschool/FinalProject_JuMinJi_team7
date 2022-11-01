@@ -97,6 +97,8 @@
   function RemoveCartItemsForm__submit() {
     if (RemoveCartItemsForm__submitDone) return;
 
+    const form = document.removeCartItemsForm;
+
     const $checked = $('.cartItemCheckbox:checked');
 
     if ($checked.length == 0) {

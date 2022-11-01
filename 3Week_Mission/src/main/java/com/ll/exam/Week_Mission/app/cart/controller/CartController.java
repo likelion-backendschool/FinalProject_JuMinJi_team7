@@ -61,7 +61,17 @@ public class CartController {
     public String removeItems(String ids, @AuthenticationPrincipal MemberContext memberContext) {
         Member buyer = memberContext.getMember();
 
-        String[] idsArr = cartService.splitAndRemoveItems(buyer, ids);
+        String[] idsArr = ids.split(",");
+
+        Arrays.stream(idsArr)
+                .mapToLong(Long::parseLong)
+                .forEach(id -> {
+                    CartItem cartItem = cartService.findById(id).orElseThrow(()-> new DataNotFoundException("해당 장바구니 품목이 존재하지 않습니다."));
+
+                    if (cartService.actorCanDelete(buyer, cartItem)) {
+                        cartService.removeItem(buyer, cartItem.getProduct());
+                    }
+                });
 
         return "redirect:/cart/list?msg=" + Ut.url.encode("%d건의 도서 상품이 장바구니에서 삭제완료됐습니다.".formatted(idsArr.length));
     }
