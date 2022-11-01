@@ -1,0 +1,80 @@
+<!doctype html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://thymeleaf.org"
+        layout:decorate="~{fragment/adm_layout}"
+>
+
+<body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
+
+<div class="untree_co-section bg-light">
+    <div class="container">
+
+        <div class="row mb-5">
+            <div class="col-12 text-center" data-aos-delay="0">
+                <h2 class="heading"> 정산 목록</h2>
+            </div>
+        </div> <!-- /.row -->
+
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                <tr class="align-self-center">
+                                    <th>No.</th>
+                                    <th width="10%">결제일자</th>
+                                    <th width="5%">품번</th>
+                                    <th width="10%">상품명</th>
+                                    <th width="8%">결제가격</th>
+                                    <th>PG Fee</th>
+                                    <th width="8%">환불가격</th>
+                                    <th>판매자</th>
+                                    <th>예상정산가</th>
+                                    <th>정산번호</th>
+                                    <th>정산여부</th>
+                                    <th width="10%">비고</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item, num : ${items}">
+
+                                    <td>[[${num.count}]]</td>
+                                    <td>[[${item.payDate}]]</td>
+                                    <td>[[${item.orderItem.id}]]</td>
+                                    <td>[[${item.productSubject}]]</td>
+                                    <td>[[${item.payPrice}]]</td>
+                                    <td>[[${item.pgFee}]]</td>
+                                    <td>[[${item.refundPrice}]]</td>
+                                    <td>[[${item.sellerName}]]</td>
+                                    <td>[[${item.calculateRebatePrice}]]</td>
+                                    <td> [[${item.rebateCashLog?.id}]]</td>
+                                    <td>
+                                        <span th:if="${item.rebateAvailable} and ${item.rebateCashLog?.id} == null" class="badge badge-boxed badge-soft-primary">정산준비중</span>
+                                        <span th:if="${item.rebateCashLog?.id} != null" class="badge badge-boxed badge-soft-primary">정산완료</span>
+                                        <span th:if="${item.rebateAvailable == false}" class="badge badge-boxed bg-light text-dark">정산불필요</span>
+                                    </td>
+                                    <td>
+                                        <a th:if="${item.rebateAvailable}" href="javascript:;" onclick="$(this).next().submit();" class="badge badge-dark">건별정산</a>
+                                        <form method="POST" th:action="@{|/adm/rebate/rebateOne/${item.orderItem.id}|}" target="_blank" hidden>
+
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div> <!-- /.container -->
+</div> <!-- /.untree_co-hero -->
+
+</body>
+</html>

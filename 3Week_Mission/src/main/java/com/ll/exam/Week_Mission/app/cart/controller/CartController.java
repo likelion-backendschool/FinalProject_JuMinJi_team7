@@ -61,7 +61,7 @@ public class CartController {
         List<Order> existingOrders = orderService.findAllByBuyerId(buyer.getId());
         if(existingOrders != null) {
             for (Order order : existingOrders) {
-                if (order.CartAvailable() == false && order.getOrderItems().stream().map(OrderItem::getProduct).anyMatch(p -> p == product)) {
+                if (order.cartAvailable() == false && order.getOrderItems().stream().map(OrderItem::getProduct).anyMatch(p -> p == product)) {
                         throw new ActorCannotBuyTwiceException("기존에 주문한 상품은 장바구니에 담을 수 없습니다. 미결제 상태일 시 주문취소 후 다시 담을 수 있습니다.");
                 }
             }
