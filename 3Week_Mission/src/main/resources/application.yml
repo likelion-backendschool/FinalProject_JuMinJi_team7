@@ -3,6 +3,12 @@ spring:
     active: dev
     include:
       - base-addi
+  batch:
+    job:
+      names: ${job.name:makeRebateOrderItemJob}
+      month:
+    jdbc:
+      initialize-schema: ALWAYS
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
