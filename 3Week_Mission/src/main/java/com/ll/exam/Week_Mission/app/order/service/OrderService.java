@@ -11,12 +11,14 @@ import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.mybook.service.MyBookService;
 import com.ll.exam.Week_Mission.app.order.entity.Order;
 import com.ll.exam.Week_Mission.app.order.entity.OrderItem;
+import com.ll.exam.Week_Mission.app.order.repository.OrderItemRepository;
 import com.ll.exam.Week_Mission.app.order.repository.OrderRepository;
 import com.ll.exam.Week_Mission.app.product.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class OrderService {
     private final CartService cartService;
     private final OrderRepository orderRepository;
     private final MyBookService myBookService;
+    private final OrderItemRepository orderItemRepository;
 
     public List<Order> findAllByBuyerId(long actorId) {
         return orderRepository.findAllByBuyerId(actorId);
@@ -187,4 +190,7 @@ public class OrderService {
         return actorCanSee(actor, order);
     }
 
+    public List<OrderItem> findAllByPayDateBetween(LocalDateTime fromDate, LocalDateTime toDate) {
+        return orderItemRepository.findAllByPayDateBetween(fromDate, toDate);
+    }
 }

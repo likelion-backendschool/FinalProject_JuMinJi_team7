@@ -22,7 +22,6 @@ import static javax.persistence.FetchType.LAZY;
 @ToString(callSuper = true)
 public class OrderItem extends BaseEntity {
     private LocalDateTime payDate;
-    /* 가격 컬럼 */
     private int price; // 권장판매가
     private int salePrice; // 실제판매가
     private int wholesalePrice; // 도매가
