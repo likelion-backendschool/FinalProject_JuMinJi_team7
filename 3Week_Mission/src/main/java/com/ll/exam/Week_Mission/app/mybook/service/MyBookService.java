@@ -1,5 +1,8 @@
 package com.ll.exam.Week_Mission.app.mybook.service;
 
+import com.ll.exam.Week_Mission.app.exception.ActorCannotAccessException;
+import com.ll.exam.Week_Mission.app.exception.ActorCannotBuyTwiceException;
+import com.ll.exam.Week_Mission.app.exception.DataNotFoundException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.mybook.entity.MyBook;
 import com.ll.exam.Week_Mission.app.mybook.repository.MyBookRepository;
@@ -20,8 +23,6 @@ public class MyBookService {
     @Transactional
     public void create(Member member, Product product) {
 
-        findByMemberIdAndProductId(member.getId(), product.getId());
-
         MyBook myBook = MyBook.builder()
                 .member(member)
                 .product(product)
@@ -36,6 +37,15 @@ public class MyBookService {
 
     public Optional<MyBook> findByMemberIdAndProductId(long memberId, long productId){
         return myBookRepository.findByMemberIdAndProductId(memberId, productId);
+    }
+
+    @Transactional
+    public void remove(Member member, Product product) {
+
+        MyBook myBook = findByMemberIdAndProductId(member.getId(), product.getId())
+                .orElseThrow(() -> new DataNotFoundException("삭제하려는 도서 상품이 존재하지 않습니다."));
+
+        myBookRepository.delete(myBook);
     }
 
 }

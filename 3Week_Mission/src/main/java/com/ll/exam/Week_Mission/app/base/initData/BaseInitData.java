@@ -93,7 +93,6 @@ public class BaseInitData {
             // 1번 주문 : 결제완료
             Order order1 = orderService.createFromCart(member1);
 
-            int order1PayPrice = order1.calculatePayPrice();
             orderService.payByRestCashOnly(order1);
 
             // 2번 주문 : 결제 후 환불
@@ -110,9 +109,6 @@ public class BaseInitData {
             Order order3 = orderService.createFromCart(member2);
 
             //
-            cartService.addItem(member1, product2);
-            cartService.addItem(member1, product4);
-
             cartService.addItem(member2, product1);
             cartService.addItem(member2, product3);
         };

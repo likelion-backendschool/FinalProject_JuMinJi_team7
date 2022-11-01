@@ -112,7 +112,7 @@ public class OrderService {
         memberService.addCash(buyer, payPrice * -1, EventGroup.ORDER, PayGroup.CASH, order);
 
         order.setPaymentDone();
-        productToMyBook(buyer, order);
+        createMyBook(buyer, order);
         orderRepository.save(order);
     }
 
@@ -136,12 +136,13 @@ public class OrderService {
         }
 
         order.setPaymentDone();
-        productToMyBook(buyer, order);
+        createMyBook(buyer, order);
         orderRepository.save(order);
     }
 
     @Transactional
-    public void productToMyBook(Member member, Order order) {
+    public void createMyBook(Member member, Order order) {
+
         List<OrderItem> orderItems = order.getOrderItems();
         for (OrderItem temp : orderItems) {
             myBookService.create(member, temp.getProduct());
@@ -159,9 +160,19 @@ public class OrderService {
         memberService.addCash(order.getBuyer(), payPrice, EventGroup.REFUND, PayGroup.CASH, order);
 
         order.setRefundDone();
+        removeMyBook(order.getBuyer(), order);
         orderRepository.save(order);
 
         return order;
+    }
+
+    @Transactional
+    public void removeMyBook(Member member, Order order) {
+
+        List<OrderItem> orderItems = order.getOrderItems();
+        for (OrderItem temp : orderItems) {
+            myBookService.remove(member, temp.getProduct());
+        }
     }
 
     public Order findById(long id) {
