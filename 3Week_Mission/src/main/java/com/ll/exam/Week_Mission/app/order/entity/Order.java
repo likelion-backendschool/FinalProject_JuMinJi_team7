@@ -38,6 +38,13 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    public boolean CartAvailable() {
+        if ( isCanceled ) return true;
+        if ( isRefunded ) return true;
+
+        return false;
+    }
+
     public boolean isPayable() {
         if ( isPaid ) return false;
         if ( isCanceled ) return false;
@@ -46,8 +53,9 @@ public class Order extends BaseEntity {
     }
 
     public boolean isCancellable() {
-        if ( isPaid == false ) return true;
-        if ( isCanceled == false ) return true;
+        if ( isPaid ) return false;
+        if ( isCanceled ) return false;
+        if ( isRefunded ) return false;
 
         return true;
     }

@@ -2,8 +2,13 @@ package com.ll.exam.Week_Mission.app.cart.controller;
 
 import com.ll.exam.Week_Mission.app.cart.entity.CartItem;
 import com.ll.exam.Week_Mission.app.cart.service.CartService;
+import com.ll.exam.Week_Mission.app.exception.ActorCannotBuyTwiceException;
 import com.ll.exam.Week_Mission.app.exception.DataNotFoundException;
+import com.ll.exam.Week_Mission.app.exception.PaymentFailedException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
+import com.ll.exam.Week_Mission.app.order.entity.Order;
+import com.ll.exam.Week_Mission.app.order.entity.OrderItem;
+import com.ll.exam.Week_Mission.app.order.service.OrderService;
 import com.ll.exam.Week_Mission.app.product.entity.Product;
 import com.ll.exam.Week_Mission.app.product.service.ProductService;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
@@ -27,6 +32,7 @@ import java.util.List;
 public class CartController {
     private final CartService cartService;
     private final ProductService productService;
+    private final OrderService orderService;
 
     @GetMapping("/list")
     @PreAuthorize("isAuthenticated()")
@@ -50,6 +56,16 @@ public class CartController {
         }
 
         Member buyer = memberContext.getMember();
+
+        // 주문기록이 있는 상품인지 확인 -> 주문기록이 있으나 취소했거나 환불했을 경우에만 장바구니 담기 가능
+        List<Order> existingOrders = orderService.findAllByBuyerId(buyer.getId());
+        if(existingOrders != null) {
+            for (Order order : existingOrders) {
+                if (order.CartAvailable() == false && order.getOrderItems().stream().map(OrderItem::getProduct).anyMatch(p -> p == product)) {
+                        throw new ActorCannotBuyTwiceException("기존에 주문한 상품은 장바구니에 담을 수 없습니다. 미결제 상태일 시 주문취소 후 다시 담을 수 있습니다.");
+                }
+            }
+        }
 
         cartService.addItem(buyer, product);
 

@@ -186,7 +186,7 @@ public class OrderController {
     public String cancel(@PathVariable long id, @AuthenticationPrincipal MemberContext memberContext) {
         Order order = orderService.findById(id);
 
-        if(order.isCancellable()) {
+        if(order.isCancellable() == false) {
             throw new OrderCannotBeCanceledException("해당 주문은 취소 불가능합니다.");
         }
 
