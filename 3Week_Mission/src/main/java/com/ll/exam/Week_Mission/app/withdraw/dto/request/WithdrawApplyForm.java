@@ -15,4 +15,7 @@ public class WithdrawApplyForm {
 
     @NotNull(message = "출금 신청 금액을 입력해주세요.")
     private int price;
+
+    @NotBlank(message = "예금주를 입력해주세요.")
+    private String accountHolder;
 }

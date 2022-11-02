@@ -56,7 +56,7 @@ public class WithdrawController {
             throw new MemberNotFoundException("회원 정보를 찾을 수 없습니다.");
         }
 
-        withdrawService.apply(applicant, withdrawApplyForm.getBankName(), withdrawApplyForm.getBankAccountNo(),withdrawApplyForm.getPrice());
+        withdrawService.apply(applicant, withdrawApplyForm.getBankName(), withdrawApplyForm.getBankAccountNo(),withdrawApplyForm.getPrice(), withdrawApplyForm.getAccountHolder());
 
         return "redirect:/member/profile?msg=" + Ut.url.encode("출금 신청이 완료되었습니다.");
     }

@@ -19,6 +19,7 @@ public class Withdraw extends BaseEntity {
     private String bankName;
     private String bankAccountNo;
     private int price;
+    private String accountHolder;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;

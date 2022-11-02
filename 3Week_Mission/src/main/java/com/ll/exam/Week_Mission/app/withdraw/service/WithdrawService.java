@@ -17,18 +17,19 @@ import java.util.List;
 public class WithdrawService {
     private final WithdrawRepository withdrawRepository;
 
-    public void apply(Member applicant, String bankName, String bankAccountNo, int price) {
+    public void apply(Member applicant, String bankName, String bankAccountNo, int price, String accountHolder) {
 
         Withdraw oldWithdraw = findByMemberId(applicant.getId());
 
         if(oldWithdraw != null) {
-            modify(oldWithdraw, bankName, bankAccountNo, price);
+            modify(oldWithdraw, bankName, bankAccountNo, price, accountHolder);
         }
 
         Withdraw withdraw = Withdraw.builder()
                 .bankName(bankName)
                 .bankAccountNo(bankAccountNo)
                 .price(price)
+                .accountHolder(accountHolder)
                 .member(applicant)
                 .build();
 
@@ -40,10 +41,11 @@ public class WithdrawService {
        return withdrawRepository.findByMemberId(applicantId).orElse(null);
     }
 
-    public void modify(Withdraw oldWithdraw, String bankName, String bankAccountNo, int price) {
+    public void modify(Withdraw oldWithdraw, String bankName, String bankAccountNo, int price, String accountHolder) {
         oldWithdraw.setBankName(bankName);
         oldWithdraw.setBankAccountNo(bankAccountNo);
         oldWithdraw.setPrice(price);
+        oldWithdraw.setAccountHolder(accountHolder);
     }
 
     public List<Withdraw> findAllByCreateDateBetweenOrderByIdAsc(String yearMonth) {

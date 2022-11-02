@@ -29,6 +29,11 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="text-black" for="accountHolder">예금주</label>
+                    <input type="text" class="form-control" id="accountHolder" name="accountHolder" th:value="${withdraw?.accountHolder}" minlength="2" maxlength="15">
+                </div>
+
+                <div class="form-group">
                     <div th:with="maxUseRestCash=${restCash}">
                     <label class="text-black" for="PaymentForm__useRestCash">출금 신청 금액</label>
                         <span> (보유 예치금 : [[${restCash}]]) </span>
@@ -70,6 +75,13 @@
 
         if (form.bankAccountNo.value.length == 0) {
             alert("계좌번호를 입력해주세요.");
+            return;
+        }
+
+        form.accountHolder.value = form.accountHolder.value.trim();
+
+        if (form.accountHolder.value.length == 0) {
+            alert("예금주를 입력해주세요.");
             return;
         }
 
