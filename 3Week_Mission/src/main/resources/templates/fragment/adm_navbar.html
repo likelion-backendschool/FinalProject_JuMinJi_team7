@@ -27,8 +27,14 @@
                 <ul class="js-clone-nav d-none d-lg-inline-block site-menu float-left">
                     <li sec:authorize="hasAuthority('ADMIN')"><a href="/adm/home/main" class="nav-link">관리자 홈</a></li>
                     <li class="active"><a href="/" class="nav-link">홈</a></li>
-                    <li sec:authorize="hasAuthority('ADMIN')"><a href="/adm/rebate/makeData" class="nav-link">정산</a></li>
-
+                    <li sec:authorize="hasAuthority('ADMIN')" class="has-children">
+                        <a href="#" class="nav-link">정산</a>
+                        <ul class="dropdown">
+                            <li><a href="/adm/rebate/makeData" class="nav-link">정산데이터 생성</a></li>
+                            <li><a href="/adm/rebate/rebateOrderItemList" class="nav-link">정산데이터 목록</a></li>
+                        </ul>
+                    </li>
+                    <li sec:authorize="hasAuthority('ADMIN')"><a href="/adm/withdraw/applyList" class="nav-link">출금신청 목록</a></li>
                 </ul>
 
                 <a href="#" class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block dark d-lg-none" data-toggle="collapse" data-target="#main-navbar">
