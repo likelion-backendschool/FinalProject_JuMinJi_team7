@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.http.HttpRequest;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -40,7 +42,8 @@ public class AdminRebateController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public String showRebateList(String yearMonth, Model model) {
         if (yearMonth == null) {
-            yearMonth = "2022-11";
+            Date now = new Date();
+            yearMonth = new SimpleDateFormat("YYYY-MM").format(now.getTime());
         }
 
         List<RebateOrderItem> rebateOrderItems = rebateService.findAllByPayDateBetweenOrderByIdAsc(yearMonth);
