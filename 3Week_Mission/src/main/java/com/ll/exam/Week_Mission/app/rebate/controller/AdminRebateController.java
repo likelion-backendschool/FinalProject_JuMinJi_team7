@@ -9,11 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.net.http.HttpRequest;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +23,18 @@ public class AdminRebateController {
 
     @GetMapping("/makeData")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String showMakeData() {
+    public String showMakeData(Model model) {
+        // 2달 전~ 이번 달 날짜데이터(YYYY-MM) 생성하여 뷰에 전달
+        Calendar cal = Calendar.getInstance();
+
+        model.addAttribute("thisMonth", new SimpleDateFormat("YYYY-MM").format(cal.getTime()));
+        cal.add(Calendar.MONTH , -1);
+
+        model.addAttribute("prevMonth", new SimpleDateFormat("YYYY-MM").format(cal.getTime()));
+        cal.add(Calendar.MONTH , -1);
+
+        model.addAttribute("twoMonthsAgo", new SimpleDateFormat("YYYY-MM").format(cal.getTime()));
+
         return "adm/rebate/makeData";
     }
 

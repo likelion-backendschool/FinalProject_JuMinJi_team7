@@ -17,9 +17,9 @@
                     <span style="text-align: center;">
                         <form method="post" th:action>
                             <select name="yearMonth" class="select select-bordered">
-                                <option value="2022-11">2022-11</option>
-                                <option value="2022-10">2022-10</option>
-                                <option value="2022-09">2022-09</option>
+                                <option>[[${thisMonth}]]</option>
+                                <option>[[${prevMonth}]]</option>
+                                <option>[[${twoMonthsAgo}]]</option>
                             </select>
                             <input class="btn btn-primary m-3" style="font-size:14px;" type="submit" value="생성">
                         </form>
