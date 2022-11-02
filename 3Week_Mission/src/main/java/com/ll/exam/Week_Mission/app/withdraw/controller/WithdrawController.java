@@ -26,7 +26,6 @@ public class WithdrawController {
     private final MemberService memberService;
     private final WithdrawService withdrawService;
 
-    /* create/modify */
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/apply")
     public String showWithdrawApply(@AuthenticationPrincipal MemberContext memberContext, Model model) {
@@ -46,7 +45,6 @@ public class WithdrawController {
         return "withdraw/apply";
     }
 
-    /* create/modify */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/apply")
     public String withdrawApply(@Valid WithdrawApplyForm withdrawApplyForm, @AuthenticationPrincipal MemberContext memberContext) {

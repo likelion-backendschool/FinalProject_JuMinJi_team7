@@ -91,9 +91,9 @@ public class RebateService {
         Order order = rebateOrderItem.getOrder();
 
         // 3. 예치금으로 정산
-        long cashLogId = memberService.addCash(rebateOrderItem.getProduct().getAuthor(), calculateRebatePrice, EventGroup.REBATE, PayGroup.CASH, order);
+        CashLog cashLog = memberService.addCash(rebateOrderItem.getProduct().getAuthor(), calculateRebatePrice, EventGroup.REBATE, PayGroup.CASH, order);
 
         // 4. 정산여부 set
-        rebateOrderItem.setRebateDone(cashLogId);
+        rebateOrderItem.setRebateDone(cashLog.getId());
     }
 }

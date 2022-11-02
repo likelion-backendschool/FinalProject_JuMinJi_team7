@@ -40,4 +40,12 @@ public class AdminWithdrawController {
 
         return "adm/withdraw/applyList";
     }
+
+    @PostMapping("/{WithdrawApplyId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String withdraw(@PathVariable Long WithdrawApplyId) {
+        withdrawService.withdraw(WithdrawApplyId);
+
+        return "redirect:/adm/withdraw/applyList?msg=" + Ut.url.encode("%d번 출금신청 출금완료됐습니다.".formatted(WithdrawApplyId));
+    }
 }

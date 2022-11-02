@@ -1,5 +1,6 @@
 package com.ll.exam.Week_Mission.app.member.service;
 
+import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import com.ll.exam.Week_Mission.app.cash.entity.CashLog;
 import com.ll.exam.Week_Mission.app.cash.entity.EventGroup;
 import com.ll.exam.Week_Mission.app.cash.entity.PayGroup;
@@ -88,14 +89,14 @@ public class MemberService {
         return memberRepository.findByEmail(email);
     }
 
-    public long addCash(Member member, long price, EventGroup eventGroup, PayGroup payGroup, Order order) {
+    public CashLog addCash(Member member, long price, EventGroup eventGroup, PayGroup payGroup, Order order) {
         CashLog cashLog = cashService.addCash(member, price, eventGroup, payGroup, order);
 
         long newRestCash = member.getRestCash() + cashLog.getPrice();
         member.setRestCash(newRestCash);
         memberRepository.save(member);
 
-        return cashLog.getId();
+        return cashLog;
     }
 }
 

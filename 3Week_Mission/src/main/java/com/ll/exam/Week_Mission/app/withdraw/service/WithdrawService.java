@@ -1,6 +1,10 @@
 package com.ll.exam.Week_Mission.app.withdraw.service;
 
+import com.ll.exam.Week_Mission.app.cash.entity.CashLog;
+import com.ll.exam.Week_Mission.app.cash.entity.EventGroup;
+import com.ll.exam.Week_Mission.app.cash.entity.PayGroup;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
+import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.withdraw.entity.Withdraw;
 import com.ll.exam.Week_Mission.app.withdraw.repository.WithdrawRepository;
 import com.ll.exam.Week_Mission.util.Ut;
@@ -16,14 +20,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WithdrawService {
     private final WithdrawRepository withdrawRepository;
+    private final MemberService memberService;
 
     public void apply(Member applicant, String bankName, String bankAccountNo, int price, String accountHolder) {
 
-        Withdraw oldWithdraw = findByMemberId(applicant.getId());
-
-        if(oldWithdraw != null) {
-            modify(oldWithdraw, bankName, bankAccountNo, price, accountHolder);
-        }
+        CashLog withdrawCashLog = memberService.addCash(applicant, -price, EventGroup.WITHDRAW, PayGroup.CASH, null);
 
         Withdraw withdraw = Withdraw.builder()
                 .bankName(bankName)
@@ -31,22 +32,13 @@ public class WithdrawService {
                 .price(price)
                 .accountHolder(accountHolder)
                 .member(applicant)
+                .withdrawCashLog(withdrawCashLog)
                 .build();
 
         withdrawRepository.save(withdraw);
+
     }
 
-    @Transactional(readOnly = true)
-    public Withdraw findByMemberId(long applicantId) {
-       return withdrawRepository.findByMemberId(applicantId).orElse(null);
-    }
-
-    public void modify(Withdraw oldWithdraw, String bankName, String bankAccountNo, int price, String accountHolder) {
-        oldWithdraw.setBankName(bankName);
-        oldWithdraw.setBankAccountNo(bankAccountNo);
-        oldWithdraw.setPrice(price);
-        oldWithdraw.setAccountHolder(accountHolder);
-    }
 
     public List<Withdraw> findAllByCreateDateBetweenOrderByIdAsc(String yearMonth) {
         int monthEndDay = Ut.date.getEndDayOf(yearMonth);
@@ -57,5 +49,12 @@ public class WithdrawService {
         LocalDateTime toDate = Ut.date.parse(toDateStr);
 
         return withdrawRepository.findAllByCreateDateBetweenOrderByIdAsc(fromDate, toDate);
+    }
+
+    public void withdraw(Long withdrawApplyId) {
+    }
+
+    public Withdraw findByMemberId(Long applicantId) {
+        return withdrawRepository.findByMemberId(applicantId).orElse(null);
     }
 }

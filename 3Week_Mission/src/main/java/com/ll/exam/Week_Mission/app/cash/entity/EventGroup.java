@@ -7,7 +7,8 @@ public enum EventGroup {
     ORDER("주문"),
     REFUND("환불"),
     CHARGE("충전"),
-    REBATE("정산");;
+    REBATE("정산"),
+    WITHDRAW("출금");
 
 
     EventGroup(String value) {
