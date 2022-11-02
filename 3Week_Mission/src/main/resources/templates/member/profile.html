@@ -1,0 +1,78 @@
+<!doctype html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://www.thymeleaf.org"
+        layout:decorate="~{fragment/layout}"
+>
+<head>
+    <link rel="stylesheet" href="/css/profile.style.css">
+</head>
+
+<body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
+
+<div class="page-content page-container" id="page-content">
+    <div class="padding">
+        <div class="row container d-flex justify-content-center" style="margin:0px;">
+            <div class="col-xl-6 col-md-12" style="margin:0px;">
+                <div class="card user-card-full">
+                    <div class="row m-l-0 m-r-0">
+                        <div class="col-sm-4 bg-c-lite-green user-profile">
+                            <div class="card-block text-center text-white">
+                                <div class="m-b-25">
+                                    <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius" alt="User-Profile-Image">
+                                </div>
+                                <p>[[${member?.username}]]</p>
+                                <button class="btn btn-dark btn-sm" th:onclick="|location.href='@{/member/modify}'|">회원정보 수정 &nbsp;<i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i></button>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="card-block">
+                                <h6 class="m-b-20 p-b-5 b-b-default f-w-600">회원정보</h6>
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">이메일</p>
+                                        <h6 class="text-muted f-w-400">[[${member.email}]]</h6>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">가입 일자</p>
+                                        <h6 class="text-muted f-w-400">[[${#strings.substring(member.createDate,0,10)}]]</h6>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">권한 목록</p>
+                                        <h6 class="text-muted f-w-400">[[${memberContext.getAuthorities()}]]</h6>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">필명</p>
+                                        <h6 class="text-muted f-w-400">[[${member?.nickname}]]</h6>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">보유 예치금</p>
+                                        <h6 class="text-muted f-w-400">[[${member.restCash}]]</h6>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">예치금 출금</p>
+                                        <a href="javascript:;" onclick="$(this).next().submit();" class="badge badge-dark py-2 px-4">신청하기</a>
+                                        <form method="GET" th:action="@{|/withdraw/apply|}" hidden>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                </div><!-- card-block -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

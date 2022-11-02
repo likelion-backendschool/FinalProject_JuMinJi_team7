@@ -1,0 +1,67 @@
+<!doctype html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://thymeleaf.org"
+        layout:decorate="~{fragment/adm_layout}"
+>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
+
+<div class="untree_co-section bg-light">
+    <div class="container">
+
+        <div class="row mb-5">
+            <div class="col-12 text-center" data-aos-delay="0">
+                <h2 class="heading"> 출금 신청 목록</h2>
+            </div>
+        </div> <!-- /.row -->
+
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                <tr class="align-self-center">
+                                    <th>신청일자</th>
+                                    <th>계좌번호</th>
+                                    <th>은행명</th>
+                                    <th>예금주</th>
+                                    <th>출금예정금액</th>
+                                    <th>출금번호</th>
+                                    <th>출금일자</th>
+                                    <th>비고</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="withdraw, num : ${withdraws}">
+                                    <td>[[${#temporals.format(withdraw.createDate, 'yy-MM-dd HH:mm:ss')}]]</td>
+                                    <td>[[${withdraw.bankAccountNo}]]</td>
+                                    <td>[[${withdraw.bankName}]]</td>
+                                    <td>[[${withdraw.accountHolder}]]</td>
+                                    <td>[[${withdraw.price}]]</td>
+                                    <td>[[${withdraw.withdrawCashLog?.id}]]</td>
+                                    <td>[[${#temporals.format(withdraw.withdrawDate, 'yy-MM-dd HH:mm:ss')}]]</td>
+                                    <td>
+                                        <a href="javascript:;" onclick="$(this).next().submit();" class="badge badge-dark">건별출금</a>
+                                        <form method="POST" th:action="@{|/adm/withdraw/${withdraw.id}|}" hidden>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div> <!-- /.container -->
+</div> <!-- /.untree_co-hero -->
+</body>
+</html>

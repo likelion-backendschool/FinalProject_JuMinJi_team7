@@ -1,0 +1,63 @@
+<!doctype html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://thymeleaf.org"
+        layout:decorate="~{fragment/layout}"
+>
+
+<body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
+
+<div class="untree_co-section bg-light">
+    <div class="container">
+
+        <div class="row mb-5">
+            <div class="col-12 text-center" data-aos-delay="0">
+                <h2 class="heading"><i class="fa-solid fa-wallet"></i>&nbsp;[[${#authentication.principal.username}]]님의 주문 목록</h2>
+            </div>
+        </div> <!-- /.row -->
+
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                <tr class="align-self-center">
+                                    <th>No.</th>
+                                    <th>주문명</th>
+                                    <th>주문일자</th>
+                                    <th>결제일자</th>
+                                    <th>결제금액</th>
+                                    <th>주문 진행현황</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="orders, num : ${orders}">
+
+                                    <td>[[${num.count}]]</td>
+                                    <td><p><a th:href="@{|/order/${orders.id}|}" th:text="|${orders.getName()}|"></a></p></td>
+                                    <td>[[${#temporals.format(orders.createDate, 'yy-MM-dd HH:mm')}]]</td>
+                                    <td>[[${#temporals.format(orders.PayDate, 'yy-MM-dd HH:mm')}]]</td>
+                                    <td>[[${orders.calculatePayPrice}]]</td>
+                                    <td>
+                                        <span th:if="${orders.ReadyStatus}"class="badge badge-boxed bg-light text-dark">주문완료</span>
+                                        <span th:if="${orders.isPaid}"class="badge badge-boxed bg-light text-dark">결제완료</span>
+                                        <span th:if="${orders.isCanceled}" class="badge badge-boxed badge-soft-primary">취소완료</span>
+                                        <span th:if="${orders.isRefunded}" class="badge badge-boxed badge-soft-primary">환불완료</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+</body>
+</html>

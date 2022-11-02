@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://thymeleaf.org"
+>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+
+<nav th:fragment="navbarFragment">
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close">
+                <span class="icofont-close js-menu-toggle"></span>
+            </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+    </div>
+
+    <nav class="site-nav dark js-site-navbar mb-5 site-navbar-target">
+        <div class="container">
+            <div class="site-navigation">
+                <a href="/" class="logo m-0 float-left">MeotBooks<span class="text-primary">.</span></a>
+
+                <ul class="js-clone-nav d-none d-lg-inline-block site-menu float-left">
+                    <li sec:authorize="hasAuthority('ADMIN')"><a href="/adm/home/main" class="nav-link">관리자 홈</a></li>
+                    <li class="active"><a href="/" class="nav-link">홈</a></li>
+                    <li class="has-children">
+                        <a href="#" class="nav-link">글</a>
+                        <ul class="dropdown">
+                            <li><a href="/post/write" class="nav-link">글 작성</a></li>
+                            <li><a href="/post/list" class="nav-link">글 목록</a></li>
+                        </ul>
+                    </li>
+                    <li class="has-children">
+                        <a href="#" class="nav-link">도서</a>
+                        <ul class="dropdown">
+                            <li><a href="/product/create" class="nav-link">도서 등록</a></li>
+                            <li><a href="/product/list" class="nav-link">도서 목록</a></li>
+                        </ul>
+                    </li>
+                    <li class="has-children">
+                        <a href="#" class="nav-link">도서 구매</a>
+                        <ul class="dropdown">
+                            <li><a href="/member/mybook" class="nav-link">구매도서 목록</a></li>
+                            <li><a href="/order/list" class="nav-link">주문 목록</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <ul class="js-clone-nav d-none mt-1 d-lg-inline-block site-menu float-right">
+                    <li class="cta-button-outline" sec:authorize="isAnonymous()">
+                        <a href="/member/login">로그인</a>
+                    </li>
+                    <li class="cta-primary" sec:authorize="isAnonymous()">
+                        <a href="/member/join">회원가입</a>
+                    </li>
+                    <li class="cta-button-outline" sec:authorize="isAuthenticated()">
+                        <a th:href="@{/member/logout}">로그아웃</a>
+                    </li>
+                    <li class="cta-primary" sec:authorize="isAuthenticated()">
+                        <a th:href="@{/member/profile}" class="inline-flex" >프로필</a>
+                    </li>
+                    <li class="cta-button-outline" sec:authorize="isAuthenticated()">
+                        <a th:href="@{/cart/list}" class="inline-flex" ><i class="fa-solid fa-cart-plus"></i></a>
+                    </li>
+                </ul>
+
+
+
+                <a href="#" class="burger ml-auto float-right site-menu-toggle js-menu-toggle d-inline-block dark d-lg-none" data-toggle="collapse" data-target="#main-navbar">
+                    <span></span>
+                </a>
+
+            </div>
+        </div>
+    </nav>
+</nav>
+</html>

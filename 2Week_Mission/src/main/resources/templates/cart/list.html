@@ -85,7 +85,6 @@
     $cartItemCheckbox.prop('checked', allChecked);
   });
 
-  <!-- 선택삭제 처리 -->
   function CartItemCheckbox__changed() {
     const allChecked = $cartItemCheckbox.length == $('.cartItemCheckbox:checked').length;
 
@@ -94,10 +93,9 @@
 
   let RemoveCartItemsForm__submitDone = false;
 
+  <!-- 선택삭제 처리 -->
   function RemoveCartItemsForm__submit() {
     if (RemoveCartItemsForm__submitDone) return;
-
-    const form = document.removeCartItemsForm;
 
     const $checked = $('.cartItemCheckbox:checked');
 
