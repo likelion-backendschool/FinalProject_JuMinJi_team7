@@ -56,6 +56,12 @@
                                         <p class="m-b-10 f-w-600">보유 예치금</p>
                                         <h6 class="text-muted f-w-400">[[${member.restCash}]]</h6>
                                     </div>
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">예치금 출금</p>
+                                        <a href="javascript:;" onclick="$(this).next().submit();" class="badge badge-dark py-2 px-4">신청하기</a>
+                                        <form method="GET" th:action="@{|/withdraw/apply|}" hidden>
+                                        </form>
+                                    </div>
                                 </div>
 
                                 </div><!-- card-block -->
