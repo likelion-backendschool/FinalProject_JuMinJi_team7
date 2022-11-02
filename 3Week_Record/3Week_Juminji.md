@@ -42,7 +42,7 @@ AuthLevel 클래스와 CashLog.eventType을 enum을 이용하여 리팩토링 �
 ### 3. Withdraw 엔티티
 `Withdraw` 엔티티의 경우 현재는 건별 출금처리만 하고 있지만 후에 일괄처리도 하게 될 경우에 외래키 제약을 제거할 수도 있다는 가능성을 두고 만들었습니다. `RebateOrderItem` 엔티티 대비 컬럼들이 적으나 출금신청폼 컬럼(은행명, 계좌번호, 출금 신청액) 외에 반드시 필요하다고 생각 드는 컬럼들은 추가적으로 넣어주었습니다.
 <img width="978" alt="image" src="https://user-images.githubusercontent.com/63441091/199425234-c049efef-bc47-48e1-9a0e-1891f571fa49.png">
-<img width="1165" alt="image" src="https://user-images.githubusercontent.com/63441091/199425464-9163b651-e73e-44f1-af51-73dd111f4942.png">
+<img width="1165" alt="image" src="https://user-images.githubusercontent.com/63441091/199430338-86c59446-2993-4890-bc9e-9ffbd3678c62.png">
 
 
 ## II. 리팩토링
