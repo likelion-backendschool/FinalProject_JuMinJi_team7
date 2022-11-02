@@ -17,7 +17,7 @@ import java.util.List;
 public class WithdrawService {
     private final WithdrawRepository withdrawRepository;
 
-    public void apply(Member applicant, String bankName, int bankAccountNo, int price) {
+    public void apply(Member applicant, String bankName, String bankAccountNo, int price) {
 
         Withdraw oldWithdraw = findByMemberId(applicant.getId());
 
@@ -40,7 +40,7 @@ public class WithdrawService {
        return withdrawRepository.findByMemberId(applicantId).orElse(null);
     }
 
-    public void modify(Withdraw oldWithdraw, String bankName, int bankAccountNo, int price) {
+    public void modify(Withdraw oldWithdraw, String bankName, String bankAccountNo, int price) {
         oldWithdraw.setBankName(bankName);
         oldWithdraw.setBankAccountNo(bankAccountNo);
         oldWithdraw.setPrice(price);

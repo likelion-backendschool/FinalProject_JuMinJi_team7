@@ -29,10 +29,10 @@
                 </div>
 
                 <div class="form-group">
-                    <div th:text="${restCash}"></div>
                     <div th:with="maxUseRestCash=${restCash}">
                     <label class="text-black" for="PaymentForm__useRestCash">출금 신청 금액</label>
-                    <input type="number"
+                        <span> (보유 예치금 : [[${restCash}]]) </span>
+                        <input type="number"
                            id="PaymentForm__useRestCash" name="price"
                            th:placeholder="|0 ~ ${maxUseRestCash}|"
                            class="form-control" min="0" th:max="${maxUseRestCash}"
