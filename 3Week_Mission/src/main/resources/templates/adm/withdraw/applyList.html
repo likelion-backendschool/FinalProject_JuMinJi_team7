@@ -31,6 +31,8 @@
                                     <th>은행명</th>
                                     <th>예금주</th>
                                     <th>출금예정금액</th>
+                                    <th>출금번호</th>
+                                    <th>출금일자</th>
                                     <th>비고</th>
 
                                 </tr>
@@ -42,6 +44,8 @@
                                     <td>[[${withdraw.bankName}]]</td>
                                     <td>[[${withdraw.accountHolder}]]</td>
                                     <td>[[${withdraw.price}]]</td>
+                                    <td>[[${withdraw.withdrawCashLog?.id}]]</td>
+                                    <td>[[${#temporals.format(withdraw.withdrawDate, 'yy-MM-dd HH:mm:ss')}]]</td>
                                     <td>
                                         <a href="javascript:;" onclick="$(this).next().submit();" class="badge badge-dark">건별출금</a>
                                         <form method="POST" th:action="@{|/adm/withdraw/${withdraw.id}|}" hidden>
