@@ -5,7 +5,7 @@ spring:
       - base-addi
   batch:
     job:
-      names: ${job.name:makeRebateOrderItemJob}
+      names: ${job.name:none}
       month:
     jdbc:
       initialize-schema: ALWAYS
