@@ -30,14 +30,124 @@
 <img width="1342" alt="image" src="https://user-images.githubusercontent.com/63441091/199423293-4e750ea6-9297-42af-a1bc-040cb69239d9.png">
 <img width="776" alt="image" src="https://user-images.githubusercontent.com/63441091/199423557-d5696781-4dba-46c2-9a92-11f977a62cf4.png">
 
+#### 2개 이상의 잡이 존재할 때 특정 잡 실행하기
+- **기존코드** : **환경변수**에서 특정 잡 지정
+```
+//application.yml
 
+batch:
+    job:
+      names: ${job.name:makeRebateOrderItemJob}
+```
+```java
+// JobScheduler.java
+
+private final Job job;
+```
+- **수정코드**: **스케줄러**에서 특정 잡 지정
+```java
+// JobScheduler.java
+
+private final Job makeRebateOrderItemJob;
+
+    //@Scheduled(cron = "0 0 4 * * *") // 매일 새벽 4시 (성공 시 중복인수는 재실행X, 실패 시 다시 실행하도록)
+    @Scheduled(cron = "1 * * * * *") // 매분 1초마다 테스트
+    public void jobScheduler(){
+        // 현재 날짜가 15일 이전이면 yearMonth를 두 달 전으로, 15일 이후면 한 달 전으로
+        LocalDate today = LocalDate.now();
+        today = today.isBefore(today.withDayOfMonth(15)) ? today.minusMonths(2) : today.minusMonths(1);
+        String  yearMonth = today.format(DateTimeFormatter.ofPattern("YYYY-MM"));
+
+        // jobParameters.yearMonth 생성
+        JobParameters jobParameters = new JobParametersBuilder().addString("yearMonth", yearMonth).toJobParameters();
+
+        try {
+            JobExecution jobExecution = jobLauncher.run(makeRebateOrderItemJob, jobParameters);
+            System.out.println("Job's Status:::"+jobExecution.getStatus());
+        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
+                 | JobParametersInvalidException e) {
+            e.printStackTrace();
+        }
+    }
+```
+```java
+// MakeRebateOrderItemJobConfig.java
+    @Bean
+    public Job makeRebateOrderItemJob(Step makeRebateOrderItemStep1, CommandLineRunner initData) throws Exception {
+        initData.run();
+
+
+        return jobBuilderFactory.get("makeRebateOrderItemJob")
+                .start(makeRebateOrderItemStep1)
+                .build();
+    }
+```
 ### 2. enum을 이용하여 이전 미션과제 리팩토링
 AuthLevel 클래스와 CashLog.eventType을 enum을 이용하여 리팩토링 진행했습니다. enum을 디비 테이블에 저장할 때 컨버터와 `@enumerated`을 적용해보며 어떤 식으로 저장되는지 살펴봤습니다. <br>
 특히 `CashLog.eventType`은 `EventGroup`(enum)과 `PayGroup`(enum)을 합쳐 단순 String 타입으로 테이블에 저장했는데, 합쳐서 단순 String타입으로 저장할 지라도 EventGroup과 PayGroup을 좀 더 깔끔하게 그룹화하기 위해 열거형으로 생성했습니다. <br>
 또한 이전에 배웠던 `@Embeddable`/`@Embedded`와 차별적인 enum만의 특징을 찾아보며 적절한 곳에 enum을 사용하고자 했습니다.
 - [우아한형제들 Java Enum 활용기](https://techblog.woowahan.com/2527/)
 - [@Enumerated 사용법](https://tomee.apache.org/examples-trunk/jpa-enumerated/)
-- [EnumSet](https://scshim.tistory.com/253)
+- [EnumSet](https://scshim.tistory.com/253) <br>
+#### Q. EventType 자체를 enum으로 만들어서 EventGroup과 PayGroup을 리스트로 넣지 않은 이유? 
+A. 우형 기술블로그의 경우 중복값 없이 그룹 안에 타입 리스트로 관리를 했지만, 저의 경우 중복값이 생기기 때문에 이게 맞나? 싶어서 진행을 안했는데 중복값이 생겨도 크게 상관은 없을 것 같아서 EventGroup과 PayGroup을 묶어서 하나의 enum으로 관리하는 쪽으로 리팩토링 생각중입니다. <br>
+```java
+// EventGroup.java
+@Getter
+public enum EventGroup {
+    ORDER("주문"),
+    REFUND("환불"),
+    CHARGE("충전"),
+    REBATE("정산"),
+    WITHDRAW("출금");
+
+
+    EventGroup(String value) {
+        this.value = value;
+    }
+
+    private String value;
+
+}
+```
+```java
+
+// PayGroup.java
+
+@Getter
+public enum PayGroup {
+    REMITTANCE("무통장입금"),
+    CARD("카드"),
+    CASH("예치금");
+
+    private String value;
+
+    PayGroup(String value){
+        this.value = value;
+    }
+}
+```
+```java
+// CashService.java
+
+   public CashLog addCash(Member member, long price, EventGroup eventGroup, PayGroup payGroup, Order order) {
+        CashLog cashLog = CashLog.builder()
+                .price(price)
+                .eventType(eventGroup.getValue() + "_" + payGroup.getValue())
+                .order(order)
+                .member(member)
+                .build();
+
+        cashLogRepository.save(cashLog);
+
+        return cashLog;
+    }
+```
+#### eventType EventGroup(enum) + PayGroup(enum)으로 바꾸기 전
+<img width="621" alt="Untitled (1)" src="https://user-images.githubusercontent.com/63441091/199881189-2abeb26d-370a-43e3-ae64-e192e4ee9e76.png"> <br>
+
+#### eventType EventGroup(enum) + PayGroup(enum)으로 바꾼 후
+<img width="621" alt="Untitled" src="https://user-images.githubusercontent.com/63441091/199881172-a6319c79-eacb-494e-bf3d-ff4198384491.png">
 
 ### 3. Withdraw 엔티티
 `Withdraw` 엔티티의 경우 현재는 건별 출금처리만 하고 있지만 후에 일괄처리도 하게 될 경우에 외래키 제약을 제거할 수도 있다는 가능성을 두고 만들었습니다. `RebateOrderItem` 엔티티 대비 컬럼들이 적으나 출금신청폼 컬럼(은행명, 계좌번호, 출금 신청액) 외에 반드시 필요하다고 생각 드는 컬럼들은 추가적으로 넣어주었습니다.
