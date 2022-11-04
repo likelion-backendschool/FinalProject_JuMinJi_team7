@@ -24,9 +24,10 @@ public class JobScheduler {
 
     private final JobLauncher jobLauncher;
 
-    private final Job job;
+    private final Job makeRebateOrderItemJob;
 
-    @Scheduled(cron = "0 0 4 15 * *") // 매달 15일 새벽 4시
+    //@Scheduled(cron = "0 0 4 15 * *") // 매달 15일 새벽 4시
+    @Scheduled(cron = "1 * * * * *") // 매분 1초마다 테스트
     public void jobScheduler(){
 
         // jobParameters.yearMonth를 한 달 전으로 설정
@@ -38,7 +39,7 @@ public class JobScheduler {
         JobParameters jobParameters = new JobParametersBuilder().addString("yearMonth", yearMonth).toJobParameters();
 
         try {
-            JobExecution jobExecution = jobLauncher.run(job, jobParameters);
+            JobExecution jobExecution = jobLauncher.run(makeRebateOrderItemJob, jobParameters);
             System.out.println("Job's Status:::"+jobExecution.getStatus());
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
                  | JobParametersInvalidException e) {
