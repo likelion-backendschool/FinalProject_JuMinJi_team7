@@ -28,7 +28,7 @@ public class JobScheduler {
     private final Job makeRebateOrderItemJob;
 
     //@Scheduled(cron = "0 0 4 * * *") // 매일 새벽 4시 (성공 시 중복인수는 재실행X, 실패 시 다시 실행하도록)
-    @Scheduled(cron = "1 * * * * *") // 매분 1초마다 테스트
+    //@Scheduled(cron = "1 * * * * *") // 매분 1초마다 테스트
     public void jobScheduler(){
         // 현재 날짜가 15일 이전이면 yearMonth를 두 달 전으로, 15일 이후면 한 달 전으로
         LocalDate today = LocalDate.now();
