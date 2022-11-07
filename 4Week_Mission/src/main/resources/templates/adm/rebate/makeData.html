@@ -1,0 +1,40 @@
+<!doctype html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://thymeleaf.org"
+        layout:decorate="~{fragment/adm_layout}"
+>
+
+<body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
+
+<div class="untree_co-login-register">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="custom-box" data-aos="fade-up" data-aos-delay="0">
+                    <h2 class="heading">정산 데이터</h2>
+
+                    <span style="text-align: center;">
+                        <form method="post" th:action>
+                            <select name="yearMonth" class="select select-bordered">
+                                <option>[[${thisMonth}]]</option>
+                                <option>[[${prevMonth}]]</option>
+                                <option>[[${twoMonthsAgo}]]</option>
+                            </select>
+                            <input class="btn btn-primary m-3" style="font-size:14px;" type="submit" value="생성">
+                        </form>
+                    </span>
+
+                    <span style="margin-left: 160px;">
+                        <a href="/adm/rebate/rebateOrderItemList" class="btn btn-secondary btn-outline p-3" style="font-size:14px;">
+                            생성 데이터 보기
+                        </a>
+                    </span>
+
+                </div>
+            </div>
+        </div> <!-- /.row -->
+    </div> <!-- /.container -->
+</div> <!-- /.untree_co -->
+</body>
+</html>

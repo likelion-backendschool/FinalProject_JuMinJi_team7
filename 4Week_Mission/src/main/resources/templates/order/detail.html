@@ -1,0 +1,268 @@
+<!doctype html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://thymeleaf.org"
+        layout:decorate="~{fragment/usr_layout}"
+>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
+
+<div class="untree_co-section bg-light">
+    <div class="container">
+        <div class="px-2 pt-4">
+
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <td align="center" style="background-color: #eeeeee;" bgcolor="#eeeeee">
+
+                        <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
+                            <tr>
+                                <td align="center" style="padding: 35px 35px 20px 35px; background-color: #ffffff;" bgcolor="#ffffff">
+                                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
+                                        <tr>
+                                            <td align="center" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding-top: 25px;">
+                                                <h2 style="font-size: 30px; font-weight: 800; line-height: 36px; color: #333333; margin: 0;">
+                                                    주문 상세내역
+                                                </h2>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left" style="padding-top: 20px;">
+                                                <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                    <tr>
+                                                        <td width="75%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;">
+                                                            # 주문 상품
+                                                        </td>
+                                                        <td width="25%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;">
+                                                            [[${order.getName()}]]
+                                                        </td>
+                                                        <td width="25%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                                            &nbsp;
+                                                        </td>
+                                                    </tr>
+                                                    <tr th:each="orderItem, num : ${order.orderItems}">
+                                                        <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                                            주문 상품 ([[${num.count}]])
+                                                        </td>
+                                                        <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                                            [[${orderItem.product.subject}]]
+                                                        </td>
+                                                        <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                                            [[${orderItem.product.price}]]
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left" style="padding-top: 20px;">
+                                                <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                    <tr>
+                                                        <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;">
+                                                            총 결제금액
+                                                        </td>
+                                                        <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;">
+                                                            [[${order.calculatePayPrice}]]
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${order.payable}">
+                                            <td align="left" style="padding-top: 20px;">
+                                                <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                    <tr>
+                                                        <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;">
+                                                            보유 예치금 : [[${restCash}]]
+                                                        </td>
+                                                        <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;">
+                                                            <div th:with="maxUseRestCash = ${order.calculatePayPrice > restCash ? restCash : order.calculatePayPrice}">
+                                                                <span>사용 예치금 : </span>
+                                                                <input type="number" id="PaymentForm__useRestCash"
+                                                                       value="0"
+                                                                       th:placeholder="|0 ~ ${maxUseRestCash}|"
+                                                                       class="input input-bordered min-w-[300px]" min="0" th:max="${maxUseRestCash}"
+                                                                       onkeydown="PaymentForm__useRestCashFix();"
+                                                                       onkeyup="PaymentForm__useRestCashFix();"
+                                                                >
+                                                                <label class="inline-flex items-center ml-3">
+                                                                    <span>전액사용</span>
+                                                                    <input onchange="PaymentForm__useRestCashAllChanged();" id="PaymentForm__useRestCashAll"
+                                                                           type="checkbox" class="ml-2 checkbox">
+                                                                </label>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${order.payable}">
+                                            <td align="left" style="padding-top: 20px;">
+                                                <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                                    <tr>
+                                                        <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;">
+                                                            PG 결제금액
+                                                        </td>
+                                                        <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;">
+                                                            <span id="PaymentForm__pgPayPriceDisplay"></span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" height="100%" valign="top" width="100%" style="padding: 0 35px 35px 35px; background-color: #ffffff;" bgcolor="#ffffff">
+                                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:660px;">
+                                        <tr>
+                                            <td align="center" valign="top" style="font-size:0;">
+                                                <div style="display:inline-block; max-width:50%; min-width:240px; vertical-align:top; width:100%;">
+
+                                                    <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:300px;">
+                                                        <tr>
+                                                            <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px;">
+                                                                <span style="font-weight: 800;">주문완료</span>
+                                                                <span>  [[${#temporals.format(order.createDate, 'yy-MM-dd HH:mm')}]]</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr th:if="${order.isPaid}">
+                                                            <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px;">
+                                                                <span style="font-weight: 800;">결제완료</span>
+                                                                <span>  [[${#temporals.format(order.payDate, 'yy-MM-dd HH:mm')}]]</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr th:if="${order.isCanceled}">
+                                                            <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px;">
+                                                                <span style="font-weight: 800;">취소완료</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr th:if="${order.isRefunded}">
+                                                            <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px;">
+                                                                <span style="font-weight: 800;">환불완료</span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="padding: 35px;">
+                                    <div> 환불 요청은 결제 이후 10분 이내에만 가능합니다.</div>
+                                    <button th:if="${order.payable}" onclick="payment();" class="move-to-list-btn" style="margin-bottom:10px; padding-right:45px; padding-left:45px;">결제</button>
+                                    <button th:if="${order.cancellable}" href="javascript:;" onclick="OrderCancelForm__submit();" class="move-to-list-btn" style="margin-bottom:10px;">주문취소</button>
+                                    <form method="POST" name="orderCancelForm" th:action="@{|/order/${order.id}/cancel|}" hidden></form>
+                                    <button th:if="${order.refundable}" href="javascript:;" onclick="OrderRefundForm__submit();" class="move-to-list-btn">환불요청</button>
+                                    <form method="POST" name="orderRefundForm" th:action="@{|/order/${order.id}/refund|}" hidden></form>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</div>
+<script src="https://js.tosspayments.com/v1"></script>
+<script layout:fragment="script" type='text/javascript'>
+    function OrderCancelForm__submit() {
+        document.orderCancelForm.submit();
+    }
+
+    function OrderRefundForm__submit() {
+        document.orderRefundForm.submit();
+    }
+</script>
+<script layout:fragment="script" type='text/javascript' th:inline="javascript">
+    /*<![CDATA[*/
+
+    const orderId = /*[[ ${order.id} ]]*/ null;
+    const buyerName = /*[[ ${order.buyer.username} ]]*/ null;
+    const orderName = /*[[ ${order.name} ]]*/ null;
+    const orderPayPrice = /*[[ ${order.calculatePayPrice} ]]*/ null;
+
+    const tossPayments = TossPayments("test_ck_LBa5PzR0ArnjzO7zv7orvmYnNeDM");
+
+    /*]]>*/
+</script>
+<script layout:fragment="script" type='text/javascript'>
+    const $PaymentForm__useRestCash = $("#PaymentForm__useRestCash");
+    const $PaymentForm__useRestCashAll = $("#PaymentForm__useRestCashAll");
+    const $PaymentForm__pgPayPriceDisplay = $("#PaymentForm__pgPayPriceDisplay");
+
+    /* 카드결제 버튼 클릭시 작동하는 토스페이먼츠 메서드 */
+    function payment() {
+
+        let useRestCash = parseInt($PaymentForm__useRestCash.val());
+
+        // 전액 예치금 결제시 예치금결제전용 페이지로 이동
+        if ( orderPayPrice == useRestCash ) {
+            window.location.href = "/order/" + orderId + "/payByRestCashOnly";
+        }
+
+        const method = "카드";
+
+        const paymentData = {
+            // 토스페이먼츠 결제예정금액 = (주문 결제금액) - (예치금 사용금액)
+            amount: orderPayPrice - useRestCash,
+            orderId: "order__" + orderId + "__" + (Math.random() + "").substring(2),
+            orderName,
+            customerName: buyerName,
+            successUrl: window.location.origin + "/order/" + orderId + "/success",
+            failUrl: window.location.origin + "/order/" + orderId + "/fail"
+        };
+
+        tossPayments.requestPayment(method, paymentData);
+    }
+</script>
+<script layout:fragment="script" type='text/javascript'>
+    function PaymentForm__useRestCashFix() {
+        let useRestCash = parseInt($PaymentForm__useRestCash.val());
+
+        if (isNaN(useRestCash)) {
+            useRestCash = 0;
+        }
+
+        const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
+
+        if (useRestCash > maxUseRestCash) {
+            useRestCash = maxUseRestCash;
+            $PaymentForm__useRestCash.val(maxUseRestCash);
+        }
+
+        if ( useRestCash == maxUseRestCash ) {
+            $PaymentForm__useRestCashAll.prop('checked', true);
+        }
+        else {
+            $PaymentForm__useRestCashAll.prop('checked', false);
+        }
+
+        const pgPayPrice = orderPayPrice - useRestCash;
+
+        $PaymentForm__pgPayPriceDisplay.text(pgPayPrice);
+    }
+
+    function PaymentForm__useRestCashAllChanged() {
+        if ( $PaymentForm__useRestCashAll.prop('checked') ) {
+            const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
+            $PaymentForm__useRestCash.val(maxUseRestCash);
+        }
+        else {
+            $PaymentForm__useRestCash.val(0);
+        }
+
+        PaymentForm__useRestCashFix();
+    }
+
+    PaymentForm__useRestCashFix();
+</script>
+</body>
+</html>

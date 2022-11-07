@@ -1,0 +1,97 @@
+<!doctype html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://thymeleaf.org"
+        layout:decorate="~{fragment/usr_layout}"
+>
+
+<body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
+
+<div class="untree_co-section bg-light">
+  <div class="container">
+    <div class="px-2 pt-4">
+      <h1 class="font-bold text-lg">
+        <i class="fa-solid fa-newspaper"></i>
+        글 상세
+      </h1>
+
+      <div class="flex flex-col mt-2 gap-3">
+        <div>
+          <h2 class="font-bold" th:text="${post.subject}"></h2>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <div class="flex">
+            <svg width="20" height="20" th:data-jdenticon-value="${post.getMember().getUsername()}"></svg>
+            <div th:text="${post.getMember().getUsername()}"></div>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <div>
+              <div class="badge">
+                <i class="fa-solid fa-pen"></i>
+                <span class="ml-1">작성</span>
+                <span class="ml-1"
+                      th:text="${#temporals.format(post.createDate, 'yy-MM-dd HH:mm')}"></span>
+              </div>
+            </div>
+
+            <div>
+              <div class="badge badge-outline">
+                <i class="fa-solid fa-eraser"></i>
+                <span class="ml-1">수정</span>
+                <span class="ml-1"
+                      th:text="${#temporals.format(post.updateDate, 'yy-MM-dd HH:mm')}"></span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div th:utext="${post.getExtra_postTagLinks()}"></div>
+          </div>
+        </div>
+
+        <!-- 아래와 동일 컨텐츠 리턴
+        <div class="toast-ui-viewer">
+          <div class="toastui-editor-contents" style="overflow-wrap: break-word;"
+               th:utext="${post.contentHtml}"></div>
+        </div>-->
+
+       <div class="toast-ui-viewer">
+           <script type="text/x-template" th:utext="${post.content}"></script>
+       </div>
+
+        <!-- 버튼 그룹 시작-->
+        <div>
+          <a th:if="${post.member != null and #authentication.getPrincipal().getUsername() == post.member.username}"
+             th:href="@{|/post/${post.id}/modify|}"
+             class="btn btn-primary btn-sm btn-outline py-2 px-4">
+            <i class="fa-solid fa-eraser"></i>
+            <span class="ml-1" style="font-size:15px;">수정</span>
+          </a>
+
+          <a th:if="${post.member != null and #authentication.getPrincipal().getUsername() == post.member.username}" href="javascript:;"
+             onclick="if ( confirm('정말로 삭제하시겠습니까?') ) $(this).next().submit();"
+             class="btn btn-outline-secondary btn-sm py-2 px-4">
+            <i class="fa-solid fa-trash"></i>
+            <span class="ml-1" style="font-size:15px;">삭제</span>
+          </a>
+          <form th:action="@{|/post/${post.id}/remove|}" method="POST" hidden></form>
+
+          <span style="margin-left:72%; margin-right: 0%;">
+            <button type="button" onclick="history.back();" class="btn btn-secondary btn-sm btn-outline py-2 px-4">
+              <i class="fa-solid fa-angle-left"></i>
+              <span class="ml-1" style="font-size:15px;">이전</span>
+            </button>
+          </span>
+        </div>
+        <!-- 버튼 그룹 끝 -->
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

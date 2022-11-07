@@ -1,0 +1,159 @@
+<!doctype html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+        layout:decorate="~{fragment/usr_layout}"
+>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
+
+<div class="container p-5 m-5 border-bottom">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="heading" style="margin-bottom: 30px;">예치금 출금 신청</h3>
+        </div>
+        <div class="col-lg-7">
+            <form onsubmit="WithdrawApply__submit(this); return false;"
+                  th:action="@{|/withdraw/apply|}" method="POST">
+
+
+                <div class="form-group">
+                    <label class="text-black" for="bankName">은행명</label>
+                <select id="bankName" name="bankName" class="form-control">
+                    <option value="KEB하나은행">KEB하나은행</option>
+                    <option value="SC제일은행">SC제일은행</option>
+                    <option value="국민은행">국민은행</option>
+                    <option value="신한은행">신한은행</option>
+                    <option value="외환은행">외환은행</option>
+                    <option value="우리은행">우리은행</option>
+                    <option value="한국시티은행">한국시티은행</option>
+                    <option value="기업은행">기업은행</option>
+                    <option value="농협">농협</option>
+                    <option value="수협">수협</option>
+                    <option value="한국산업은행">한국산업은행</option>
+                    <option value="한국수출입은행">한국수출입은행</option>
+
+                </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="text-black" for="bankAccountNo">계좌번호</label>
+                    <input type="number" class="form-control" id="bankAccountNo" name="bankAccountNo" th:value="${withdraw?.bankAccountNo}" placeholder="- 제외 숫자만 입력해주세요.">
+                </div>
+
+                <div class="form-group">
+                    <label class="text-black" for="accountHolder">예금주</label>
+                    <input type="text" class="form-control" id="accountHolder" name="accountHolder" th:value="${withdraw?.accountHolder}" minlength="2" maxlength="15">
+                </div>
+
+                <div class="form-group">
+                    <div th:with="maxUseRestCash=${restCash}">
+                    <label class="text-black" for="PaymentForm__useRestCash">출금 신청 금액</label>
+                        <span> (보유 예치금 : [[${restCash}]]) </span>
+                        <input type="number"
+                           id="PaymentForm__useRestCash" name="price"
+                           th:placeholder="|0 ~ ${maxUseRestCash}|"
+                           class="form-control" min="0" th:max="${maxUseRestCash}"
+                           onkeydown="PaymentForm__useRestCashFix();"
+                           onkeyup="PaymentForm__useRestCashFix();"
+                    >
+                    <label class="inline-flex items-center ml-3">
+                        <span>전액사용</span>
+                        <input onchange="PaymentForm__useRestCashAllChanged();" id="PaymentForm__useRestCashAll"
+                               type="checkbox" class="ml-2 checkbox">
+                    </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary py-2" style="font-size:14px;">출금 신청</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="script" type='text/javascript'>
+    const $PaymentForm__useRestCash = $("#PaymentForm__useRestCash");
+    const $PaymentForm__useRestCashAll = $("#PaymentForm__useRestCashAll");
+
+    function WithdrawApply__submit(form) {
+
+        form.bankName.value = form.bankName.value.trim();
+
+        if (form.bankName.value.length == 0) {
+            alert("은행명을 입력해주세요.");
+            return;
+        }
+
+        form.bankAccountNo.value = form.bankAccountNo.value.trim();
+
+        if (form.bankAccountNo.value.length == 0) {
+            alert("계좌번호를 입력해주세요.");
+            return;
+        }
+
+        form.accountHolder.value = form.accountHolder.value.trim();
+
+        if (form.accountHolder.value.length == 0) {
+            alert("예금주를 입력해주세요.");
+            return;
+        }
+
+        form.price.value = form.price.value.trim();
+
+        if (form.price.value.length == 0) {
+            alert("출금 신청 금액을 입력해주세요.");
+            return;
+        }
+
+        form.submit();
+    }
+
+
+    /* 출금신청금액 value가 입력될 때마다 실행되는 메서드 */
+    function PaymentForm__useRestCashFix() {
+        let useRestCash = parseInt($PaymentForm__useRestCash.val());
+
+        if (isNaN(useRestCash)) {
+            useRestCash = 0;
+        }
+
+        const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
+
+        // 출금신청금액이 보유금액을 초과할 때 보유금액으로 재설정
+        if (useRestCash > maxUseRestCash) {
+            useRestCash = maxUseRestCash;
+            $PaymentForm__useRestCash.val(maxUseRestCash);
+        }
+
+        // 전액사용 체크 작동
+        if ( useRestCash == maxUseRestCash ) {
+            $PaymentForm__useRestCashAll.prop('checked', true);
+        }
+
+        // 전액사용 미체크 작동
+        else {
+            $PaymentForm__useRestCashAll.prop('checked', false);
+        }
+
+    }
+
+    /* 전액사용 체크 시 실행되는 메서드 */
+    function PaymentForm__useRestCashAllChanged() {
+        // 전액 사용 체크 시 restCash Max 금액 반영
+        if ( $PaymentForm__useRestCashAll.prop('checked') ) {
+            const maxUseRestCash = parseInt($PaymentForm__useRestCash.attr('max'));
+            $PaymentForm__useRestCash.val(maxUseRestCash);
+        }
+        else {
+            $PaymentForm__useRestCash.val(0);
+        }
+
+        PaymentForm__useRestCashFix();
+    }
+
+    PaymentForm__useRestCashFix();
+</script>
+</body>
+</html>
