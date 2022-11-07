@@ -1,6 +1,7 @@
 package com.ll.exam.Week_Mission.app.product.entity;
 
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
+import com.ll.exam.Week_Mission.app.config.AppConfig;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.post.domain.keyword.entity.PostKeyword;
 import com.ll.exam.Week_Mission.app.product.domain.tag.entity.ProductTag;
@@ -44,7 +45,7 @@ public class Product extends BaseEntity {
 
     // 판매자 : 대행자 정산비율 -> 5 : 5
     public int getWholesalePrice() {
-        return (int) Math.ceil(getPrice() * 0.5);
+        return (int) Math.ceil(getPrice() * AppConfig.getWholesalePriceRate());
     }
 
     public boolean isOrderable() {

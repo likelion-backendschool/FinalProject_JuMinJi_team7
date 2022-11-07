@@ -1,6 +1,7 @@
 package com.ll.exam.Week_Mission.app.order.entity;
 
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
+import com.ll.exam.Week_Mission.app.config.AppConfig;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -65,7 +66,7 @@ public class Order extends BaseEntity {
         if ( isPaid == false ) return false;
         if ( isCanceled ) return false;
         if ( isRefunded ) return false;
-        if( currentDateTime.isAfter(payDate.plusMinutes(10))) return false;
+        if( currentDateTime.isAfter(payDate.plusMinutes(AppConfig.getCancelAvailableSeconds()))) return false;
 
         return true;
     }
