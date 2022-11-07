@@ -150,7 +150,7 @@ public enum PayGroup {
 <img width="621" alt="Untitled" src="https://user-images.githubusercontent.com/63441091/199881172-a6319c79-eacb-494e-bf3d-ff4198384491.png">
 
 ### 3. Withdraw 엔티티
-`Withdraw` 엔티티의 경우 현재는 건별 출금처리만 하고 있지만 후에 일괄처리도 하게 될 경우에 외래키 제약을 제거할 수도 있다는 가능성을 두고 만들었습니다. `RebateOrderItem` 엔티티 대비 컬럼들이 적으나 출금신청폼 컬럼(은행명, 계좌번호, 출금 신청액) 외에 반드시 필요하다고 생각 드는 컬럼들은 추가적으로 넣어주었습니다.
+`Withdraw` 엔티티의 경우 `RebateOrderItem` 엔티티 대비 컬럼들이 적으나 출금신청폼 컬럼(은행명, 계좌번호, 출금 신청액) 외에 반드시 필요하다고 생각 드는 컬럼들은 추가적으로 넣어주었습니다.
 <img width="978" alt="image" src="https://user-images.githubusercontent.com/63441091/199425234-c049efef-bc47-48e1-9a0e-1891f571fa49.png">
 <img width="1165" alt="image" src="https://user-images.githubusercontent.com/63441091/199430338-86c59446-2993-4890-bc9e-9ffbd3678c62.png">
 
@@ -158,7 +158,11 @@ public enum PayGroup {
 ## II. 리팩토링
 1. 중복 코드 제거
 2. 정산이나 출금처리 완료 후 이전 페이지(리스트 페이지)에서 파라미터 저장하여 파라미터 보존한 채 이전페이지 redirect
-3. 출금처리 취소(출금처리 가능여부(계좌나 출금금액 등) 판단) 추가
+3. 출금처리 취소(출금처리 가능여부(계좌나 출금금액 등) 판단) 추가하면서 예치금 차감 로직은 출금 신청 받은 직후로 이동
+4. `CashLog`에서 FK가 무한정 늘어나지 않도록 FK들을 `relTypeCode`(관련 있는 FK(ex.Member, Order) Code), `relTypeId` 2개 컬럼으로 리팩토링
+5. 취소 가능 시간, 판매자 정산비율 등은 설정파일(.yml)에서 가져올 수 있도록 리팩토링
+6. String 유효성 검증은 단순 null 체크(? == null)로 검증하기 보다는 `StringUtils.hasText()` 로 null 체크 + 공백 제외한 길이가 1 이상인지 검증할 수 있도록 리팩토링 [참고자료](https://creampuffy.tistory.com/120)
+7. 관리자 레이아웃 페이지 중복제거 -> 사용자와 관리자 공통 레이아웃을 생성하여 관리자와 사용자 레이아웃이 다중 상속되도록 + 관리자페이지에서는 footer 제거(사용자페이지일 때만 나오도록)
 
 ## III. 궁금한점
 - 회원의 예치금 차감은 출금신청 받은 직후에 진행해야 하는지, 출금처리를 하면서 진행해야 하는지
