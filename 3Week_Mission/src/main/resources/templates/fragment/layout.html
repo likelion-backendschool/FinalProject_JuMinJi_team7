@@ -20,19 +20,19 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
 
   <!-- bootstrap Start-->
-  <link rel="stylesheet" href="../css/bootstrap.min.css">
-  <link rel="stylesheet" href="../css/owl.carousel.min.css">
-  <link rel="stylesheet" href="../css/owl.theme.default.min.css">
-  <link rel="stylesheet" href="../css/jquery.fancybox.min.css">
-  <link rel="stylesheet" href="../fonts/icomoon/style.css">
-  <link rel="stylesheet" href="../fonts/flaticon/font/flaticon.css">
-  <link rel="stylesheet" href="../css/aos.css">
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/owl.carousel.min.css">
+  <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="/fonts/icomoon/style.css">
+  <link rel="stylesheet" href="/fonts/flaticon/font/flaticon.css">
+  <link rel="stylesheet" href="/css/aos.css">
+  <link rel="stylesheet" href="/css/style.css">
   <!-- bootstrap End-->
 
-  <link rel="stylesheet" href="../css/common.css">
-  <link rel="stylesheet" href="../css/order.detail.css">
-  <link rel="stylesheet" href="../css/order.list.css">
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/order.detail.css">
+  <link rel="stylesheet" href="/css/order.list.css">
 
   <!-- toastr -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -42,7 +42,7 @@
 
 <body style="min-height:100vh;" class="d-flex flex-column">
 
-<header th:replace="fragment/navbar :: navbarFragment"></header>
+<header layout:fragment="header"></header>
 
 <!-- 기본 템플릿 안에 삽입될 content Start -->
 <main class="flex-grow-1">
@@ -50,7 +50,7 @@
 </main>
 <!-- 기본 템플릿 안에 삽입될 content End -->
 
-<footer th:replace="fragment/footer :: footer"> </footer>
+<footer th:if="${@rq.usrPage}" layout:fragment="footer"></footer>
 
 <!-- 커스텀할 JS Start -->
 <th:block layout:fragment="script"></th:block>
@@ -98,20 +98,20 @@
 <!-- 토스트 UI 에디터 의존성 끝 -->
 
 <!-- bootstrap Start-->
-<script src="../js/jquery-3.4.1.min.js"></script>
-<script src="../js/jquery-migrate-3.0.1.min.js"></script>
-<script src="../js/popper.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/owl.carousel.min.js"></script>
-<script src="../js/jquery.easing.1.3.js"></script>
-<script src="../js/jquery.animateNumber.min.js"></script>
-<script src="../js/jquery.waypoints.min.js"></script>
-<script src="../js/jquery.fancybox.min.js"></script>
-<script src="../js/aos.js"></script>
-<script src="../js/custom.js"></script>
+<script src="/js/jquery-3.4.1.min.js"></script>
+<script src="/js/jquery-migrate-3.0.1.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/jquery.easing.1.3.js"></script>
+<script src="/js/jquery.animateNumber.min.js"></script>
+<script src="/js/jquery.waypoints.min.js"></script>
+<script src="/js/jquery.fancybox.min.js"></script>
+<script src="/js/aos.js"></script>
+<script src="/js/custom.js"></script>
 <!-- bootstrap End-->
 
-<script src="../js/common.js"></script>
+<script src="/js/common.js"></script>
 
 <script th:inline="javascript">
   const params = /*[[ ${param} ]]*/ null;
