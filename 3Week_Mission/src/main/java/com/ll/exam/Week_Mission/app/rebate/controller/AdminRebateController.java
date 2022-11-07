@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
@@ -50,7 +51,7 @@ public class AdminRebateController {
     @GetMapping("/rebateOrderItemList")
     @PreAuthorize("hasAuthority('ADMIN')")
     public String showRebateList(String yearMonth, Model model) {
-        if (yearMonth == null) {
+        if (StringUtils.hasText(yearMonth)) {
             Date now = new Date();
             yearMonth = new SimpleDateFormat("YYYY-MM").format(now.getTime());
         }
