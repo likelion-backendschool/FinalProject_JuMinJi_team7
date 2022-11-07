@@ -34,7 +34,7 @@ public class WithdrawController {
 
         long restCash = applicant.getRestCash();
 
-        Withdraw existingWithdraw = withdrawService.findByMemberId(applicant.getId());
+        Withdraw existingWithdraw = withdrawService.findTop1ByMemberIdOrderByIdDesc(applicant.getId());
 
         if(existingWithdraw != null ) {
             model.addAttribute("withdraw", existingWithdraw);

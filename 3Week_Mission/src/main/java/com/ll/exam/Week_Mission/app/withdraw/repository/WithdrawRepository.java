@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WithdrawRepository extends JpaRepository<Withdraw,Long> {
-    Optional<Withdraw> findByMemberId(long applicantId);
     List<Withdraw> findAllByCreateDateBetweenOrderByIdAsc(LocalDateTime fromDate, LocalDateTime toDate);
+    Optional<Withdraw> findTop1ByMemberIdOrderByIdDesc(long applicantId);
 }

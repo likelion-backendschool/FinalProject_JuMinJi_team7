@@ -66,7 +66,7 @@ public class WithdrawService {
         withdraw.setWithdrawDone(withdrawCashLog.getId());
     }
 
-    public Withdraw findByMemberId(Long applicantId) {
-        return withdrawRepository.findByMemberId(applicantId).orElse(null);
+    public Withdraw findTop1ByMemberIdOrderByIdDesc(long applicantId) {
+        return withdrawRepository.findTop1ByMemberIdOrderByIdDesc(applicantId).orElse(null);
     }
 }
