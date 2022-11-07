@@ -101,11 +101,21 @@ public class Ut {
     public static class json {
 
         /* Map -> JSON String으로 변환 */
-        // ex. {"name":"mkyong","age":"37"} 형태로 변환
+        // ex. {"name":"mkyong","age":"37"}
         public static Object toStr(Map<String, Object> map) {
             try {
                 // jackson.databind.ObjectMapper 이용하여 String으로 Serialization
                 return getObjectMapper().writeValueAsString(map);
+            } catch (JsonProcessingException e) {
+                return null;
+            }
+        }
+
+        /* JSON String -> Map으로 변환 */
+        // ex. {name=mkyong, age=37}
+        public static Map<String, Object> toMap(String jsonStr) {
+            try {
+                return getObjectMapper().readValue(jsonStr, LinkedHashMap.class);
             } catch (JsonProcessingException e) {
                 return null;
             }

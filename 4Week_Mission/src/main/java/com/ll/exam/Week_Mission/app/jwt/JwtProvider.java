@@ -2,6 +2,7 @@ package com.ll.exam.Week_Mission.app.jwt;
 
 import com.ll.exam.Week_Mission.util.Ut;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +31,30 @@ public class JwtProvider {
                 .setIssuedAt(now) // 토큰 발행시간
                 .setExpiration(new Date(now.getTime() + tokenValidTime)) // 토큰 만료시간
                 .compact();
+    }
+
+    /* 토큰 유효성 검증 + 만료일자 확인 */
+    public boolean verify(String jwtToken) {
+        try {
+            Jws<Claims> claims = Jwts.parserBuilder()
+                    .setSigningKey(getSecretKey())
+                    .build()
+                    .parseClaimsJws(jwtToken);
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /* 토큰 claims -> map */
+    public Map<String, Object> getClaims(String token) {
+        String body = Jwts.parserBuilder()
+                .setSigningKey(getSecretKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("body", String.class);
+
+        return Ut.json.toMap(body);
     }
 }
