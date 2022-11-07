@@ -6,6 +6,7 @@ import com.ll.exam.Week_Mission.app.cash.entity.EventGroup;
 import com.ll.exam.Week_Mission.app.cash.entity.PayGroup;
 import com.ll.exam.Week_Mission.app.cash.service.CashService;
 import com.ll.exam.Week_Mission.app.email.service.EmailService;
+import com.ll.exam.Week_Mission.app.jwt.JwtProvider;
 import com.ll.exam.Week_Mission.app.member.entity.AuthLevel;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.repository.MemberRepository;
@@ -26,10 +27,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class MemberService {
+    private final JwtProvider jwtProvider;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final CashService cashService;
+
+    public String genAccessToken(Member member) {
+        return jwtProvider.generateAccessToken(member.getAccessTokenClaims());
+    }
 
     public Member join(String username, String password, String email, String nickname) {
 

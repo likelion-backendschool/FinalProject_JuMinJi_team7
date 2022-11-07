@@ -27,6 +27,25 @@ public class Ut {
         return (ObjectMapper) AppConfig.getContext().getBean("objectMapper");
     }
 
+    /* Map의 put() 기능을 한 큐에 */
+    public static <K, V> Map<K, V> mapOf(Object... args) { // Object ... agrgs -> 가변인자
+        Map<K, V> map = new LinkedHashMap<>();
+
+        int size = args.length / 2;
+
+        for (int i = 0; i < size; i++) {
+            int keyIndex = i * 2;
+            int valueIndex = keyIndex + 1;
+
+            K key = (K) args[keyIndex];
+            V value = (V) args[valueIndex];
+
+            map.put(key, value);
+        }
+
+        return map;
+    }
+
     public static class date {
         /* month 자릿수 두 자릿수로 맞추기 */
         public static int getEndDayOf(int year, int month) {
@@ -119,6 +138,31 @@ public class Ut {
             } catch (JsonProcessingException e) {
                 return null;
             }
+        }
+    }
+
+    public static class spring {
+
+        /* response body null 처리 */
+        public static <T> ResponseEntity<RsData> responseEntityOf(RsData<T> rsData) {
+            return responseEntityOf(rsData, null);
+        }
+
+        public static <T> ResponseEntity<RsData> responseEntityOf(RsData<T> rsData, HttpHeaders headers) {
+            return new ResponseEntity<>(rsData, headers, rsData.isSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+        }
+
+        public static HttpHeaders httpHeadersOf(String... args) {
+            HttpHeaders headers = new HttpHeaders();
+
+            Map<String, String> map = Ut.mapOf(args);
+
+            for (String key : map.keySet()) {
+                String value = map.get(key);
+                headers.set(key, value);
+            }
+
+            return headers;
         }
     }
 }

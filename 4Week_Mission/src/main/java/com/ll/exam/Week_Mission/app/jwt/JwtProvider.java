@@ -51,7 +51,7 @@ public class JwtProvider {
         String body = Jwts.parserBuilder()
                 .setSigningKey(getSecretKey())
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJwt(token)
                 .getBody()
                 .get("body", String.class);
 

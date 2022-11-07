@@ -4,6 +4,7 @@ import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import com.ll.exam.Week_Mission.app.mybook.entity.MyBook;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
 import com.ll.exam.Week_Mission.app.post.domain.hashtag.entity.PostHashTag;
+import com.ll.exam.Week_Mission.util.Ut;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +14,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Setter
@@ -47,6 +49,19 @@ public class Member extends BaseEntity {
         }
 
         return authorities;
+    }
+
+    public Map<String, Object> getAccessTokenClaims() {
+        return Ut.mapOf(
+                "id", getId(),
+                "createDate", getCreateDate(),
+                "updateDate", getUpdateDate(),
+                "username", getUsername(),
+                "email", getEmail(),
+                "nickname", getNickname(),
+                "authLevel", getAuthLevel(),
+                "restCash", getRestCash()
+        );
     }
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
