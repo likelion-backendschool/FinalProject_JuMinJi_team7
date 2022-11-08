@@ -39,7 +39,7 @@ public class JwtProvider {
             Jwts.parserBuilder()
                     .setSigningKey(getSecretKey())
                     .build()
-                    .parseClaimsJws(token);
+                    .parseClaimsJwt(token);
         } catch (Exception e) {
             return false;
         }

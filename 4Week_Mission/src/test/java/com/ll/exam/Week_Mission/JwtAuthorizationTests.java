@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @SpringBootTest
-class JwtTests {
+class JwtAuthorizationTests {
     @Value("${spring.custom.jwt.secret-key}")
     private String secretKey;
 
