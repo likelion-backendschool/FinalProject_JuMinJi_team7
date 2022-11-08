@@ -23,20 +23,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests(
-                        authorizeRequests -> authorizeRequests
-                        .antMatchers("/**").permitAll() // 넓은 범위 URL을 아래로 배치
-                        .anyRequest().authenticated())
+                .httpBasic().disable()
                 .csrf().disable()
                 .formLogin(
                         formLogin -> formLogin
                                 .loginPage("/member/login") // GET
                                 .loginProcessingUrl("/member/login") // POST
-                                .successHandler(authenticationSuccessHandler) // Custom Login Success Msg
-                                .failureHandler(authenticationFailureHandler) // Custom Login Error Msg
+                                .successHandler(authenticationSuccessHandler)
+                                .failureHandler(authenticationFailureHandler)
+                )
+                .authorizeRequests(
+                        authorizeRequests -> authorizeRequests
+                                .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+                                .hasAuthority("ADMIN")
+                                .anyRequest()
+                                .permitAll()
                 )
                 .logout(
-                        logout -> logout.logoutUrl("/member/logout")
+                        logout -> logout
+                                .logoutUrl("/member/logout")
                 );
 
         return http.build();

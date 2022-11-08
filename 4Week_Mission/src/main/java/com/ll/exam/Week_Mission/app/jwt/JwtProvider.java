@@ -33,17 +33,18 @@ public class JwtProvider {
                 .compact();
     }
 
-    /* 토큰 유효성 검증 + 만료일자 확인 */
-    public boolean verify(String jwtToken) {
+    /* 토큰 유효성 검증 */
+    public boolean verify(String token) {
         try {
-            Jws<Claims> claims = Jwts.parserBuilder()
+            Jwts.parserBuilder()
                     .setSigningKey(getSecretKey())
                     .build()
-                    .parseClaimsJws(jwtToken);
-            return !claims.getBody().getExpiration().before(new Date());
+                    .parseClaimsJws(token);
         } catch (Exception e) {
             return false;
         }
+
+        return true;
     }
 
     /* 토큰 claims -> map */

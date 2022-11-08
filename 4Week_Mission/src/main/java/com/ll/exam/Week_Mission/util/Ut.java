@@ -4,12 +4,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.exam.Week_Mission.app.base.dto.RsData;
 import com.ll.exam.Week_Mission.app.config.AppConfig;
+import com.ll.exam.Week_Mission.app.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,6 +47,48 @@ public class Ut {
         }
 
         return map;
+    }
+
+    /* private method 접근, 인수 X */
+    public static <T> T callMethod(Object obj, String methodName) {
+        Method method = null;
+
+        try {
+            method = obj.getClass().getDeclaredMethod(methodName);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+
+        method.setAccessible(true);
+
+        try {
+            return (T) method.invoke(obj);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /* private method 접근, 인수 O */
+    public static <T> T callMethod(Object obj, String methodName, Member member) {
+        Method method = null;
+
+        try {
+            method = obj.getClass().getDeclaredMethod(methodName);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+
+        method.setAccessible(true);
+
+        try {
+            return (T) method.invoke(obj, member);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static class date {

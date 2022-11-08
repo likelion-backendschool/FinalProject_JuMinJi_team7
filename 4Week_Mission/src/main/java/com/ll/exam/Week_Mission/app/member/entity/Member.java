@@ -58,9 +58,7 @@ public class Member extends BaseEntity {
                 "updateDate", getUpdateDate(),
                 "username", getUsername(),
                 "email", getEmail(),
-                "nickname", getNickname(),
-                "authLevel", getAuthLevel(),
-                "restCash", getRestCash()
+                "nickname", getNickname()
         );
     }
 

@@ -4,15 +4,14 @@ import com.ll.exam.Week_Mission.app.base.dto.RsData;
 import com.ll.exam.Week_Mission.app.member.dto.request.LoginForm;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.service.MemberService;
+import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
 import com.ll.exam.Week_Mission.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -49,5 +48,14 @@ public class ApiMemberController {
                         "accessToken", accessToken
                 )
         ), headers);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<RsData> me(@AuthenticationPrincipal MemberContext memberContext) {
+        if (memberContext == null) {
+            return Ut.spring.responseEntityOf(RsData.failOf(null));
+        }
+
+        return Ut.spring.responseEntityOf(RsData.successOf(memberContext));
     }
 }
