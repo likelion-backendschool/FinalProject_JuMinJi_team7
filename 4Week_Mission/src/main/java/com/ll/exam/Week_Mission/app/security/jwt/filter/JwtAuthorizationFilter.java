@@ -28,12 +28,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Token으로부터 회원 정보 가져오기
-        /*
-          AuthTests에서 헤더를 갖고 올 때 .header("Authorization", "Bearer " + accessToken) 이렇게 가져왔음
-          즉 이제 Authorization 헤더에 accessToken만 있는 것이 아니라 Bearer도 있으므로 이것을 제거하고
-          accessToken에서 회원정보을 가져와야 됨
-        */
+        /*  Token으로부터 회원 정보 가져오기 */
+        // 헤더 -> .header("Authorization", "Bearer " + accessToken)
+        // accessToken에서 회원 정보 가져오려면 Authentication에서 Bearer 제거 필요
         String bearerToken = request.getHeader("Authorization");
 
         if (bearerToken != null) {
@@ -41,10 +38,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             if (jwtProvider.verify(token)) {
                 Map<String, Object> claims = jwtProvider.getClaims(token);
-                String username = (String) claims.get("username");
-                Member member = memberService.findByUsername(username);
+                /* 토큰 유효성 1차 검증 */
+                // JWT의 장점인 DB없이 CPU에서 정보 조회하는 방법은 아니지만 정보 불일치 문제 해결가능
+                Member member = memberService.findByUsername(claims.get("username").toString());
 
-                forceAuthentication(member);
+                /* 토큰 유효성 2차 검증 */
+                // 화이트리스트에 포함되는지
+                if ( memberService.verifyWithWhiteList(member, token) ) {
+                    forceAuthentication(member);
+                }
             }
         }
 

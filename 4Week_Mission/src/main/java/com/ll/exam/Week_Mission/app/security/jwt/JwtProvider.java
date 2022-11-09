@@ -17,7 +17,7 @@ import java.util.Map;
 @Component
 public class JwtProvider {
     private final SecretKey jwtSecretKey;
-    private long tokenValidTime = 30 * 60 * 1000L; // 30분 // 30 * 60 * 1000 * 1 ms
+    private long tokenValidTime = 365 * 24 * 60 * 60 * 1000L; // 1년 // 365 * 24 * 60 * 60 * 1000 * 1 ms
 
     private SecretKey getSecretKey() {
         return jwtSecretKey;

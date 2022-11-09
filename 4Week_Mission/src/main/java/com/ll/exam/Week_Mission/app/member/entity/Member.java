@@ -33,6 +33,8 @@ public class Member extends BaseEntity {
     @Convert(converter = AuthLevel.Converter.class)
     private AuthLevel authLevel;
     private long restCash;
+    @Column(columnDefinition = "TEXT") // String 컬럼 길이 제한 해제
+    private String accessToken;
 
     public Member (long id) { super(id);}
 

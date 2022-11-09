@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
@@ -33,8 +34,18 @@ public class MemberService {
     private final CashService cashService;
 
     public String genAccessToken(Member member) {
-        return jwtProvider.generateAccessToken(member.getAccessTokenClaims());
+        String accessToken = member.getAccessToken();
+
+        if (StringUtils.hasText(accessToken) == false ) {
+            accessToken = jwtProvider.generateAccessToken(member.getAccessTokenClaims());
+            member.setAccessToken(accessToken);
+        }
+
+        return accessToken;
     }
+
+    public boolean verifyWithWhiteList(Member member, String token) {
+        return member.getAccessToken().equals(token);    }
 
     public Member join(String username, String password, String email, String nickname) {
 
