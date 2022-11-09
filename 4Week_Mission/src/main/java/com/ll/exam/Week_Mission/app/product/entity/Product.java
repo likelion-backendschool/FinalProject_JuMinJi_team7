@@ -1,5 +1,6 @@
 package com.ll.exam.Week_Mission.app.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import com.ll.exam.Week_Mission.app.config.AppConfig;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
@@ -28,12 +29,13 @@ public class Product extends BaseEntity {
     private String subject;
     private int price;
 
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
     private Member author;
 
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
     private PostKeyword postKeyword;
-
 
     public Product(long id) {
         super(id);

@@ -1,12 +1,13 @@
 package com.ll.exam.Week_Mission.app.mybook.service;
 
-import com.ll.exam.Week_Mission.app.exception.ActorCannotAccessException;
-import com.ll.exam.Week_Mission.app.exception.ActorCannotBuyTwiceException;
 import com.ll.exam.Week_Mission.app.exception.DataNotFoundException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.mybook.entity.MyBook;
 import com.ll.exam.Week_Mission.app.mybook.repository.MyBookRepository;
+import com.ll.exam.Week_Mission.app.order.entity.Order;
+import com.ll.exam.Week_Mission.app.post.entity.Post;
 import com.ll.exam.Week_Mission.app.product.entity.Product;
+import com.ll.exam.Week_Mission.app.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,4 +49,11 @@ public class MyBookService {
         myBookRepository.delete(myBook);
     }
 
+    public MyBook findById(Long id) {
+        return myBookRepository.findById(id).orElse(null);
+    }
+
+    public boolean actorCanSee(Member actor, MyBook myBook) {
+        return actor.getId().equals(myBook.getMember().getId());
+    }
 }

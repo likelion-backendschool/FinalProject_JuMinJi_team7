@@ -45,15 +45,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 String username = (String) claims.get("username");
                 Member member = memberService.findByUsername(username);
 
-                if(member == null) {
-                    throw new MemberNotFoundException("해당 회원이 존재하지 않습니다.");
-                }
-
                 forceAuthentication(member);
             }
         }
 
         filterChain.doFilter(request, response);
+        return;
     }
 
     private void forceAuthentication(Member member) { // Todo: MemberService.forceAuthentication()과 동일 -> 중복 제거

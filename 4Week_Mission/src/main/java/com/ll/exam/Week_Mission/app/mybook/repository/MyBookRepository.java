@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface MyBookRepository extends JpaRepository<MyBook,Long> {
     List<MyBook> findByMemberId(long memberId);
     Optional<MyBook> findByMemberIdAndProductId(long memberId, long productId);
+    Optional<MyBook> findById (long id);
 }

@@ -22,13 +22,13 @@ public class ApiExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining("/"));
 
-        String code = exception
+        String data = exception
                 .getBindingResult()
                 .getAllErrors()
                 .stream()
                 .map(DefaultMessageSourceResolvable::getCode)
                 .collect(Collectors.joining("/"));
 
-        return Ut.spring.responseEntityOf(RsData.of("F-MethodArgumentNotValidException", code, msg));
+        return Ut.spring.responseEntityOf(RsData.of("F-MethodArgumentNotValidException", msg, data));
     }
 }

@@ -1,5 +1,6 @@
 package com.ll.exam.Week_Mission.app.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import com.ll.exam.Week_Mission.app.mybook.entity.MyBook;
 import com.ll.exam.Week_Mission.app.post.entity.Post;

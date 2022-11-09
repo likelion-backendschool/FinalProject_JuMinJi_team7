@@ -1,5 +1,6 @@
 package com.ll.exam.Week_Mission.app.post.domain.hashtag.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
@@ -20,16 +21,16 @@ import javax.persistence.*;
 public class PostHashTag extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    @ToString.Exclude
+    @JsonIgnore
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    @ToString.Exclude
+    @JsonIgnore
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "keyword_id")
-    @ToString.Exclude
+    @JsonIgnore
     private PostKeyword postkeyword;
 }

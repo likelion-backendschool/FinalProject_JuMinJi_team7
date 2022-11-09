@@ -1,5 +1,6 @@
 package com.ll.exam.Week_Mission.app.mybook.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.product.entity.Product;
@@ -20,9 +21,11 @@ import javax.persistence.*;
 @ToString(callSuper = true)
 @Table(indexes = {@Index(name = "mybook_index",columnList = "member_id, product_id")})
 public class MyBook extends BaseEntity {
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 }

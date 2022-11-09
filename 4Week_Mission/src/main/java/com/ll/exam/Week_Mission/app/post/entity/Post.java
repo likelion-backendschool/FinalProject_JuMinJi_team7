@@ -1,5 +1,6 @@
 package com.ll.exam.Week_Mission.app.post.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.post.domain.hashtag.entity.PostHashTag;
@@ -26,6 +27,7 @@ public class Post extends BaseEntity {
     @Column(columnDefinition = "LONGTEXT")
     private String contentHtml;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
