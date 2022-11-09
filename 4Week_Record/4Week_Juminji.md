@@ -20,7 +20,7 @@
 ##  I. 개발 도중 발생한 이슈 
 ### 1. 로그인 후 토큰 인증처리되지 않는 문제 [해결]
 ### Bug
-로그인 후 인증 처리된 토큰 정보로 memberContext 생성하여  정보 가져오는 테스트 실패
+로그인 후 인증 처리된 토큰 정보로 memberContext 생성하여  회원 정보 가져오는(requestURI=`/api/v1/member/me`) 테스트 실패
 ```
 Range for response status value 403 expected:<SUCCESSFUL> but was:<CLIENT_ERROR>
 필요:SUCCESSFUL
@@ -178,7 +178,7 @@ public class JwtProvider {
                 .claim("body", Ut.json.toStr(claims)) // JWT payload에 저장되는 정보 단위
                 .setIssuedAt(now) // 토큰 발행시간
                 .setExpiration(new Date(now.getTime() + tokenValidTime)) // 토큰 만료시간
-                .signWith(getSecretKey(), SignatureAlgorithm.HS512)
+                .signWith(getSecretKey(), SignatureAlgorithm.HS512) // Cause of Problem
                 .compact();
     }
 
@@ -208,55 +208,6 @@ public class JwtProvider {
         return Ut.json.toMap(body);
     }
    }
-```
-```
-@RequiredArgsConstructor
-@Component
-public class JwtProvider {
-    private final SecretKey jwtSecretKey;
-    private long tokenValidTime = 365 * 24 * 60 * 60 * 1000L; // 1년 // 365 * 24 * 60 * 60 * 1000 * 1 ms
-
-    private SecretKey getSecretKey() {
-        return jwtSecretKey;
-    }
-
-    public String generateAccessToken(Map<String, Object> claims) {
-        Date now = new Date();
-
-        return Jwts.builder()
-                .claim("body", Ut.json.toStr(claims)) // JWT payload에 저장되는 정보 단위
-                .setIssuedAt(now) // 토큰 발행시간
-                .setExpiration(new Date(now.getTime() + tokenValidTime)) // 토큰 만료시간
-                .signWith(getSecretKey(), SignatureAlgorithm.HS512)
-                .compact();
-    }
-
-    /* 토큰 유효성 검증 */
-    public boolean verify(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(getSecretKey())
-                    .build()
-                    .parseClaimsJws(token);
-        } catch (Exception e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /* 토큰 claims -> map */
-    public Map<String, Object> getClaims(String token) {
-        String body = Jwts.parserBuilder()
-                .setSigningKey(getSecretKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("body", String.class);
-
-        return Ut.json.toMap(body);
-    }
-}
 ```
 ### Solution
 1. Jwt 인증 필터 log.debug 로 로그 찍어봐도 원하는 내용이 출력되지 않아 해당 필터 자체가 안 먹는 현상인가 의심
