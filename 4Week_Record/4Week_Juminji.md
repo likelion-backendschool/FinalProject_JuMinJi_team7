@@ -75,7 +75,7 @@ MockHttpServletRequest:
       HTTP Method = GET
       Request URI = /api/v1/member/me
        Parameters = {}
-          Headers = [Authorization:"Bearer eyJhbGciOiJub25lIn0.eyJib2R5Ijoie1wiaWRcIjoyLFwiY3JlYXRlRGF0ZVwiOlsyMDIyLDExLDgsMTMsMjMsNSw2NzA3ODgwMDBdLFwidXBkYXRlRGF0ZVwiOlsyMDIyLDExLDgsMTMsMjMsNiwyMTE0MjYwMDBdLFwidXNlcm5hbWVcIjpcInVzZXIxXCIsXCJlbWFpbFwiOlwidXNlcjFAbWVvdGJvb2tzLmNvbVwiLFwibmlja25hbWVcIjpcInVzZXIxQXV0aG9yXCJ9IiwiaWF0IjoxNjY3ODgxMzg3LCJleHAiOjE2Njc4ODMxODd9."]
+          Headers = [Authorization:"Bearer ..생략.. 인코딩된 "]
              Body = null
     Session Attrs = {}
 
@@ -182,11 +182,12 @@ Request processing failed; nested exception is org.springframework.http.converte
 위와 같은 문제로 테스트 미통과
 
 ### Solution
-현재 @OneToMany 관계에 있는 컬럼들은 @JsonIgnore처리했으나, 요구사항 명세서대로 ResponseEntity에 외래키는 포함되지 않아 추가적으로 해결 필요
+현재 `@OneToMany` 관계에 있는 컬럼들은 `@JsonIgnore`처리했으나, 상세페이지 조회의 경우 요구사항 명세서대로 `ResponseEntity`에 외래키는 포함되지 않아 추가적으로 수정 필요
 
 
 ## II. 접근방법
-이번 주는 TDD 방식으로 구현해보았는데, 앞서 말했 듯 기존 프로젝트에서 수정하는 방식으로 Jwt 로그인을 적용하다보니 이슈들이 생겼습니다.
-아직은 테스트코드에 능숙한 편은 아니다 보니 혹시 테스트코드가 잘못 짜여졌나 싶어 PostMan으로 같이 확인하며 개발 진행했습니다.
+앞서 말했 듯 기존 프로젝트에서 수정하는 방식으로 Jwt 로그인을 적용하다보니 이슈들이 생겼습니다. TDD로 테스트를 통해 버그를 하나씩 해결해나가며, PostMan으로 적절한 응답이 호출되는지 확인하며 개발 진행했습니다.
+- **내 도서 리스트**
 ![img.png](img.png)
+- **내 도서 상세페이지 조회**
 ![img_1.png](img_1.png)
