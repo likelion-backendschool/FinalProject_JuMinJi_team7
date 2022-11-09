@@ -1,6 +1,6 @@
 package com.ll.exam.Week_Mission;
 
-import com.ll.exam.Week_Mission.app.jwt.JwtProvider;
+import com.ll.exam.Week_Mission.app.security.jwt.JwtProvider;
 import com.ll.exam.Week_Mission.util.Ut;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

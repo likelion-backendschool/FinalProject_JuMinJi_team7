@@ -1,12 +1,11 @@
 package com.ll.exam.Week_Mission.app.member.service;
 
-import com.ll.exam.Week_Mission.app.base.entity.BaseEntity;
 import com.ll.exam.Week_Mission.app.cash.entity.CashLog;
 import com.ll.exam.Week_Mission.app.cash.entity.EventGroup;
 import com.ll.exam.Week_Mission.app.cash.entity.PayGroup;
 import com.ll.exam.Week_Mission.app.cash.service.CashService;
 import com.ll.exam.Week_Mission.app.email.service.EmailService;
-import com.ll.exam.Week_Mission.app.jwt.JwtProvider;
+import com.ll.exam.Week_Mission.app.security.jwt.JwtProvider;
 import com.ll.exam.Week_Mission.app.member.entity.AuthLevel;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.repository.MemberRepository;

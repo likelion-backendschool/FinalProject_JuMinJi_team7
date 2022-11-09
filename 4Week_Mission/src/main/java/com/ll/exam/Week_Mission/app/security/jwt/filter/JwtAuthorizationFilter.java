@@ -1,7 +1,6 @@
-package com.ll.exam.Week_Mission.app.jwt.filter;
+package com.ll.exam.Week_Mission.app.security.jwt.filter;
 
-import com.ll.exam.Week_Mission.app.exception.MemberNotFoundException;
-import com.ll.exam.Week_Mission.app.jwt.JwtProvider;
+import com.ll.exam.Week_Mission.app.security.jwt.JwtProvider;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;

@@ -1,4 +1,4 @@
-package com.ll.exam.Week_Mission.app.jwt;
+package com.ll.exam.Week_Mission.app.security.jwt;
 
 import com.ll.exam.Week_Mission.util.Ut;
 import io.jsonwebtoken.Claims;

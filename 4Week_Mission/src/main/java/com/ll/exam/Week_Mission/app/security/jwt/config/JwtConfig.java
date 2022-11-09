@@ -1,4 +1,4 @@
-package com.ll.exam.Week_Mission.app.jwt.config;
+package com.ll.exam.Week_Mission.app.security.jwt.config;
 
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
