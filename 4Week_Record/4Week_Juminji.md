@@ -4,13 +4,13 @@
 
 ---
 #### 필수 기능
-- [ ] JWT 로그인 구현(POST /api/v1/member/login)
-- [ ] 내 도서 리스트 구현(GET /api/v1/myBooks)
-- [ ] 내 도서 상세정보 구현(GET /api/v1/myBooks/{id})
-- [ ] 로그인 한 회원의 정보 구현(GET /api/v1/member/me)
-- [ ] Srping Doc 으로 API 문서화(크롬 /swagger-ui/index.html )
+- [x] JWT 로그인 구현(POST /api/v1/member/login)
+- [x] 내 도서 리스트 구현(GET /api/v1/myBooks)
+- [x] 내 도서 상세정보 구현(GET /api/v1/myBooks/{id})
+- [x] 로그인 한 회원의 정보 구현(GET /api/v1/member/me)
+- [x] Srping Doc 으로 API 문서화(크롬 /swagger-ui/index.html )
 #### 추가 기능
-- [ ] 엑세스 토큰 화이트리스트 구현(Member 엔티티에 accessToken 필드 추가)
+- [x] 엑세스 토큰 화이트리스트 구현(Member 엔티티에 accessToken 필드 추가)
 - [ ] 리액트에서 작동되도록
 
 ### 4주차 미션 요약
@@ -18,8 +18,6 @@
 ---
 
 ##  I. 개발 도중 발생한 이슈 
- 기존 세션 로그인방식으로 세팅해놓았던 프로젝트에서 시작하다보니, 이전에 개별 프로젝트에서 Jwt 로그인을 구현했을 때는
-발생하지 않았던 몇 가지 이슈들이 있었습니다.
 ### 1. 로그인 후 토큰 인증처리되지 않는 문제 [임의 해결]
 ### Bug
 로그인 후 인증 처리된 토큰 정보로 memberContext 생성하여 memberContext 정보 가져오는 테스트 실패
@@ -186,7 +184,7 @@ Request processing failed; nested exception is org.springframework.http.converte
 
 
 ## II. 접근방법
-앞서 말했 듯 기존 프로젝트에서 수정하는 방식으로 Jwt 로그인을 적용하다보니 이슈들이 생겼습니다. TDD로 테스트를 통해 버그를 하나씩 해결해나가며, PostMan으로 적절한 응답이 호출되는지 확인하며 개발 진행했습니다.
+새로운 프로젝트에서 시작하지 않고, 기존 스프링시큐티리 세션 로그인방식이 적용된 프로젝트에서 작업을 시작하기도 했고, JWT를 이용한 로그인 구현이 아직은 익숙하지 않아 크고 작은 이슈들을 계속 만났습니다. TDD로 버그를 하나씩 해결해나가며, PostMan으로 적절한 응답이 호출되는지 확인하며 개발 진행했습니다.
 - **내 도서 리스트**
 ![img.png](img.png)
 - **내 도서 상세페이지 조회**
