@@ -4,13 +4,13 @@
 
 ---
 #### 필수 기능
-- [ ] JWT 로그인 구현(POST /api/v1/member/login)
-- [ ] 내 도서 리스트 구현(GET /api/v1/myBooks)
-- [ ] 내 도서 상세정보 구현(GET /api/v1/myBooks/{id})
-- [ ] 로그인 한 회원의 정보 구현(GET /api/v1/member/me)
-- [ ] Srping Doc 으로 API 문서화(크롬 /swagger-ui/index.html )
+- [x] JWT 로그인 구현(POST /api/v1/member/login)
+- [x] 내 도서 리스트 구현(GET /api/v1/myBooks)
+- [x] 내 도서 상세정보 구현(GET /api/v1/myBooks/{id})
+- [x] 로그인 한 회원의 정보 구현(GET /api/v1/member/me)
+- [x] Srping Doc 으로 API 문서화(크롬 /swagger-ui/index.html )
 #### 추가 기능
-- [ ] 엑세스 토큰 화이트리스트 구현(Member 엔티티에 accessToken 필드 추가)
+- [x] 엑세스 토큰 화이트리스트 구현(Member 엔티티에 accessToken 필드 추가)
 - [ ] 리액트에서 작동되도록
 
 ### 4주차 미션 요약
@@ -18,11 +18,9 @@
 ---
 
 ##  I. 개발 도중 발생한 이슈 
- 기존 세션 로그인방식으로 세팅해놓았던 프로젝트에서 시작하다보니, 이전에 개별 프로젝트에서 Jwt 로그인을 구현했을 때는
-발생하지 않았던 몇 가지 이슈들이 있었습니다.
-### 1. 로그인 후 토큰 인증처리되지 않는 문제 [임의 해결]
+### 1. 로그인 후 토큰 인증처리되지 않는 문제 [해결]
 ### Bug
-로그인 후 인증 처리된 토큰 정보로 memberContext 생성하여 memberContext 정보 가져오는 테스트 실패
+로그인 후 인증 처리된 토큰 정보로 memberContext 생성하여  회원 정보 가져오는(requestURI=`/api/v1/member/me`) 테스트 실패
 ```
 Range for response status value 403 expected:<SUCCESSFUL> but was:<CLIENT_ERROR>
 필요:SUCCESSFUL
@@ -75,7 +73,7 @@ MockHttpServletRequest:
       HTTP Method = GET
       Request URI = /api/v1/member/me
        Parameters = {}
-          Headers = [Authorization:"Bearer eyJhbGciOiJub25lIn0.eyJib2R5Ijoie1wiaWRcIjoyLFwiY3JlYXRlRGF0ZVwiOlsyMDIyLDExLDgsMTMsMjMsNSw2NzA3ODgwMDBdLFwidXBkYXRlRGF0ZVwiOlsyMDIyLDExLDgsMTMsMjMsNiwyMTE0MjYwMDBdLFwidXNlcm5hbWVcIjpcInVzZXIxXCIsXCJlbWFpbFwiOlwidXNlcjFAbWVvdGJvb2tzLmNvbVwiLFwibmlja25hbWVcIjpcInVzZXIxQXV0aG9yXCJ9IiwiaWF0IjoxNjY3ODgxMzg3LCJleHAiOjE2Njc4ODMxODd9."]
+          Headers = [Authorization:"Bearer ..생략.. 인코딩된 "]
              Body = null
     Session Attrs = {}
 
@@ -107,7 +105,7 @@ MockHttpServletResponse:
    Redirected URL = null
           Cookies = []
 ```
-### Problem Code
+### Code
 ```java
 // JwtAuthorizationTest.java
 
@@ -161,7 +159,56 @@ MockHttpServletResponse:
                 .andExpect(jsonPath("$.success").value(true));
     }
 ```
+```
+// JwtProvider.java
+@RequiredArgsConstructor
+@Component
+public class JwtProvider {
+    private final SecretKey jwtSecretKey;
+    private long tokenValidTime = 365 * 24 * 60 * 60 * 1000L; // 1년 // 365 * 24 * 60 * 60 * 1000 * 1 ms
 
+    private SecretKey getSecretKey() {
+        return jwtSecretKey;
+    }
+
+    public String generateAccessToken(Map<String, Object> claims) {
+        Date now = new Date();
+
+        return Jwts.builder()
+                .claim("body", Ut.json.toStr(claims)) // JWT payload에 저장되는 정보 단위
+                .setIssuedAt(now) // 토큰 발행시간
+                .setExpiration(new Date(now.getTime() + tokenValidTime)) // 토큰 만료시간
+                .signWith(getSecretKey(), SignatureAlgorithm.HS512) // Cause of Problem
+                .compact();
+    }
+
+    /* 토큰 유효성 검증 */
+    public boolean verify(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSecretKey())
+                    .build()
+                    .parseClaimsJws(token);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /* 토큰 claims -> map */
+    public Map<String, Object> getClaims(String token) {
+        String body = Jwts.parserBuilder()
+                .setSigningKey(getSecretKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("body", String.class);
+
+        return Ut.json.toMap(body);
+    }
+   }
+```
 ### Solution
 1. Jwt 인증 필터 log.debug 로 로그 찍어봐도 원하는 내용이 출력되지 않아 해당 필터 자체가 안 먹는 현상인가 의심
    -> ApiSecurityConfig에 새로 도입한 CORS 의심
@@ -169,9 +216,12 @@ MockHttpServletResponse:
    -> 실패
 2. 토큰은 제대로 헤더에 담겨오므로 이제 남은 건 토큰 인증과정에서의 문제라는 생각에 JwtProvider.getClaims() 코드 의심
    -> `parseClaimsJws(token)->.parseClaimsJwt(token)`로 변경 후 문제 임의 해결
-   -> 정확한 이유는 알 수 없어 더 조사 필요
-
-https://stackoverflow.com/questions/61016123/io-jsonwebtoken-unsupportedjwtexception-signed-claims-jwss-are-not-supported
+3. **근본적 원인** : JwtProvider.generateAccessToken()에서 HS512 알고리즘으로 디지털 서명하는 코드(`.signWith(getSecretKey(), SignatureAlgorithm.HS512)`) 실수로 제거 
+-> 다시 추가한 후에는 `parseClaimsJws(token)`로 토큰을 Jws로 파싱 가능
+-> **문제 해결**
+- [JWT와 JWS](https://escapefromcoding.tistory.com/255)
+- [참고한 stackoverflow 1](https://stackoverflow.com/questions/42397484/jwt-signature-does-not-match-locally-computed-signature/42400145)
+- [참고한 stackoverflow 2](https://stackoverflow.com/questions/61016123/io-jsonwebtoken-unsupportedjwtexception-signed-claims-jwss-are-not-supported)
 
 ### 2. 내 도서 리스트 및 상세페이지 조회 순환참조 [임의 해결]
 ### Bug
@@ -182,11 +232,12 @@ Request processing failed; nested exception is org.springframework.http.converte
 위와 같은 문제로 테스트 미통과
 
 ### Solution
-현재 @OneToMany 관계에 있는 컬럼들은 @JsonIgnore처리했으나, 요구사항 명세서대로 ResponseEntity에 외래키는 포함되지 않아 추가적으로 해결 필요
+현재 `@OneToMany` 관계에 있는 컬럼들은 `@JsonIgnore`처리했으나, 상세페이지 조회의 경우 요구사항 명세서대로 `ResponseEntity`에 외래키는 포함되지 않아 추가적으로 수정 필요
 
 
 ## II. 접근방법
-이번 주는 TDD 방식으로 구현해보았는데, 앞서 말했 듯 기존 프로젝트에서 수정하는 방식으로 Jwt 로그인을 적용하다보니 이슈들이 생겼습니다.
-아직은 테스트코드에 능숙한 편은 아니다 보니 혹시 테스트코드가 잘못 짜여졌나 싶어 PostMan으로 같이 확인하며 개발 진행했습니다.
+새로운 프로젝트에서 시작하지 않고 스프링시큐티리 세션 로그인방식이 적용된 기존 프로젝트에서 작업을 시작하기도 했고, JWT를 이용한 로그인 구현이 아직은 익숙하지 않아 이슈들을 계속 생겼었습니다. 이번 주에는 다른 주차들에 비해 테스트 코드를 많이 작성해보며 TDD 방식으로 문제를 하나씩 해결해나갔고, PostMan으로 적절한 응답이 호출되는지 확인하며 개발 진행했습니다.
+- **내 도서 리스트**
 ![img.png](img.png)
+- **내 도서 상세페이지 조회**
 ![img_1.png](img_1.png)
