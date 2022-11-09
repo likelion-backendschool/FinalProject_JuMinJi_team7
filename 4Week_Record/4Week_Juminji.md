@@ -17,24 +17,176 @@
 
 ---
 
-**[접근 방법]**
+##  I. 개발 도중 발생한 이슈 
+ 기존 세션 로그인방식으로 세팅해놓았던 프로젝트에서 시작하다보니, 이전에 개별 프로젝트에서 Jwt 로그인을 구현했을 때는
+발생하지 않았던 몇 가지 이슈들이 있었습니다.
+### 1. 로그인 후 토큰 인증처리되지 않는 문제 [임의 해결]
+### Bug
+로그인 후 인증 처리된 토큰 정보로 memberContext 생성하여 memberContext 정보 가져오는 테스트 실패
+```
+Range for response status value 403 expected:<SUCCESSFUL> but was:<CLIENT_ERROR>
+필요:SUCCESSFUL
+실제   :CLIENT_ERROR
+```
+### Bug Detail
+```
+MockHttpServletRequest:
+      HTTP Method = POST
+      Request URI = /api/v1/member/login
+       Parameters = {}
+          Headers = [Content-Type:"application/json;charset=UTF-8", Content-Length:"56"]
+             Body = {
+    "username": "user1",
+    "password": "12341234"
+}
 
-체크리스트를 중심으로 각각의 기능을 구현하기 위해 어떤 생각을 했는지 정리합니다.
+    Session Attrs = {}
 
-- 무엇에 중점을 두고 구현하였는지, 어떤 공식문서나 예제를 참고하여 개발하였는지 뿐만 아니라 미션을 진행하기 전 개인적으로 실습한 것도 포함하여 작성해주시기 바랍니다.
-- 실제 개발 과정에서 목표하던 바가 무엇이었는지 작성해주시기 바랍니다.
-- 구현 과정에 따라 어떤 결과물이 나오게 되었는지 최대한 상세하게 작성해주시기 바랍니다.
+Handler:
+             Type = com.ll.exam.Week_Mission.app.member.controller.ApiMemberController
+           Method = com.ll.exam.Week_Mission.app.member.controller.ApiMemberController#login(LoginForm)
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 200
+    Error message = null
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", Authentication:"..생략.. 인코딩된 토큰 값", Content-Type:"application/json", X-Content-Type-Options:"nosniff", X-XSS-Protection:"1; mode=block", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = application/json
+             Body = {"resultCode":"S-1","msg":"성공","data":{"accessToken":"..생략.. 인코딩된 토큰 값"},"success":true,"fail":false}
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+
+MockHttpServletRequest:
+      HTTP Method = GET
+      Request URI = /api/v1/member/me
+       Parameters = {}
+          Headers = [Authorization:"Bearer eyJhbGciOiJub25lIn0.eyJib2R5Ijoie1wiaWRcIjoyLFwiY3JlYXRlRGF0ZVwiOlsyMDIyLDExLDgsMTMsMjMsNSw2NzA3ODgwMDBdLFwidXBkYXRlRGF0ZVwiOlsyMDIyLDExLDgsMTMsMjMsNiwyMTE0MjYwMDBdLFwidXNlcm5hbWVcIjpcInVzZXIxXCIsXCJlbWFpbFwiOlwidXNlcjFAbWVvdGJvb2tzLmNvbVwiLFwibmlja25hbWVcIjpcInVzZXIxQXV0aG9yXCJ9IiwiaWF0IjoxNjY3ODgxMzg3LCJleHAiOjE2Njc4ODMxODd9."]
+             Body = null
+    Session Attrs = {}
+
+Handler:
+             Type = null
+
+Async:
+    Async started = false
+     Async result = null
+
+Resolved Exception:
+             Type = null
+
+ModelAndView:
+        View name = null
+             View = null
+            Model = null
+
+FlashMap:
+       Attributes = null
+
+MockHttpServletResponse:
+           Status = 403
+    Error message = Access Denied
+          Headers = [Vary:"Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", X-Content-Type-Options:"nosniff", X-XSS-Protection:"1; mode=block", Cache-Control:"no-cache, no-store, max-age=0, must-revalidate", Pragma:"no-cache", Expires:"0", X-Frame-Options:"DENY"]
+     Content type = null
+             Body = 
+    Forwarded URL = null
+   Redirected URL = null
+          Cookies = []
+```
+### Problem Code
+```java
+// JwtAuthorizationTest.java
+
+    @Test
+    @DisplayName("로그인 후 얻은 JWT 토큰으로 현재 로그인 한 회원정보 가져오기 (강제 세션 로그인 -> memberContext)")
+    void t5() throws Exception {
+        // When
+        ResultActions resultActions = mvc
+                .perform(
+                        post("/api/v1/member/login")
+                                .content("""
+                                        {
+                                            "username": "user1",
+                                            "password": "12341234"
+                                        }
+                                        """.stripIndent())
+                                .contentType(new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
+                )
+                .andDo(print());
+
+        // Then
+        resultActions
+                .andExpect(status().is2xxSuccessful());
+
+        var mvcResult = resultActions.andReturn();
+
+        MockHttpServletResponse response = mvcResult.getResponse();
+
+        String accessToken = response.getHeader("Authentication");
+
+        resultActions = mvc
+                .perform(
+                        get("/api/v1/member/me")
+                                .header("Authorization", "Bearer " + accessToken)
+                )
+                .andDo(print());
+
+        // Then
+        resultActions
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.resultCode").value("S-1"))
+                .andExpect(jsonPath("$.msg").value("성공"))
+                .andExpect(jsonPath("$.data.id").value(2))
+                .andExpect(jsonPath("$.data.createDate").isNotEmpty())
+                .andExpect(jsonPath("$.data.updateDate").isNotEmpty())
+                .andExpect(jsonPath("$.data.username").value("user1"))
+                .andExpect(jsonPath("$.data.email").value("user1@meotbooks.com"))
+                .andExpect(jsonPath("$.data.nickname").value("user1Author"))
+                .andExpect(jsonPath("$.fail").value(false))
+                .andExpect(jsonPath("$.success").value(true));
+    }
+```
+
+### Solution
+1. Jwt 인증 필터 log.debug 로 로그 찍어봐도 원하는 내용이 출력되지 않아 해당 필터 자체가 안 먹는 현상인가 의심
+   -> ApiSecurityConfig에 새로 도입한 CORS 의심
+   ->  스프링시큐리티와 CORS 같이 사용시 생길 수 있는 문제(https://2step-hyun.tistory.com/112) 찾아보며 해결 시도
+   -> 실패
+2. 토큰은 제대로 헤더에 담겨오므로 이제 남은 건 토큰 인증과정에서의 문제라는 생각에 JwtProvider.getClaims() 코드 의심
+   -> `parseClaimsJws(token)->.parseClaimsJwt(token)`로 변경 후 문제 임의 해결
+   -> 정확한 이유는 알 수 없어 더 조사 필요
+
+https://stackoverflow.com/questions/61016123/io-jsonwebtoken-unsupportedjwtexception-signed-claims-jwss-are-not-supported
+
+### 2. 내 도서 리스트 및 상세페이지 조회 순환참조 [임의 해결]
+### Bug
+테스트 결과 MockHttpServletResponse은 200이 뜨나, 
+```
+Request processing failed; nested exception is org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON:
+```
+위와 같은 문제로 테스트 미통과
+
+### Solution
+현재 @OneToMany 관계에 있는 컬럼들은 @JsonIgnore처리했으나, 요구사항 명세서대로 ResponseEntity에 외래키는 포함되지 않아 추가적으로 해결 필요
 
 
-
-**[특이사항]**
-
-구현 과정에서 아쉬웠던 점 / 궁금했던 점을 정리합니다.
-
-- 추후 리팩토링 시, 어떤 부분을 추가적으로 진행하고 싶은지에 대해 구체적으로 작성해주시기 바랍니다.
-
-  **참고: [Refactoring]**
-
-    - Refactoring 시 주로 다루어야 할 이슈들에 대해 리스팅합니다.
-    - 1차 리팩토링은 기능 개발을 종료한 후, 스스로 코드를 다시 천천히 읽어보면서 진행합니다.
-    - 2차 리팩토링은 피어리뷰를 통해 전달받은 다양한 의견과 피드백을 조율하여 진행합니다.
+## II. 접근방법
+이번 주는 TDD 방식으로 구현해보았는데, 앞서 말했 듯 기존 프로젝트에서 수정하는 방식으로 Jwt 로그인을 적용하다보니 이슈들이 생겼습니다.
+아직은 테스트코드에 능숙한 편은 아니다 보니 혹시 테스트코드가 잘못 짜여졌나 싶어 PostMan으로 같이 확인하며 개발 진행했습니다.
+![img.png](img.png)
+![img_1.png](img_1.png)
