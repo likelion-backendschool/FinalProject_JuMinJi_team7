@@ -30,6 +30,7 @@ public class JwtProvider {
                 .claim("body", Ut.json.toStr(claims)) // JWT payload에 저장되는 정보 단위
                 .setIssuedAt(now) // 토큰 발행시간
                 .setExpiration(new Date(now.getTime() + tokenValidTime)) // 토큰 만료시간
+                .signWith(getSecretKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -39,7 +40,7 @@ public class JwtProvider {
             Jwts.parserBuilder()
                     .setSigningKey(getSecretKey())
                     .build()
-                    .parseClaimsJwt(token);
+                    .parseClaimsJws(token);
         } catch (Exception e) {
             return false;
         }
@@ -52,7 +53,7 @@ public class JwtProvider {
         String body = Jwts.parserBuilder()
                 .setSigningKey(getSecretKey())
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody()
                 .get("body", String.class);
 
