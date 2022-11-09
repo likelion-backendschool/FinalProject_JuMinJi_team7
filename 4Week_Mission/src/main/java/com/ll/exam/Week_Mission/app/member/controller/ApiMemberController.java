@@ -6,6 +6,8 @@ import com.ll.exam.Week_Mission.app.member.entity.Member;
 import com.ll.exam.Week_Mission.app.member.service.MemberService;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
 import com.ll.exam.Week_Mission.util.Ut;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Tag(name = "ApiMemberController", description = "로그인 기능과 로그인 회원 정보 제공 기능 담당 컨트롤러")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/member")
@@ -51,7 +54,7 @@ public class ApiMemberController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<RsData> me(@AuthenticationPrincipal MemberContext memberContext) {
+    public ResponseEntity<RsData> me(@Parameter(hidden = true) @AuthenticationPrincipal MemberContext memberContext) {
         if (memberContext == null) {
             return Ut.spring.responseEntityOf(RsData.failOf(null));
         }

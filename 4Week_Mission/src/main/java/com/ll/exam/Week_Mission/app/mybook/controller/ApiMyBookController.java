@@ -9,6 +9,8 @@ import com.ll.exam.Week_Mission.app.product.entity.Product;
 import com.ll.exam.Week_Mission.app.product.service.ProductService;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
 import com.ll.exam.Week_Mission.util.Ut;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Tag(name = "ApiMyBookController", description = "내 도서 리스트 기능과 도서 상세정보 구현 기능 담당 컨트롤러")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/myBooks")
@@ -25,7 +28,7 @@ public class ApiMyBookController {
     private final ProductService productService;
 
     @GetMapping("")
-    public ResponseEntity<RsData> showMyBookList(@AuthenticationPrincipal MemberContext memberContext){
+    public ResponseEntity<RsData> showMyBookList(@Parameter(hidden = true) @AuthenticationPrincipal MemberContext memberContext){
         Member member = memberContext.getMember();
 
         if(member == null){
@@ -44,7 +47,8 @@ public class ApiMyBookController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<RsData> showDetail(@PathVariable Long id, @AuthenticationPrincipal MemberContext memberContext) {
+    public ResponseEntity<RsData> showDetail(@Parameter(hidden = true) @PathVariable Long id,
+                                             @Parameter(hidden = true) @AuthenticationPrincipal MemberContext memberContext) {
         Member member = memberContext.getMember();
 
         if(member == null){
