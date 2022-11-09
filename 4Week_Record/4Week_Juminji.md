@@ -18,9 +18,9 @@
 ---
 
 ##  I. 개발 도중 발생한 이슈 
-### 1. 로그인 후 토큰 인증처리되지 않는 문제 [임의 해결]
+### 1. 로그인 후 토큰 인증처리되지 않는 문제 [해결]
 ### Bug
-로그인 후 인증 처리된 토큰 정보로 memberContext 생성하여 memberContext 정보 가져오는 테스트 실패
+로그인 후 인증 처리된 토큰 정보로 memberContext 생성하여  정보 가져오는 테스트 실패
 ```
 Range for response status value 403 expected:<SUCCESSFUL> but was:<CLIENT_ERROR>
 필요:SUCCESSFUL
@@ -105,7 +105,7 @@ MockHttpServletResponse:
    Redirected URL = null
           Cookies = []
 ```
-### Problem Code
+### Code
 ```java
 // JwtAuthorizationTest.java
 
@@ -159,7 +159,105 @@ MockHttpServletResponse:
                 .andExpect(jsonPath("$.success").value(true));
     }
 ```
+```
+// JwtProvider.java
+@RequiredArgsConstructor
+@Component
+public class JwtProvider {
+    private final SecretKey jwtSecretKey;
+    private long tokenValidTime = 365 * 24 * 60 * 60 * 1000L; // 1년 // 365 * 24 * 60 * 60 * 1000 * 1 ms
 
+    private SecretKey getSecretKey() {
+        return jwtSecretKey;
+    }
+
+    public String generateAccessToken(Map<String, Object> claims) {
+        Date now = new Date();
+
+        return Jwts.builder()
+                .claim("body", Ut.json.toStr(claims)) // JWT payload에 저장되는 정보 단위
+                .setIssuedAt(now) // 토큰 발행시간
+                .setExpiration(new Date(now.getTime() + tokenValidTime)) // 토큰 만료시간
+                .signWith(getSecretKey(), SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+    /* 토큰 유효성 검증 */
+    public boolean verify(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSecretKey())
+                    .build()
+                    .parseClaimsJws(token);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /* 토큰 claims -> map */
+    public Map<String, Object> getClaims(String token) {
+        String body = Jwts.parserBuilder()
+                .setSigningKey(getSecretKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("body", String.class);
+
+        return Ut.json.toMap(body);
+    }
+   }
+```
+```
+@RequiredArgsConstructor
+@Component
+public class JwtProvider {
+    private final SecretKey jwtSecretKey;
+    private long tokenValidTime = 365 * 24 * 60 * 60 * 1000L; // 1년 // 365 * 24 * 60 * 60 * 1000 * 1 ms
+
+    private SecretKey getSecretKey() {
+        return jwtSecretKey;
+    }
+
+    public String generateAccessToken(Map<String, Object> claims) {
+        Date now = new Date();
+
+        return Jwts.builder()
+                .claim("body", Ut.json.toStr(claims)) // JWT payload에 저장되는 정보 단위
+                .setIssuedAt(now) // 토큰 발행시간
+                .setExpiration(new Date(now.getTime() + tokenValidTime)) // 토큰 만료시간
+                .signWith(getSecretKey(), SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+    /* 토큰 유효성 검증 */
+    public boolean verify(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSecretKey())
+                    .build()
+                    .parseClaimsJws(token);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /* 토큰 claims -> map */
+    public Map<String, Object> getClaims(String token) {
+        String body = Jwts.parserBuilder()
+                .setSigningKey(getSecretKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("body", String.class);
+
+        return Ut.json.toMap(body);
+    }
+}
+```
 ### Solution
 1. Jwt 인증 필터 log.debug 로 로그 찍어봐도 원하는 내용이 출력되지 않아 해당 필터 자체가 안 먹는 현상인가 의심
    -> ApiSecurityConfig에 새로 도입한 CORS 의심
@@ -167,9 +265,12 @@ MockHttpServletResponse:
    -> 실패
 2. 토큰은 제대로 헤더에 담겨오므로 이제 남은 건 토큰 인증과정에서의 문제라는 생각에 JwtProvider.getClaims() 코드 의심
    -> `parseClaimsJws(token)->.parseClaimsJwt(token)`로 변경 후 문제 임의 해결
-   -> 정확한 이유는 알 수 없어 더 조사 필요
-
-https://stackoverflow.com/questions/61016123/io-jsonwebtoken-unsupportedjwtexception-signed-claims-jwss-are-not-supported
+3. **근본적 원인** : JwtProvider.generateAccessToken()에서 HS512 알고리즘으로 디지털 서명하는 코드(`.signWith(getSecretKey(), SignatureAlgorithm.HS512)`) 실수로 제거 
+-> 다시 추가한 후에는 `parseClaimsJws(token)`로 토큰을 Jws로 파싱 가능
+-> **문제 해결**
+- [JWT와 JWS](https://escapefromcoding.tistory.com/255)
+- [참고한 stackoverflow 1](https://stackoverflow.com/questions/42397484/jwt-signature-does-not-match-locally-computed-signature/42400145)
+- [참고한 stackoverflow 2](https://stackoverflow.com/questions/61016123/io-jsonwebtoken-unsupportedjwtexception-signed-claims-jwss-are-not-supported)
 
 ### 2. 내 도서 리스트 및 상세페이지 조회 순환참조 [임의 해결]
 ### Bug
