@@ -1,0 +1,132 @@
+<!doctype html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://thymeleaf.org"
+        layout:decorate="~{fragment/adm_layout}"
+>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
+
+<div class="untree_co-section bg-light">
+    <div class="container">
+
+        <div class="row mb-5">
+            <div class="col-12 text-center" data-aos-delay="0">
+                <h2 class="heading"> 정산 목록</h2>
+            </div>
+        </div> <!-- /.row -->
+
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                <tr class="align-self-center">
+                                    <th>
+                                        <input type="checkbox" class="orderItemCheckboxAll checkbox">
+                                    </th>
+                                    <th width="10%">결제일자</th>
+                                    <th width="5%">품번</th>
+                                    <th width="8%">상품명</th>
+                                    <th width="8%">결제가격</th>
+                                    <th>PG Fee</th>
+                                    <th width="8%">환불가격</th>
+                                    <th>판매자</th>
+                                    <th>예상정산가</th>
+                                    <th>정산번호</th>
+                                    <th width="10%">정산일자</th>
+                                    <th>정산여부</th>
+                                    <th width="5%">비고</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item, num : ${items}">
+                                    <td>
+                                    <input th:if="${item.rebateAvailable}"
+                                           onchange="OrderItemCheckbox__changed();"
+                                           type="checkbox" class="orderItemCheckbox checkbox"
+                                           th:value="${item.orderItem.id}">
+                                    </td>
+                                    <td>[[${#temporals.format(item.payDate, 'yy-MM-dd HH:mm:ss')}]]</td>
+                                    <td>[[${item.orderItem.id}]]</td>
+                                    <td>[[${item.productSubject}]]</td>
+                                    <td>[[${item.payPrice}]]</td>
+                                    <td>[[${item.pgFee}]]</td>
+                                    <td>[[${item.refundPrice}]]</td>
+                                    <td>[[${item.sellerName}]]</td>
+                                    <td>[[${item.calculateRebatePrice}]]</td>
+                                    <td>[[${item.rebateCashLog?.id}]]</td>
+                                    <td>[[${#temporals.format(item.rebateDate, 'yy-MM-dd HH:mm:ss')}]]</td>
+                                    <td>
+                                        <span th:if="${item.rebateAvailable} and ${item.rebateCashLog?.id} == null" class="badge badge-boxed badge-soft-primary">정산준비중</span>
+                                        <span th:if="${item.rebateAvailable == false} and ${item.rebateCashLog?.id} == null" class="badge badge-boxed bg-light text-dark">정산불필요</span>
+                                        <span th:if="${item.rebateCashLog?.id} != null" class="badge badge-boxed badge-soft-primary">정산완료</span>
+                                    </td>
+                                    <td>
+                                        <a th:if="${item.rebateAvailable}" href="javascript:;" onclick="$(this).next().submit();" class="badge badge-dark">건별정산</a>
+                                        <form method="POST" th:action="@{|/adm/rebate/rebateOne/${item.orderItem.id}|}" hidden>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <a href="javascript:;" onclick="RebateForm__submit();" class="btn btn-outline-secondary btn-sm py-2 px-3 mt-3">
+                                <span class="ml-1" style="font-size:15px;">선택정산</span>
+                            </a>
+                            <form method="POST" name="rebateForm" th:action="@{|/adm/rebate/rebate|}" hidden>
+                                <input type="hidden" name="ids">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div> <!-- /.container -->
+</div> <!-- /.untree_co-hero -->
+<script layout:fragment="script" type='text/javascript'>
+    // 전체선택 체크박스
+    const $orderItemCheckboxAll = $('.orderItemCheckboxAll');
+    // 각 아이템 별 체크박스
+    const $orderItemCheckbox = $('.orderItemCheckbox');
+
+    $orderItemCheckboxAll.change(function () {
+        const allChecked = $(this).prop('checked');
+        $orderItemCheckbox.prop('checked', allChecked);
+    });
+
+    function OrderItemCheckbox__changed() {
+        const allChecked = $orderItemCheckbox.length == $('.orderItemCheckbox:checked').length;
+
+        $orderItemCheckboxAll.prop('checked', allChecked);
+    }
+
+    let RebateForm__submitDone = false;
+
+    /* 선택정산 메서드 */
+    function RebateForm__submit() {
+        if (RebateForm__submitDone) return;
+
+        const form = document.rebateForm;
+
+        const $checked = $('.orderItemCheckbox:checked');
+
+        if ($checked.length == 0) {
+            alert('정산할 주문품목을 선택해주세요.');
+            return;
+        }
+
+        const ids = $checked.map((index, el) => $(el).val()).get();
+        form.ids.value = ids;
+        form.submit();
+        RebateForm__submitDone = true;
+    }
+</script>
+</body>
+</html>

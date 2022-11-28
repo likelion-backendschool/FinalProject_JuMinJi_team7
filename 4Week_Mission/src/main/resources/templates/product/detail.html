@@ -1,0 +1,98 @@
+<!doctype html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:th="http://thymeleaf.org"
+        layout:decorate="~{fragment/usr_layout}"
+>
+
+<body layout:fragment="content" data-spy="scroll" data-target=".site-navbar-target" data-offset="100">
+
+<div class="untree_co-section bg-light">
+    <div class="container">
+        <div class="px-2 pt-4">
+            <h1 class="font-bold text-lg">
+                <i class="fa-solid fa-book-open"></i>
+                도서 정보
+            </h1>
+
+            <div class="flex flex-col mt-2 gap-3">
+                <div>
+                    <h2 class="font-bold" th:text="${product.subject}"></h2>
+                </div>
+
+                <div class="flex">
+                    <svg width="20" height="20" th:data-jdenticon-value="${product.author.id}"></svg>
+                    <div th:text="${product.author.nickname}"></div>
+                </div>
+
+                <div th:text="|￦ ${product.getSalePrice()}|"></div>
+
+                <div class="flex flex-wrap gap-3">
+                    <div class="flex flex-wrap gap-3">
+                        <div>
+                            <div class="badge">
+                                <i class="fa-solid fa-pen"></i>
+                                <span class="ml-1">작성</span>
+                                <span class="ml-1"
+                                      th:text="${#temporals.format(product.createDate, 'yy-MM-dd HH:mm')}"></span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="badge badge-outline">
+                                <i class="fa-solid fa-eraser"></i>
+                                <span class="ml-1">수정</span>
+                                <span class="ml-1"
+                                      th:text="${#temporals.format(product.updateDate, 'yy-MM-dd HH:mm')}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:utext="${product.getExtra_productTagLinks()}"></div>
+
+                <div>
+                    <a th:if="${product.author != null and #authentication.getPrincipal().getUsername() == product.author.username}"
+                       th:href="@{|/product/${product.id}/modify|}"
+                       class="btn btn-secondary btn-sm btn-outline">
+                        <i class="fa-solid fa-eraser"></i>
+                        <span class="ml-1">수정</span>
+                    </a>
+
+                    <a th:if="${product.author != null and #authentication.getPrincipal().getUsername() == product.author.username}" href="javascript:;"
+                       onclick="if ( confirm('정말로 삭제하시겠습니까?') ) $(this).next().submit();"
+                       class="btn btn-secondary btn-sm btn-outline">
+                        <i class="fa-solid fa-trash"></i>
+                        <span class="ml-1">삭제</span>
+                    </a>
+                    <form th:action="@{|/product/${product.id}/remove|}" method="POST" hidden></form>
+
+                    <button type="button" onclick="history.back();" class="btn btn-secondary btn-sm  btn-outline">
+                        <i class="fa-solid fa-angle-left"></i>
+                        <span class="ml-1">이전</span>
+                    </button>
+                </div>
+
+
+
+                <div>
+                    <h2 class="font-bold"><i class="fa-solid fa-indent"></i> 목차</h2>
+
+                    <ol class="pl-6 mt-2">
+                        <li style="list-style: decimal" class="mt-1"
+                            th:each="i : ${#numbers.sequence(posts.size() - 1, 0, -1)}"
+                            th:with="post=${posts[i]}">
+                            <a th:if="${product.author != null and #authentication.getPrincipal().getUsername() == product.author.username}" class="text-link" target="_blank" th:href="@{|/post/${post.id}|}"
+                               th:text="|${post.subject}|"></a>
+                            <span th:unless="${product.author != null and #authentication.getPrincipal().getUsername() == product.author.username}" th:text="|${post.subject}|"></span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
