@@ -223,21 +223,29 @@ public class JwtProvider {
 - [참고한 stackoverflow 1](https://stackoverflow.com/questions/42397484/jwt-signature-does-not-match-locally-computed-signature/42400145)
 - [참고한 stackoverflow 2](https://stackoverflow.com/questions/61016123/io-jsonwebtoken-unsupportedjwtexception-signed-claims-jwss-are-not-supported)
 
-### 2. 내 도서 리스트 및 상세페이지 조회 순환참조 [임의 해결]
-### Bug
+### 2. 내 도서 리스트 및 상세페이지 조회 순환참조 [해결]
+
+### 2-1. Bug
 테스트 결과 MockHttpServletResponse은 200이 뜨나, 
 ```
 Request processing failed; nested exception is org.springframework.http.converter.HttpMessageNotWritableException: Could not write JSON:
 ```
 위와 같은 문제로 테스트 미통과
 
-### Solution
+### 2-1. Solution
 현재 `@OneToMany` 관계에 있는 컬럼들은 `@JsonIgnore`처리했으나, 상세페이지 조회의 경우 요구사항 명세서대로 `ResponseEntity`에 외래키는 포함되지 않아 추가적으로 수정 필요
 
+### 2-2. Bug
+리액트에서 작동 안되는 현상(아예 빈 화면이 나오는 현상)
+
+### 2-2 Solution
+[제공된 리액트 코드](https://codepen.io/jangka44/pen/wvXGwwv?editors=0010)에서 기대하는 API 데이터 컬럼명 및 계층구조와 일치하도록 수정
 
 ## II. 접근방법
 새로운 프로젝트에서 시작하지 않고 스프링시큐티리 세션 로그인방식이 적용된 기존 프로젝트에서 작업을 시작하기도 했고, JWT를 이용한 로그인 구현이 아직은 익숙하지 않아 이슈들을 계속 생겼었습니다. 이번 주에는 다른 주차들에 비해 테스트 코드를 많이 작성해보며 TDD 방식으로 문제를 하나씩 해결해나갔고, PostMan으로 적절한 응답이 호출되는지 확인하며 개발 진행했습니다.
 - **내 도서 리스트**
-![img.png](img.png)
+<img width="1229" alt="스크린샷 2022-11-28 오후 7 27 03" src="https://user-images.githubusercontent.com/63441091/204256837-3b34bc87-072d-4795-b7ad-0d39a3d13efd.png">
+
 - **내 도서 상세페이지 조회**
-![img_1.png](img_1.png)
+<img width="1229" alt="스크린샷 2022-11-28 오후 7 28 31" src="https://user-images.githubusercontent.com/63441091/204256937-159deae9-15b5-4789-9f7e-266c8f1dbf1d.png">
+<img width="1229" alt="스크린샷 2022-11-28 오후 7 28 39" src="https://user-images.githubusercontent.com/63441091/204256980-dc9973d0-66d1-424d-a3da-858075322419.png">
