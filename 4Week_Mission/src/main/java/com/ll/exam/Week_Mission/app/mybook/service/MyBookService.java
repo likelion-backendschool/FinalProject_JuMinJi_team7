@@ -2,7 +2,9 @@ package com.ll.exam.Week_Mission.app.mybook.service;
 
 import com.ll.exam.Week_Mission.app.exception.DataNotFoundException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
+import com.ll.exam.Week_Mission.app.mybook.dto.response.MyBookDto;
 import com.ll.exam.Week_Mission.app.mybook.entity.MyBook;
+import com.ll.exam.Week_Mission.app.mybook.mapper.MyBookMapper;
 import com.ll.exam.Week_Mission.app.mybook.repository.MyBookRepository;
 import com.ll.exam.Week_Mission.app.order.entity.Order;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +56,27 @@ public class MyBookService {
         return myBookRepository.findById(id).orElse(null);
     }
 
-    public boolean actorCanSee(Member actor, MyBook myBook) {
-        return actor.getId().equals(myBook.getMember().getId());
+    public boolean actorCanSee(Member actor, MyBookDto myBookDto) {
+        return actor.getId().equals(myBookDto.getOwnerId());
+    }
+
+    // REST API
+    public List<MyBookDto> findByOwnerId(Long id) {
+        List<MyBook> myBooks = myBookRepository.findByMemberId(id);
+
+        List<MyBookDto> myBookDtos = myBooks.stream()
+                .map(myBook -> MyBookDto.toDto(myBook))
+                .collect(Collectors.toList());
+
+        return myBookDtos;
+    }
+
+    // REST API
+    public MyBookDto findByIdForPrint(Long id) {
+        MyBook myBook = findById(id);
+
+        MyBookDto myBookDto = MyBookDto.toDto(myBook);
+
+        return myBookDto;
     }
 }

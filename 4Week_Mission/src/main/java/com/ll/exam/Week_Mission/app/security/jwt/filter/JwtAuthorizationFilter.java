@@ -41,7 +41,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 /* 토큰 유효성 1차 검증 */
                 // JWT의 장점인 DB없이 CPU에서 정보 조회하는 방법은 아니지만 정보 불일치 문제 해결가능
                 Member member = memberService.findByUsername(claims.get("username").toString());
-
+                //log.info("token="+token);
                 /* 토큰 유효성 2차 검증 */
                 // 화이트리스트에 포함되는지
                 if ( memberService.verifyWithWhiteList(member, token) ) {

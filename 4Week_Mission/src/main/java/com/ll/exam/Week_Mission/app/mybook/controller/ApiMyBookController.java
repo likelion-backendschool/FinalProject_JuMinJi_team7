@@ -2,9 +2,12 @@ package com.ll.exam.Week_Mission.app.mybook.controller;
 
 import com.ll.exam.Week_Mission.app.base.dto.RsData;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
+import com.ll.exam.Week_Mission.app.mybook.dto.response.MyBookDto;
 import com.ll.exam.Week_Mission.app.mybook.entity.MyBook;
 import com.ll.exam.Week_Mission.app.mybook.service.MyBookService;
+import com.ll.exam.Week_Mission.app.post.dto.response.PostDto;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
+import com.ll.exam.Week_Mission.app.product.dto.reponse.ProductDto;
 import com.ll.exam.Week_Mission.app.product.entity.Product;
 import com.ll.exam.Week_Mission.app.product.service.ProductService;
 import com.ll.exam.Week_Mission.app.security.dto.MemberContext;
@@ -29,13 +32,13 @@ public class ApiMyBookController {
 
     @GetMapping("")
     public ResponseEntity<RsData> showMyBookList(@Parameter(hidden = true) @AuthenticationPrincipal MemberContext memberContext){
-        Member member = memberContext.getMember();
+        Member owner = memberContext.getMember();
 
-        if(member == null){
+        if(owner == null){
             return Ut.spring.responseEntityOf(RsData.of("F-2", "일치하는 회원이 존재하지 않습니다."));
         }
 
-        List<MyBook> myBooks = myBookService.findByMemberId(member.getId());
+        List<MyBookDto> myBooks = myBookService.findByOwnerId(owner.getId());
 
         return Ut.spring.responseEntityOf(
                 RsData.successOf(
@@ -55,18 +58,9 @@ public class ApiMyBookController {
             return Ut.spring.responseEntityOf(RsData.of("F-2", "일치하는 회원이 존재하지 않습니다."));
         }
 
-        MyBook myBook = myBookService.findById(id);
+        MyBookDto myBook = myBookService.findByIdForPrint(id);
 
-        long ownerId = myBook.getMember().getId();
-
-        // fixme: product 객체 자체로 전달 (problem->jackson.databind.exc.InvalidDefinitionException)
-        // Product product = myBook.getProduct();
-        long productId= myBook.getProduct().getId();
-        String productSubject = myBook.getProduct().getSubject();
-        String productAuthorName = myBook.getProduct().getAuthor().getUsername();
-
-        // fixme: Post 리스트 자체로 전달 (problem->jackson.databind.exc.InvalidDefinitionException)
-        List<String> bookChaptersSubject = productService.findPostsByProduct(myBook.getProduct()).stream().map(Post::getSubject).collect(Collectors.toList());
+        List<PostDto> bookChapters = productService.findPostsByProductForPrint(myBook.getProduct());
 
         if (myBook == null) {
             return Ut.spring.responseEntityOf(RsData.of("F-1", "해당 도서 상품은 존재하지 않습니다."));
@@ -80,11 +74,7 @@ public class ApiMyBookController {
                 RsData.successOf(
                         Ut.mapOf(
                                 "myBook", myBook,
-                                "ownerId", ownerId,
-                                "productId", productId,
-                                "productSubject", productSubject,
-                                "productAuthorName", productAuthorName,
-                                "bookChaptersSubject", bookChaptersSubject
+                                "bookChapters", bookChapters
                         )
                 )
         );

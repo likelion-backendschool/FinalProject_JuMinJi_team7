@@ -2,6 +2,8 @@ package com.ll.exam.Week_Mission.app.product.service;
 
 import com.ll.exam.Week_Mission.app.exception.DataNotFoundException;
 import com.ll.exam.Week_Mission.app.member.entity.Member;
+import com.ll.exam.Week_Mission.app.mybook.dto.response.MyBookDto;
+import com.ll.exam.Week_Mission.app.post.dto.response.PostDto;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
 import com.ll.exam.Week_Mission.app.post.domain.hashtag.entity.PostHashTag;
 import com.ll.exam.Week_Mission.app.post.domain.hashtag.service.PostHashTagService;
@@ -9,6 +11,7 @@ import com.ll.exam.Week_Mission.app.post.domain.keyword.entity.PostKeyword;
 import com.ll.exam.Week_Mission.app.post.domain.keyword.service.PostKeywordService;
 import com.ll.exam.Week_Mission.app.product.domain.tag.entity.ProductTag;
 import com.ll.exam.Week_Mission.app.product.domain.tag.service.ProductTagService;
+import com.ll.exam.Week_Mission.app.product.dto.reponse.ProductDto;
 import com.ll.exam.Week_Mission.app.product.entity.Product;
 import com.ll.exam.Week_Mission.app.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -166,5 +169,20 @@ public class ProductService {
                 .collect(toList());
 
         loadForPrintData(products, actor);
+    }
+    // REST API
+    public List<PostDto> findPostsByProductForPrint(ProductDto productDto) {
+        Long authorId = productDto.getAuthorId();
+        Long postKeywordId = productDto.getPostKeywordId();
+        List<PostHashTag> postTags = postTagService.getPostTags(authorId, postKeywordId);
+
+        // 게시글 태그 리스트에서 게시글 리스트만 추출
+        List<Post> posts = postTags
+                .stream()
+                .map(PostHashTag::getPost)
+                .collect(Collectors.toList());
+
+        // Entity to Dto
+        return posts.stream().map(post -> PostDto.toDto(post)).collect(Collectors.toList());
     }
 }
