@@ -1,6 +1,7 @@
 package com.ll.exam.Week_Mission.app.post.service;
 
 import com.ll.exam.Week_Mission.app.member.entity.Member;
+import com.ll.exam.Week_Mission.app.post.dto.response.PostDto;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
 import com.ll.exam.Week_Mission.app.post.domain.hashtag.entity.PostHashTag;
 import com.ll.exam.Week_Mission.app.post.domain.hashtag.service.PostHashTagService;
@@ -125,5 +126,13 @@ public class PostService {
                 .collect(toList());
 
         loadForPrintData(posts);
+    }
+    public PostDto toDto(Post post) {
+        return PostDto.builder()
+                .id(post.getId())
+                .subject(post.getSubject())
+                .content(post.getContent())
+                .contentHtml(post.getContentHtml())
+                .build();
     }
 }

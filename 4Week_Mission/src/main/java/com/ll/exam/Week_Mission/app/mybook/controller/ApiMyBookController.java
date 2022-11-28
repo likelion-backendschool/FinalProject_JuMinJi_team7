@@ -60,8 +60,6 @@ public class ApiMyBookController {
 
         MyBookDto myBook = myBookService.findByIdForPrint(id);
 
-        List<PostDto> bookChapters = productService.findPostsByProductForPrint(myBook.getProduct());
-
         if (myBook == null) {
             return Ut.spring.responseEntityOf(RsData.of("F-1", "해당 도서 상품은 존재하지 않습니다."));
         }
@@ -73,8 +71,7 @@ public class ApiMyBookController {
         return Ut.spring.responseEntityOf(
                 RsData.successOf(
                         Ut.mapOf(
-                                "myBook", myBook,
-                                "bookChapters", bookChapters
+                                "myBook", myBook
                         )
                 )
         );

@@ -9,6 +9,7 @@ import com.ll.exam.Week_Mission.app.post.domain.hashtag.entity.PostHashTag;
 import com.ll.exam.Week_Mission.app.post.domain.hashtag.service.PostHashTagService;
 import com.ll.exam.Week_Mission.app.post.domain.keyword.entity.PostKeyword;
 import com.ll.exam.Week_Mission.app.post.domain.keyword.service.PostKeywordService;
+import com.ll.exam.Week_Mission.app.post.service.PostService;
 import com.ll.exam.Week_Mission.app.product.domain.tag.entity.ProductTag;
 import com.ll.exam.Week_Mission.app.product.domain.tag.service.ProductTagService;
 import com.ll.exam.Week_Mission.app.product.dto.reponse.ProductDto;
@@ -34,6 +35,7 @@ public class ProductService {
     private final PostKeywordService postKeywordService;
     private final ProductTagService productTagService;
     private final PostHashTagService postTagService;
+    private final PostService postService;
 
 
     public List<Product> findAllForPrintByOrderByIdDesc(Member actor) {
@@ -170,19 +172,23 @@ public class ProductService {
 
         loadForPrintData(products, actor);
     }
-    // REST API
-    public List<PostDto> findPostsByProductForPrint(ProductDto productDto) {
-        Long authorId = productDto.getAuthorId();
-        Long postKeywordId = productDto.getPostKeywordId();
-        List<PostHashTag> postTags = postTagService.getPostTags(authorId, postKeywordId);
 
-        // 게시글 태그 리스트에서 게시글 리스트만 추출
-        List<Post> posts = postTags
+    // REST API
+    // Entity to Dto
+    public ProductDto toDto(Product product) {
+        List<PostDto> postDtos = findPostsByProduct(product)
                 .stream()
-                .map(PostHashTag::getPost)
+                .map(post -> postService.toDto(post))
                 .collect(Collectors.toList());
 
-        // Entity to Dto
-        return posts.stream().map(post -> PostDto.toDto(post)).collect(Collectors.toList());
+        return ProductDto.builder()
+                .id(product.getId())
+                .createDate(product.getCreateDate())
+                .modifyDate(product.getUpdateDate())
+                .authorId(product.getAuthor().getId())
+                .authorName(product.getAuthor().getNickname())
+                .subject(product.getSubject())
+                .bookChapters(postDtos)
+                .build();
     }
 }

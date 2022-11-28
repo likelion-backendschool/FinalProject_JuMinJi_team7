@@ -8,6 +8,7 @@ import com.ll.exam.Week_Mission.app.mybook.mapper.MyBookMapper;
 import com.ll.exam.Week_Mission.app.mybook.repository.MyBookRepository;
 import com.ll.exam.Week_Mission.app.order.entity.Order;
 import com.ll.exam.Week_Mission.app.post.entity.Post;
+import com.ll.exam.Week_Mission.app.product.dto.reponse.ProductDto;
 import com.ll.exam.Week_Mission.app.product.entity.Product;
 import com.ll.exam.Week_Mission.app.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MyBookService {
     private final MyBookRepository myBookRepository;
+    private final ProductService productService;
 
     @Transactional
     public void create(Member member, Product product) {
@@ -61,11 +63,25 @@ public class MyBookService {
     }
 
     // REST API
+    // Entity to Dto
+    public MyBookDto toDto(MyBook myBook) {
+        ProductDto productDto = productService.toDto(myBook.getProduct());
+
+        return MyBookDto.builder()
+                .id(myBook.getId())
+                .createDate(myBook.getCreateDate())
+                .modifyDate(myBook.getUpdateDate())
+                .ownerId(myBook.getMember().getId())
+                .product(productDto)
+                .build();
+    }
+
+    // REST API
     public List<MyBookDto> findByOwnerId(Long id) {
         List<MyBook> myBooks = myBookRepository.findByMemberId(id);
 
         List<MyBookDto> myBookDtos = myBooks.stream()
-                .map(myBook -> MyBookDto.toDto(myBook))
+                .map(myBook -> toDto(myBook))
                 .collect(Collectors.toList());
 
         return myBookDtos;
@@ -75,7 +91,7 @@ public class MyBookService {
     public MyBookDto findByIdForPrint(Long id) {
         MyBook myBook = findById(id);
 
-        MyBookDto myBookDto = MyBookDto.toDto(myBook);
+        MyBookDto myBookDto = toDto(myBook);
 
         return myBookDto;
     }

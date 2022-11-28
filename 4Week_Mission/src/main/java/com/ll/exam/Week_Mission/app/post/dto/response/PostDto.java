@@ -1,6 +1,5 @@
 package com.ll.exam.Week_Mission.app.post.dto.response;
 
-import com.ll.exam.Week_Mission.app.post.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,13 +14,4 @@ public class PostDto {
     private String subject;
     private String content;
     private String contentHtml;
-
-    public static PostDto toDto(Post post) {
-        return PostDto.builder()
-                .id(post.getId())
-                .subject(post.getSubject())
-                .content(post.getContent())
-                .contentHtml(post.getContentHtml())
-                .build();
-    }
 }
