@@ -44,6 +44,9 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
 
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
+
+	// PasswordEncoder
+	implementation 'org.springframework.security:spring-security-crypto'
 }
 
 tasks.named('test') {
