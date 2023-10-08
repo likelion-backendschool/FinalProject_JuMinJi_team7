@@ -115,10 +115,10 @@ public class ApiMyBookControllerTests {
                 .andExpect(jsonPath("$.msg").value("성공"))
                 .andExpect(jsonPath("$.data.myBook.id").value(2))
                 .andExpect(jsonPath("$.data.myBook.createDate").isNotEmpty())
-                .andExpect(jsonPath("$.data.myBook.updateDate").isNotEmpty())
-                .andExpect(jsonPath("$.data.ownerId").value(2))
-                .andExpect(jsonPath("$.data.productId").value(2))
-                .andExpect(jsonPath("$.data.productAuthorName").value("user2"))
-                .andExpect(jsonPath("$.data.bookChaptersSubject").isNotEmpty());
+                .andExpect(jsonPath("$.data.myBook.modifyDate").isNotEmpty())
+                .andExpect(jsonPath("$.data.myBook.ownerId").value(2))
+                .andExpect(jsonPath("$.data.myBook.product.id").value(2))
+                .andExpect(jsonPath("$.data.myBook.product.authorName").value("user2Author"))
+                .andExpect(jsonPath("$.data.myBook.product.bookChapters").isNotEmpty());
     }
 }
