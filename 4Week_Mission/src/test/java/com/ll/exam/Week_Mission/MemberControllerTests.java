@@ -48,7 +48,8 @@
 //
 //        // THEN
 //        resultActions
-//                .andExpect(status().is3xxRedirection())
+//
+//               .andExpect(status().is3xxRedirection())
 //                .andExpect(handler().handlerType(MemberController.class))
 //                .andExpect(handler().methodName("join"))
 //                .andExpect(redirectedUrlPattern("/member/login?msg=**"));
