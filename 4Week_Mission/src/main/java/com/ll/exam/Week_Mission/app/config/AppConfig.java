@@ -17,8 +17,6 @@ public class AppConfig {
     @Getter
     private static String siteName;
     @Getter
-    private static String siteBaseUrl;
-    @Getter
     public static double wholesalePriceRate;
 
     @Getter
@@ -39,10 +37,6 @@ public class AppConfig {
         AppConfig.siteName = siteName;
     }
 
-    @Value("${custom.site.baseUrl}")
-    public void setSiteBaseUrl(String siteBaseUrl) {
-        AppConfig.siteBaseUrl = siteBaseUrl;
-    }
 
     @Value("${custom.rebate.wholesalePriceRate}")
     public void setWholesalePriceRate(double value) {

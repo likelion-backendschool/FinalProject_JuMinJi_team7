@@ -5,8 +5,6 @@ server:
 spring:
   profiles:
     active: dev
-    include:
-      - base-addi
   batch:
     job:
       names: ${JOB_NAME:none}
@@ -48,4 +46,3 @@ custom:
     wholesalePriceRate: 0.5
   site:
     name: MEOTBOOKS
-    baseUrl: "http://localhost:8010"
