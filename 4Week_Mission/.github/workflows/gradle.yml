@@ -31,11 +31,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Make gradlew executable
+        run: chmod 744 ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build -x test
+        run: ./gradlew bootJar
 
       - name: Docker build and push
         run: |
